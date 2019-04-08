@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- Config -->
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <!-- Navigation Entries -->
+    <data name="NavigationCaptureTitle">
+        <value>Capture</value>
+    </data>
+    <data name="NavigationSettingsTitle">
+        <value>Settings</value>
+    </data>
+    <!-- Page Entries -->
+    <data name="PageCaptureTitle">
+        <value>Capture</value>
+    </data>
+    <data name="PageCaptureToolbarBrowsePhotos">
+        <value>Pick Photo</value>
+    </data>
+    <data name="PageCaptureToolbarToggleCamera">
+        <value>ToggleCamera</value>
+    </data>
+    <data name="PageCaptureImageUploading">
+        <value>Uploading</value>
+    </data>
+    <data name="PagePermissionsTitle">
+        <value>Permissions Please</value>
+    </data>
+    <data name="PagePermissionsMessage">
+        <value>This app requires access to the camera and photos. Please grant access before continuing.</value>
+    </data>
+    <data name="PagePermissionsCameraButton">
+        <value>Allow Camera Access</value>
+    </data>
+    <data name="PagePermissionsPhotosButton">
+        <value>Allow Photos Access</value>
+    </data>
+    <!-- Camera Entries -->
+    <data name="CameraNotSupported">
+        <value>Camera Not Available</value>
+    </data>
+    <data name="CameraPermissionMissing">
+        <value>:( Permission not granted to camera.</value>
+    </data>
+    <data name="CameraPermissionGranted">
+        <value>Camera Granted</value>
+    </data>
+    <data name="CameraPermissionDeniedTitle">
+        <value>Camera Denied</value>
+    </data>
+    <data name="CameraPermissionDeniedMessage">
+        <value>Can not continue, try again.</value>
+    </data>
+    <data name="CameraPermissionPromptTitle">
+        <value>Camera Please</value>
+    </data>
+    <data name="CameraPermissionPromptMessage">
+        <value>This application requires access to the camera.</value>
+    </data>
+    <!-- Photos Entries -->
+    <data name="PhotosNotSupported">
+        <value>Photos not supported</value>
+    </data>
+    <data name="PhotosPermissionMissing">
+        <value>:( Permission not granted to photos.</value>
+    </data>
+    <data name="PhotosPermissionGranted">
+        <value>Photos Granted</value>
+    </data>
+    <data name="PhotosPermissionDeniedTitle">
+        <value>Photos Denied</value>
+    </data>
+    <data name="PhotosPermissionDeniedMessage">
+        <value>Can not continue, try again.</value>
+    </data>
+    <data name="PhotosPermissionPromptTitle">
+        <value>Photos Please</value>
+    </data>
+    <data name="PhotosPermissionPromptMessage">
+        <value>This application requires access to photos.</value>
+    </data>
+    <!-- General -->
+    <data name="OK">
+        <value>OK</value>
+    </data>
+    <data name="GeneralErrorTitle">
+        <value>Uh Oh</value>
+    </data>
+    <data name="GeneralErrorSummary">
+        <value>Something went wrong!</value>
+    </data>
+</root>
