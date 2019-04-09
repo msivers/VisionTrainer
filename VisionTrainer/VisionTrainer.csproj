@@ -15,8 +15,8 @@
     <PackageReference Include="Xam.Plugins.Settings" Version="3.1.1" />
     <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
     <PackageReference Include="Xam.Plugin.Media" Version="4.0.1.5" />
-    <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie" Version="2.7.1" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.2.0-beta" />
+    <PackageReference Include="Plugin.HttpTransferTasks" Version="2.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Constants\" />

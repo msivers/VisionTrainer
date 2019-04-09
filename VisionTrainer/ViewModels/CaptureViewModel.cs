@@ -40,7 +40,6 @@ namespace VisionTrainer.ViewModels
 
 			IsBusy = true;
 			ImageData = bytes;
-			var location = Settings.CameraLocation;
 
 			var result = new UIResponse();
 			//AudienceResponse response = await AzureService.CaptureAudience(location, imageData);

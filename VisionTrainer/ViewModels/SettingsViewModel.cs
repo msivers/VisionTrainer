@@ -27,47 +27,87 @@ namespace VisionTrainer.ViewModels
 			}
 		}
 
-		int timerInterval;
-		public int TimerInterval
+		#region Training
+		public string TrainingKey
 		{
-			get { return Settings.MonitorInterval; }
+			get { return Settings.TrainingKey; }
 			set
 			{
-				if (Settings.MonitorInterval == value)
+				if (Settings.TrainingKey == value)
 					return;
 
-				Settings.MonitorInterval = value;
-				OnPropertyChanged("TimerInterval");
+				Settings.TrainingKey = value;
+				OnPropertyChanged("TrainingKey");
 			}
 		}
 
-		int historyInterval;
-		public int HistoryInterval
+		public string TrainingEndpoint
 		{
-			get { return Settings.HistoryInterval; }
+			get { return Settings.TrainingEndpoint; }
 			set
 			{
-				if (Settings.HistoryInterval == value)
+				if (Settings.TrainingEndpoint == value)
 					return;
 
-				Settings.HistoryInterval = value;
-				OnPropertyChanged("HistoryInterval");
+				Settings.TrainingEndpoint = value;
+				OnPropertyChanged("TrainingEndpoint");
 			}
 		}
 
-		string cameraLocation;
-		public string CameraLocation
+		public string TrainingResourceId
 		{
-			get { return Settings.CameraLocation; }
+			get { return Settings.TrainingResourceId; }
 			set
 			{
-				if (Settings.CameraLocation == value)
+				if (Settings.TrainingResourceId == value)
 					return;
 
-				Settings.CameraLocation = value;
-				OnPropertyChanged("CameraLocation");
+				Settings.TrainingResourceId = value;
+				OnPropertyChanged("TrainingResourceId");
 			}
 		}
+		#endregion
+
+		#region Prediction
+		public string PredictionKey
+		{
+			get { return Settings.PredictionKey; }
+			set
+			{
+				if (Settings.PredictionKey == value)
+					return;
+
+				Settings.PredictionKey = value;
+				OnPropertyChanged("PredictionKey");
+			}
+		}
+
+		public string PredictionEndpoint
+		{
+			get { return Settings.PredictionEndpoint; }
+			set
+			{
+				if (Settings.PredictionEndpoint == value)
+					return;
+
+				Settings.TrainingEndpoint = value;
+				OnPropertyChanged("PredictionEndpoint");
+			}
+		}
+
+		public string PredictionResourceId
+		{
+			get { return Settings.PredictionResourceId; }
+			set
+			{
+				if (Settings.PredictionResourceId == value)
+					return;
+
+				Settings.TrainingResourceId = value;
+				OnPropertyChanged("PredictionResourceId");
+			}
+		}
+		#endregion
 
 		public SettingsViewModel()
 		{

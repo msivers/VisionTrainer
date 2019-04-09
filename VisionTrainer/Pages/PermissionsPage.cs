@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Lottie.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using VisionTrainer.Resources;
@@ -17,15 +16,6 @@ namespace VisionTrainer.Pages
 
 		public PermissionsPage()
 		{
-			var animation = new AnimationView()
-			{
-				Loop = true,
-				AutoPlay = true,
-				VerticalOptions = LayoutOptions.FillAndExpand,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Animation = "LoadingAnimation.json"
-			};
-
 			var titleLabel = new Label()
 			{
 				Text = ApplicationResource.PagePermissionsTitle,

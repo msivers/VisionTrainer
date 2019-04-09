@@ -23,32 +23,63 @@ namespace VisionTrainer
 			set { AppSettings.AddOrUpdateValue(cameraOption, (int)value); }
 		}
 
-		const string monitorInvertal = "monitorInterval";
-		private static readonly int MonitorIntervalDefault = 5;
+		#region Training
+		const string trainingKey = "trainingkey";
+		private static readonly string TrainingKeyDefault = "";
 
-		public static int MonitorInterval
+		public static string TrainingKey
 		{
-			get { return AppSettings.GetValueOrDefault(monitorInvertal, MonitorIntervalDefault); }
-			set { AppSettings.AddOrUpdateValue(monitorInvertal, (int)value); }
+			get { return AppSettings.GetValueOrDefault(trainingKey, TrainingKeyDefault); }
+			set { AppSettings.AddOrUpdateValue(trainingKey, (string)value); }
 		}
 
-		const string historyInterval = "historyInterval";
-		private static readonly int HistoryIntervalDefault = 5;
+		const string trainingEndpoint = "trainingendpoint";
+		private static readonly string TrainingEndpointDefault = "";
 
-		public static int HistoryInterval
+		public static string TrainingEndpoint
 		{
-			get { return AppSettings.GetValueOrDefault(historyInterval, HistoryIntervalDefault); }
-			set { AppSettings.AddOrUpdateValue(historyInterval, (int)value); }
+			get { return AppSettings.GetValueOrDefault(trainingEndpoint, TrainingEndpointDefault); }
+			set { AppSettings.AddOrUpdateValue(trainingEndpoint, (string)value); }
 		}
 
-		const string cameraLocation = "cameraLocation";
-		private static readonly string CameraLocationDefault = "None";
+		const string trainingResourceId = "trainingresourceid";
+		private static readonly string TrainingResourceIdDefault = "";
 
-		public static string CameraLocation
+		public static string TrainingResourceId
 		{
-			get { return AppSettings.GetValueOrDefault(cameraLocation, CameraLocationDefault); }
-			set { AppSettings.AddOrUpdateValue(cameraLocation, (string)value); }
+			get { return AppSettings.GetValueOrDefault(trainingResourceId, TrainingResourceIdDefault); }
+			set { AppSettings.AddOrUpdateValue(trainingResourceId, (string)value); }
 		}
+		#endregion
+
+		#region Prediction
+		const string predictionKey = "predictionkey";
+		private static readonly string PredictionKeyDefault = "";
+
+		public static string PredictionKey
+		{
+			get { return AppSettings.GetValueOrDefault(predictionKey, PredictionKeyDefault); }
+			set { AppSettings.AddOrUpdateValue(predictionKey, (string)value); }
+		}
+
+		const string predictionEndpoint = "predictionendpoint";
+		private static readonly string PredictionEndpointDefault = "";
+
+		public static string PredictionEndpoint
+		{
+			get { return AppSettings.GetValueOrDefault(predictionEndpoint, PredictionEndpointDefault); }
+			set { AppSettings.AddOrUpdateValue(predictionEndpoint, (string)value); }
+		}
+
+		const string predictionResourceId = "predictionresourceid";
+		private static readonly string PredictionResourceIdDefault = "";
+
+		public static string PredictionResourceId
+		{
+			get { return AppSettings.GetValueOrDefault(predictionResourceId, PredictionResourceIdDefault); }
+			set { AppSettings.AddOrUpdateValue(predictionResourceId, (string)value); }
+		}
+		#endregion
 	}
 }
 

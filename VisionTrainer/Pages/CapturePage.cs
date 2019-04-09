@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Lottie.Forms;
 using Plugin.Media;
 using VisionTrainer.Resources;
 using VisionTrainer.ViewModels;
@@ -95,21 +94,11 @@ namespace VisionTrainer.Pages
 				activityIndicator.Color = Color.Black;
 				activityIndicator.HorizontalOptions = LayoutOptions.CenterAndExpand;
 
-				var test = new AnimationView()
-				{
-					Loop = true,
-					AutoPlay = true,
-					VerticalOptions = LayoutOptions.FillAndExpand,
-					HorizontalOptions = LayoutOptions.FillAndExpand,
-					Animation = "LoadingAnimation.json"
-				};
-
 				var centerLayout = new StackLayout();
 				centerLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
 				centerLayout.VerticalOptions = LayoutOptions.CenterAndExpand;
 				centerLayout.Children.Add(cameraMissingLabel);
 				centerLayout.Children.Add(activityIndicator);
-				centerLayout.Children.Add(test);
 
 				Content = centerLayout;
 			}
