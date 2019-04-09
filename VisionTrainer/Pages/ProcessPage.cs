@@ -10,20 +10,20 @@ namespace VisionTrainer.Pages
 		public ProcessPage()
 		{
 			Title = ApplicationResource.PageProcessTitle;
-			BindingContext = new ProcessViewModel();
+			BindingContext = new ProcessViewModel(this.Navigation);
 
-			var browsePhotosItem = new ToolbarItem()
+			var createNewItem = new ToolbarItem()
 			{
 				Text = ApplicationResource.PageCaptureToolbarBrowsePhotos,
 				Icon = "folder.png"
 			};
-			browsePhotosItem.SetBinding(MenuItem.CommandProperty, new Binding("SelectImagesCommand"));
-			this.ToolbarItems.Add(browsePhotosItem);
+			createNewItem.SetBinding(MenuItem.CommandProperty, new Binding("NewBatchCommand"));
+			this.ToolbarItems.Add(createNewItem);
 
 			var layout = new StackLayout();
 			layout.HorizontalOptions = LayoutOptions.CenterAndExpand;
 			layout.VerticalOptions = LayoutOptions.CenterAndExpand;
-			layout.Children.Add(new Label() { Text = "Hello World" });
+			layout.Children.Add(new Label() { Text = "List of Batches" });
 
 			Content = layout;
 		}

@@ -3,6 +3,7 @@ using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training;
 
 namespace VisionTrainer.Functions.Services
 {
+	// WIP from https://github.com/Azure-Samples/cognitive-services-dotnet-sdk-samples/blob/master/CustomVision/ImageClassification/Program.cs
 	public static class CustomVisionService
 	{
 		private static CustomVisionTrainingClient _trainingClient;

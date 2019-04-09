@@ -119,6 +119,12 @@ namespace VisionTrainer.Resources {
             }
         }
         
+        internal static string PageCreateBatchTitle {
+            get {
+                return ResourceManager.GetString("PageCreateBatchTitle", resourceCulture);
+            }
+        }
+        
         internal static string CameraNotSupported {
             get {
                 return ResourceManager.GetString("CameraNotSupported", resourceCulture);

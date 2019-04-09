@@ -51,6 +51,9 @@
     <data name="PageProcessTitle">
         <value>Process</value>
     </data>
+    <data name="PageCreateBatchTitle">
+        <value>Create New Batch</value>
+    </data>
     <!-- Camera Entries -->
     <data name="CameraNotSupported">
         <value>Camera Not Available</value>

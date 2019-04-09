@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -118,12 +117,10 @@ namespace VisionTrainer.iOS.Services
 								else
 								{
 									path = FileHelper.GetOutputPath(MediaFileType.Image, TemporalDirectoryName, string.Empty);
-
 								}
 
 								if (!File.Exists(path))
 								{
-
 									img.AsJPEG().Save(path, true);
 								}
 
@@ -133,7 +130,6 @@ namespace VisionTrainer.iOS.Services
 								vOptions.NetworkAccessAllowed = true;
 								vOptions.Version = PHVideoRequestOptionsVersion.Original;
 								vOptions.DeliveryMode = PHVideoRequestOptionsDeliveryMode.FastFormat;
-
 
 								PHImageManager.DefaultManager.RequestAvAsset(asset, vOptions, (avAsset, audioMix, vInfo) =>
 								{
@@ -146,7 +142,6 @@ namespace VisionTrainer.iOS.Services
 										exportSession.OutputUrl = NSUrl.FromFilename(vPath);
 										exportSession.OutputFileType = AVFileType.QuickTimeMovie;
 
-
 										exportSession.ExportAsynchronously(() =>
 										{
 											Console.WriteLine(exportSession.Status);
@@ -154,9 +149,7 @@ namespace VisionTrainer.iOS.Services
 											tvcs.TrySetResult(vPath);
 											//exportSession.Dispose();
 										});
-
 									}
-
 								});
 
 								var videoUrl = await tvcs.Task;
@@ -174,10 +167,7 @@ namespace VisionTrainer.iOS.Services
 									completed = true;
 									tcs.TrySetResult(results);
 								}
-
 							});
-
-
 
 						break;
 					default:
