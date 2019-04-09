@@ -8,7 +8,7 @@ namespace VisionTrainer.Pages
 	{
 		public SettingsPage()
 		{
-			//BindingContext = new SettingsViewModel();
+			BindingContext = new SettingsViewModel();
 
 			var cameraSwitch = new SwitchCell { Text = "Rear Camera" };
 			//cameraSwitch.SetBinding(SwitchCell.OnProperty, new Binding("DefaultCameraRear"));

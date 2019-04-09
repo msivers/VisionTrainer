@@ -53,6 +53,12 @@ namespace VisionTrainer.Resources {
             }
         }
         
+        internal static string NavigationProcessTitle {
+            get {
+                return ResourceManager.GetString("NavigationProcessTitle", resourceCulture);
+            }
+        }
+        
         internal static string NavigationSettingsTitle {
             get {
                 return ResourceManager.GetString("NavigationSettingsTitle", resourceCulture);
@@ -104,6 +110,12 @@ namespace VisionTrainer.Resources {
         internal static string PagePermissionsPhotosButton {
             get {
                 return ResourceManager.GetString("PagePermissionsPhotosButton", resourceCulture);
+            }
+        }
+        
+        internal static string PageProcessTitle {
+            get {
+                return ResourceManager.GetString("PageProcessTitle", resourceCulture);
             }
         }
         

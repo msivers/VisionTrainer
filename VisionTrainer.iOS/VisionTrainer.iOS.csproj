@@ -98,6 +98,7 @@
     <Compile Include="Camera\CameraPreviewRenderer.cs" />
     <Compile Include="Camera\UICameraPreview.cs" />
     <Compile Include="Camera\UIImageExtensions.cs" />
+    <Compile Include="Services\MultiMediaPickerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -156,6 +157,18 @@
     <PackageReference Include="Plugin.HttpTransferTasks">
       <Version>2.0.2</Version>
     </PackageReference>
+    <PackageReference Include="DLToolkit.Forms.Controls.FlowListView">
+      <Version>2.0.11</Version>
+    </PackageReference>
+    <PackageReference Include="GMImagePicker.Xamarin">
+      <Version>2.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.FFImageLoading.Forms">
+      <Version>2.4.5.870-pre</Version>
+    </PackageReference>
+    <PackageReference Include="Plugin.Permissions">
+      <Version>3.0.0.12</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
@@ -166,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Camera\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\folder.png" />

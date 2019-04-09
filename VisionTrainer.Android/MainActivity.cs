@@ -7,6 +7,8 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Plugin.Permissions;
+using VisionTrainer.Interfaces;
+using VisionTrainer.Droid.Services;
 
 namespace VisionTrainer.Droid
 {
@@ -23,9 +25,14 @@ namespace VisionTrainer.Droid
 
 			base.OnCreate(savedInstanceState);
 
+			// Initialize platform specific services
+			FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+			ServiceContainer.Register<IMultiMediaPickerService>(MultiMediaPickerService.SharedInstance);
+
+			// Load forms app
 			global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 			Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
-			//AnimationViewRenderer.Init();
+
 			LoadApplication(new App());
 		}
 

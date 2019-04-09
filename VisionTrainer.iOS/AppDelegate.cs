@@ -4,6 +4,8 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using VisionTrainer.Interfaces;
+using VisionTrainer.iOS.Services;
 
 namespace VisionTrainer.iOS
 {
@@ -22,6 +24,11 @@ namespace VisionTrainer.iOS
 		//
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
+			// Initialize platform specific services
+			ServiceContainer.Register<IMultiMediaPickerService>(new MultiMediaPickerService());
+			FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
+
+			// Load forms app
 			Xamarin.Calabash.Start();
 			global::Xamarin.Forms.Forms.Init();
 			LoadApplication(new App());

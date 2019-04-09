@@ -23,13 +23,10 @@ namespace VisionTrainer
 			InitializeComponent();
 
 			Barrel.ApplicationId = "VisionTrainer";
-
 			//ServiceContainer.Register<IHistoryService>(new HistoryService());
 
 			MainPage = new MainPage();
 		}
-
-
 
 		protected override void OnStart()
 		{

@@ -34,9 +34,9 @@ namespace VisionTrainer.Pages
 			activityIndicator.IsRunning = false;
 			activityIndicator.IsVisible = false;
 
-			this.ToolbarItems.Add(
-				new ToolbarItem(ApplicationResource.PageCaptureToolbarBrowsePhotos, null, () => PickPhoto()) { Icon = "folder.png" }
-			);
+			//this.ToolbarItems.Add(
+			//	new ToolbarItem(ApplicationResource.PageCaptureToolbarBrowsePhotos, null, () => PickPhoto()) { Icon = "folder.png" }
+			//);
 
 			if (CrossMedia.Current.IsCameraAvailable)
 			{
@@ -139,6 +139,7 @@ namespace VisionTrainer.Pages
 			});
 		}
 
+		/*
 		async void PickPhoto()
 		{
 			if (!CrossMedia.Current.IsPickPhotoSupported)
@@ -175,6 +176,7 @@ namespace VisionTrainer.Pages
 				await DisplayAlert(messageGeneralErrorTitle, message, messageOK);
 			}
 		}
+		*/
 
 		void CaptureButton_Clicked(object sender, EventArgs e)
 		{

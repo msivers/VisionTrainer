@@ -2,9 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using MonkeyCache.FileStore;
 using VisionTrainer.Models;
-using VisionTrainer.Services;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels

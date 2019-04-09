@@ -33,12 +33,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+<CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -66,6 +67,12 @@
     <PackageReference Include="Plugin.HttpTransferTasks">
       <Version>2.0.2</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.FFImageLoading.Forms">
+      <Version>2.4.5.880-pre</Version>
+    </PackageReference>
+    <PackageReference Include="DLToolkit.Forms.Controls.FlowListView">
+      <Version>2.0.11</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -87,6 +94,8 @@
     <Compile Include="Camera2Basic\Listeners\CameraStateListener.cs" />
     <Compile Include="Camera2Basic\Listeners\ImageAvailableListener.cs" />
     <Compile Include="Utils\BitmapUtils.cs" />
+    <Compile Include="Services\MultiMediaPickerService.cs" />
+    <Compile Include="Utils\ImageHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -122,6 +131,7 @@
     <Folder Include="Camera\" />
     <Folder Include="Camera2Basic\" />
     <Folder Include="Utils\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VisionTrainer\VisionTrainer.csproj">

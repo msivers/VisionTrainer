@@ -17,6 +17,9 @@
     <data name="NavigationCaptureTitle">
         <value>Capture</value>
     </data>
+    <data name="NavigationProcessTitle">
+        <value>Process</value>
+    </data>
     <data name="NavigationSettingsTitle">
         <value>Settings</value>
     </data>
@@ -44,6 +47,9 @@
     </data>
     <data name="PagePermissionsPhotosButton">
         <value>Allow Photos Access</value>
+    </data>
+    <data name="PageProcessTitle">
+        <value>Process</value>
     </data>
     <!-- Camera Entries -->
     <data name="CameraNotSupported">
