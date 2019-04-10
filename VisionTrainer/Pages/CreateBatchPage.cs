@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using DLToolkit.Forms.Controls;
 using FFImageLoading.Forms;
+using VisionTrainer.Models;
 using VisionTrainer.Resources;
 using VisionTrainer.ViewModels;
 using Xamarin.Forms;
@@ -14,6 +17,7 @@ namespace VisionTrainer.Pages
 			Title = ApplicationResource.PageCreateBatchTitle;
 			BindingContext = new CreateBatchViewModel();
 
+			// Browse for images toolbar item
 			var browsePhotosItem = new ToolbarItem()
 			{
 				Text = ApplicationResource.PageCaptureToolbarBrowsePhotos,
@@ -22,38 +26,100 @@ namespace VisionTrainer.Pages
 			browsePhotosItem.SetBinding(MenuItem.CommandProperty, new Binding("SelectImagesCommand"));
 			this.ToolbarItems.Add(browsePhotosItem);
 
-			var flowList = new FlowListView()
-			{
-				FlowColumnCount = 3,
-				SeparatorVisibility = SeparatorVisibility.None,
-				HasUnevenRows = false,
-				RowHeight = 100
-			};
+			// List view
+			ListView lstView = new ListView();
+			lstView.SeparatorVisibility = SeparatorVisibility.None;
+			lstView.RowHeight = 100;
+			//lstView.IsPullToRefreshEnabled = true;
+			//lstView.Refreshing += OnRefresh;
+			//lstView.ItemSelected += OnSelection;
+			//lstView.ItemTapped += OnTap;
+			//lstView.ItemsSource = items;
+			lstView.SetBinding(ListView.ItemsSourceProperty, new Binding("Media"));
+			//lstView.SelectionMode = ListViewSelectionMode.None;
+			lstView.ItemTemplate = new DataTemplate(typeof(CachedImageCell));
 
-			var dataTemplate = new DataTemplate(() =>
+			Content = new StackLayout
 			{
-				var cachedImage = new CachedImage()
+				Margin = new Thickness(10),
+				Children =
 				{
-					BackgroundColor = Color.Gray,
-					DownsampleToViewSize = true,
-					HeightRequest = 100,
-					Aspect = Aspect.AspectFill,
-					HorizontalOptions = LayoutOptions.FillAndExpand
-				};
-				cachedImage.SetBinding(CachedImage.SourceProperty, new Binding("PreviewPath"));
+					new Label { Text = "ListView Interactivity", FontAttributes = FontAttributes.Bold, HorizontalOptions = LayoutOptions.Center },
+					lstView
+				}
+			};
+		}
+	}
 
-				return new ViewCell { View = cachedImage };
-			});
+	public class CachedImageCell : ViewCell
+	{
+		public CachedImageCell()
+		{
+			var cachedImage = new CachedImage()
+			{
+				BackgroundColor = Color.Gray,
+				DownsampleToViewSize = true,
+				HeightRequest = 100,
+				WidthRequest = 100,
+				Aspect = Aspect.AspectFill,
+				HorizontalOptions = LayoutOptions.Start,
+				IsEnabled = false
+			};
+			cachedImage.SetBinding(CachedImage.SourceProperty, new Binding("PreviewPath"));
 
-			flowList.SetBinding(FlowListView.FlowItemsSourceProperty, new Binding("Media"));
-			flowList.FlowColumnTemplate = dataTemplate;
+			var deleteAction = new MenuItem { Text = "Delete", IsDestructive = true }; // red background
+			deleteAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+			deleteAction.Clicked += OnDelete;
+			this.ContextActions.Add(deleteAction);
 
-			var layout = new StackLayout();
-			layout.HorizontalOptions = LayoutOptions.CenterAndExpand;
-			layout.VerticalOptions = LayoutOptions.CenterAndExpand;
-			layout.Children.Add(flowList);
+			StackLayout layout = new StackLayout();
+			layout.Padding = new Thickness(15, 0);
+			layout.Children.Add(cachedImage);
+			View = layout;
+		}
 
-			Content = layout;
+		void OnDelete(object sender, EventArgs e)
+		{
+			//var item = (MenuItem)sender;
+			//interactiveListViewCode.items.Remove(item.CommandParameter.ToString());
+		}
+	}
+
+	public class textViewCell : ViewCell
+	{
+		public textViewCell()
+		{
+			StackLayout layout = new StackLayout();
+			layout.Padding = new Thickness(15, 0);
+			Label label = new Label();
+
+			label.SetBinding(Label.TextProperty, "Path");
+			layout.Children.Add(label);
+
+			var moreAction = new MenuItem { Text = "More" };
+			moreAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+			moreAction.Clicked += OnMore;
+
+			var deleteAction = new MenuItem { Text = "Delete", IsDestructive = true }; // red background
+			deleteAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+			deleteAction.Clicked += OnDelete;
+
+			this.ContextActions.Add(moreAction);
+			this.ContextActions.Add(deleteAction);
+			View = layout;
+		}
+
+		void OnMore(object sender, EventArgs e)
+		{
+			var item = (MenuItem)sender;
+			//Do something here... e.g. Navigation.pushAsync(new specialPage(item.commandParameter));
+			//page.DisplayAlert("More Context Action", item.CommandParameter + " more context action", 	"OK");
+		}
+
+		void OnDelete(object sender, EventArgs e)
+		{
+			//var item = (MenuItem)sender;
+			//interactiveListViewCode.items.Remove(item.CommandParameter.ToString());
 		}
 	}
 }

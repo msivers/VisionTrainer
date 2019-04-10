@@ -48,6 +48,7 @@ namespace VisionTrainer.Pages
 			captureNavigationPage.BarBackgroundColor = backgroundColor;
 			Children.Add(captureNavigationPage);
 
+
 			var processNavigationPage = new NavigationPage(new ProcessPage());
 			processNavigationPage.Title = ApplicationResource.NavigationProcessTitle;
 			//processNavigationPage.Icon = "person.png";

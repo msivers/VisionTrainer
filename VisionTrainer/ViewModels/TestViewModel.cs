@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Plugin.Permissions;
@@ -13,45 +11,39 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
 {
-	public class CreateBatchViewModel : INotifyPropertyChanged
+	public class TestViewModel : INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
 		IMultiMediaPickerService _multiMediaPickerService;
 
-		ObservableCollection<MediaFile> media;
-		public ObservableCollection<MediaFile> Media
-		{
-			get { return media; }
-			set { SetProperty(ref media, value); }
-		}
-
+		public ObservableCollection<MediaFile> Media { get; set; }
 		public ICommand SelectImagesCommand { get; set; }
 		public ICommand SelectVideosCommand { get; set; }
 
-		public CreateBatchViewModel()
+		public TestViewModel()
 		{
 			_multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
 
-			//Media = new ObservableCollection<MediaFile>();
-
 			SelectImagesCommand = new Command(async (obj) =>
 			{
-				//var hasPermission = await CheckPermissionsAsync();
-				//if (hasPermission)
-				//{
-				Media = new ObservableCollection<MediaFile>();
-				await _multiMediaPickerService.PickPhotosAsync();
-				//}
+				var hasPermission = await CheckPermissionsAsync();
+				if (hasPermission)
+				{
+					Media = new ObservableCollection<MediaFile>();
+					await _multiMediaPickerService.PickPhotosAsync();
+				}
 			});
 
 			SelectVideosCommand = new Command(async (obj) =>
 			{
-				//var hasPermission = await CheckPermissionsAsync();
-				//if (hasPermission)
-				//{
-				Media = new ObservableCollection<MediaFile>();
-				await _multiMediaPickerService.PickVideosAsync();
-				//}
+				var hasPermission = await CheckPermissionsAsync();
+				if (hasPermission)
+				{
+
+					Media = new ObservableCollection<MediaFile>();
+
+					await _multiMediaPickerService.PickVideosAsync();
+
+				}
 			});
 
 			_multiMediaPickerService.OnMediaPicked += (s, a) =>
@@ -63,7 +55,6 @@ namespace VisionTrainer.ViewModels
 			};
 		}
 
-		/*
 		async Task<bool> CheckPermissionsAsync()
 		{
 			var retVal = false;
@@ -100,21 +91,6 @@ namespace VisionTrainer.ViewModels
 			return retVal;
 
 		}
-		*/
-
-		bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-		{
-			if (Object.Equals(storage, value))
-				return false;
-
-			storage = value;
-			OnPropertyChanged(propertyName);
-			return true;
-		}
-
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
+		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }

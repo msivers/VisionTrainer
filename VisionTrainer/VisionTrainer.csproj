@@ -51,4 +51,7 @@
       <LastGenOutput>ApplicationResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="FodyWeavers.xml" />
+  </ItemGroup>
 </Project>
