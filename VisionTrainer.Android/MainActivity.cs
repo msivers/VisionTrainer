@@ -30,6 +30,7 @@ namespace VisionTrainer.Droid
 			ServiceContainer.Register<IMultiMediaPickerService>(MultiMediaPickerService.SharedInstance);
 
 			// Load forms app
+			global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
 			global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 			Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
 

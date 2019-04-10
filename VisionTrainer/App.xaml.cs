@@ -1,5 +1,4 @@
-﻿using DLToolkit.Forms.Controls;
-using MonkeyCache.FileStore;
+﻿using MonkeyCache.FileStore;
 using VisionTrainer.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -16,7 +15,6 @@ namespace VisionTrainer
 		public App()
 		{
 			InitializeComponent();
-			FlowListView.Init();
 
 			Barrel.ApplicationId = "VisionTrainer";
 			//ServiceContainer.Register<IHistoryService>(new HistoryService());

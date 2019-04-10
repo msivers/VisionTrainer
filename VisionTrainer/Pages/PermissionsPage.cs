@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
 using VisionTrainer.Resources;
+using VisionTrainer.Services;
 using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
@@ -45,7 +44,19 @@ namespace VisionTrainer.Pages
 				CornerRadius = 10,
 				Margin = new Thickness(0, 20, 0, 5)
 			};
-			cameraButton.Clicked += async (sender, e) => await CheckCameraPermissions();
+			cameraButton.Clicked += async (sender, e) =>
+			{
+
+				var hasPermission = await PermissionsCheck.CameraAsync();
+				if (hasPermission)
+				{
+					cameraButton.IsEnabled = false;
+					cameraButton.Text = ApplicationResource.CameraPermissionGranted;
+					cameraButton.BackgroundColor = Color.LightGray;
+					hasCameraPermission = true;
+					await CheckComplete();
+				}
+			};
 
 			photosButton = new Button()
 			{
@@ -58,7 +69,19 @@ namespace VisionTrainer.Pages
 				HeightRequest = 40,
 				CornerRadius = 10
 			};
-			photosButton.Clicked += async (sender, e) => await CheckPhotosPermissions();
+			photosButton.Clicked += async (sender, e) =>
+			{
+
+				var hasPermission = await PermissionsCheck.PhotosAsync();
+				if (hasPermission)
+				{
+					photosButton.IsEnabled = false;
+					photosButton.Text = ApplicationResource.PhotosPermissionGranted;
+					photosButton.BackgroundColor = Color.LightGray;
+					hasPhotoPermission = true;
+					await CheckComplete();
+				}
+			};
 
 			var centerLayout = new StackLayout();
 			centerLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
@@ -71,63 +94,10 @@ namespace VisionTrainer.Pages
 			Content = centerLayout;
 		}
 
-		async Task CheckCameraPermissions()
-		{
-			var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
-			if (status != PermissionStatus.Granted)
-			{
-				if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Camera))
-					await DisplayAlert(ApplicationResource.CameraPermissionPromptTitle, ApplicationResource.CameraPermissionPromptMessage, ApplicationResource.OK);
-
-				var results = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Camera);
-				if (results.ContainsKey(Permission.Camera))
-					status = results[Permission.Camera];
-			}
-
-			if (status == PermissionStatus.Granted)
-			{
-				cameraButton.IsEnabled = false;
-				cameraButton.Text = ApplicationResource.CameraPermissionGranted;
-				cameraButton.BackgroundColor = Color.LightGray;
-				hasCameraPermission = true;
-				await CheckComplete();
-			}
-
-			else if (status != PermissionStatus.Unknown)
-				await DisplayAlert(ApplicationResource.CameraPermissionDeniedTitle, ApplicationResource.CameraPermissionDeniedMessage, ApplicationResource.OK);
-		}
-
-		async Task CheckPhotosPermissions()
-		{
-			var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Photos);
-			if (status != PermissionStatus.Granted)
-			{
-				if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Photos))
-					await DisplayAlert(ApplicationResource.PhotosPermissionPromptTitle, ApplicationResource.PhotosPermissionPromptMessage, ApplicationResource.OK);
-
-				var results = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Photos);
-				if (results.ContainsKey(Permission.Photos))
-					status = results[Permission.Photos];
-			}
-
-			if (status == PermissionStatus.Granted)
-			{
-				photosButton.IsEnabled = false;
-				photosButton.Text = ApplicationResource.PhotosPermissionGranted;
-				photosButton.BackgroundColor = Color.LightGray;
-				hasPhotoPermission = true;
-				await CheckComplete();
-			}
-
-			else if (status != PermissionStatus.Unknown)
-				await DisplayAlert(ApplicationResource.PhotosPermissionDeniedTitle, ApplicationResource.PhotosPermissionDeniedMessage, ApplicationResource.OK);
-		}
-
 		async Task CheckComplete()
 		{
 			if (hasCameraPermission && hasPhotoPermission)
 				await Navigation.PopModalAsync();
 		}
-
 	}
 }
