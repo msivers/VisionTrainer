@@ -1,5 +1,8 @@
-﻿using MonkeyCache.FileStore;
+﻿using System;
+using System.IO;
+using MonkeyCache.FileStore;
 using VisionTrainer.Pages;
+using VisionTrainer.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,7 +20,8 @@ namespace VisionTrainer
 			InitializeComponent();
 
 			Barrel.ApplicationId = "VisionTrainer";
-			//ServiceContainer.Register<IHistoryService>(new HistoryService());
+			var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrainerSQLite.db3");
+			ServiceContainer.Register<IDatabase>(new TrainerDatabase(dbPath));
 
 			MainPage = new MainPage();
 		}

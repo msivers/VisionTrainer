@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using VisionTrainer.Resources;
-using VisionTrainer.Services;
+using VisionTrainer.Utils;
 using Xamarin.Forms;
 
 namespace VisionTrainer.Pages

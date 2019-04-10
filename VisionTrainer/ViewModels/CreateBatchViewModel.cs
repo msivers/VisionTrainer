@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Models;
+using VisionTrainer.Services;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
@@ -13,6 +14,7 @@ namespace VisionTrainer.ViewModels
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		IMultiMediaPickerService _multiMediaPickerService;
+		IDatabase database;
 
 		ObservableCollection<MediaFile> media;
 		public ObservableCollection<MediaFile> Media
@@ -30,10 +32,14 @@ namespace VisionTrainer.ViewModels
 
 		public ICommand SelectImagesCommand { get; set; }
 		public ICommand SelectVideosCommand { get; set; }
+		public ICommand Complete { get; set; }
 
 		public CreateBatchViewModel()
 		{
 			_multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
+			database = ServiceContainer.Resolve<IDatabase>();
+
+			// TODO Check if we're looking at an existing item
 
 			Tags = new string[]
 			{
@@ -53,6 +59,11 @@ namespace VisionTrainer.ViewModels
 			{
 				Media = new ObservableCollection<MediaFile>();
 				await _multiMediaPickerService.PickVideosAsync();
+			});
+
+			Complete = new Command(async (obj) =>
+			{
+				// TODO store in Database
 			});
 
 			_multiMediaPickerService.OnMediaPicked += (s, a) =>

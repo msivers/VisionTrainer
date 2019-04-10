@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
-using Xamarin.Forms;
 using VisionTrainer.Resources;
 
-namespace VisionTrainer.Services
+namespace VisionTrainer.Utils
 {
 	public static class PermissionsCheck
 	{
@@ -32,6 +31,7 @@ namespace VisionTrainer.Services
 				{
 					retVal = true;
 				}
+
 				else if (status != PermissionStatus.Unknown)
 				{
 					await App.Current.MainPage.DisplayAlert(
@@ -77,6 +77,7 @@ namespace VisionTrainer.Services
 					retVal = true;
 
 				}
+
 				else if (status != PermissionStatus.Unknown)
 				{
 					await App.Current.MainPage.DisplayAlert(

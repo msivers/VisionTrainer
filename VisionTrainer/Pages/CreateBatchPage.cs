@@ -22,7 +22,7 @@ namespace VisionTrainer.Pages
 
 			// Tag Selection
 			var tagPicker = new Picker();
-			tagPicker.Title = "Traiing Tag:";
+			tagPicker.Title = "Training Tag:";
 			tagPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("Tags"));
 			tagPicker.HorizontalOptions = LayoutOptions.CenterAndExpand;
 
