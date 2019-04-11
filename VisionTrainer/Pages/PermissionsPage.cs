@@ -70,6 +70,7 @@ namespace VisionTrainer.Pages
 				HeightRequest = 40,
 				CornerRadius = 10
 			};
+
 			photosButton.Clicked += async (sender, e) =>
 			{
 

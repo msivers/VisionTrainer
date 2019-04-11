@@ -1,4 +1,5 @@
 ﻿using System;
+using FFImageLoading.Forms;
 using VisionTrainer.Constants;
 using VisionTrainer.Resources;
 using VisionTrainer.ViewModels;
@@ -46,29 +47,24 @@ namespace VisionTrainer.Pages
 			addButton.SetBinding(Button.CommandProperty, new Binding("NewBatchCommand"));
 			topGrid.Children.Add(addButton, 1, 0);
 
-			// TODO Upload button
-			// TODO Create Button
-
-
-			// TODO List view of all items
 			// TODO Delete list items
 			// TODO remove items once uploaded
 
 			// TableView
-			var itemsListView = new ListView { Margin = new Thickness(0, 20, 0, 0) };
+			var itemsListView = new ListView { Margin = new Thickness(6, 0, 6, 0), SeparatorVisibility = SeparatorVisibility.None, RowHeight = 64 };
 			itemsListView.SetBinding(ListView.ItemsSourceProperty, new Binding("Media"));
 			itemsListView.ItemTemplate = new DataTemplate(() =>
 			{
-				Grid grid = new Grid() { Margin = 5, BackgroundColor = Color.Gray };
+				Grid grid = new Grid();
 				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60, GridUnitType.Absolute) });
 				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-				Image image = new Image { Aspect = Aspect.AspectFill };
-				image.SetBinding(Image.SourceProperty, "PreviewPath");
+				CachedImage image = new CachedImage { Aspect = Aspect.AspectFill, WidthRequest = 60, HeightRequest = 60 };
+				image.SetBinding(CachedImage.SourceProperty, "FullPreviewPath");
 				grid.Children.Add(image, 0, 0);
 
-				Label idLabel = new Label();
+				Label idLabel = new Label() { VerticalOptions = LayoutOptions.Center };
 				idLabel.SetBinding(Label.TextProperty, "Tag");
 				grid.Children.Add(idLabel, 1, 0);
 
@@ -77,8 +73,8 @@ namespace VisionTrainer.Pages
 
 			var layout = new StackLayout()
 			{
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				VerticalOptions = LayoutOptions.CenterAndExpand,
+				HorizontalOptions = LayoutOptions.StartAndExpand,
+				VerticalOptions = LayoutOptions.StartAndExpand,
 				Children =
 				{
 					topGrid,

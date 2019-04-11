@@ -22,7 +22,7 @@ namespace VisionTrainer.Droid.Services
 	{
 		public static MultiMediaPickerService SharedInstance = new MultiMediaPickerService();
 		int MultiPickerResultCode = 9793;
-		const string TemporalDirectoryName = "TmpMedia";
+		public string DirectoryName { get; set; } = "TempMedia";
 
 		MultiMediaPickerService()
 		{
@@ -100,19 +100,23 @@ namespace VisionTrainer.Droid.Services
 					var thumbImage = ImageHelpers.RotateImage(path, 0.25f);
 
 
-					fullPath = FileHelper.GetOutputPath(MediaFileType.Image, TemporalDirectoryName, $"{fileName}{ext}");
+					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName}{ext}");
+					fullPath = FileHelper.GetFullPath(relativePath);
 					File.WriteAllBytes(fullPath, fullImage);
 
-					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, TemporalDirectoryName, $"{fileName}-THUMBNAIL{ext}");
+					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName}-THUMBNAIL{ext}");
 					File.WriteAllBytes(thumbnailImagePath, thumbImage);
 
 				}
+
 				else if (type.StartsWith(Enum.GetName(typeof(MediaFileType), MediaFileType.Video), StringComparison.CurrentCultureIgnoreCase))
 				{
 					fullPath = path;
 					var bitmap = ThumbnailUtils.CreateVideoThumbnail(path, ThumbnailKind.MiniKind);
 
-					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, TemporalDirectoryName, $"{fileName}-THUMBNAIL{ext}");
+					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName}-THUMBNAIL{ext}");
+					thumbnailImagePath = FileHelper.GetFullPath(relativePath);
+
 					var stream = new FileStream(thumbnailImagePath, FileMode.Create);
 					bitmap?.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
 					stream.Close();
@@ -216,7 +220,7 @@ namespace VisionTrainer.Droid.Services
 		public void Clean()
 		{
 
-			var documentsDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TemporalDirectoryName);
+			var documentsDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), DirectoryName);
 
 			if (Directory.Exists(documentsDirectory))
 			{

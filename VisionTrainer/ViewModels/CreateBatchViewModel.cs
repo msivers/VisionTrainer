@@ -72,7 +72,7 @@ namespace VisionTrainer.ViewModels
 				await _multiMediaPickerService.PickVideosAsync();
 			});
 
-			RemoveImageCommand = new Command<MediaFile>(async (obj) =>
+			RemoveImageCommand = new Command<MediaFile>((obj) =>
 			{
 				Media.Remove(obj);
 			});

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FFImageLoading.Forms;
 using VisionTrainer.Constants;
 using VisionTrainer.Models;
 using VisionTrainer.Resources;
@@ -33,7 +34,7 @@ namespace VisionTrainer.Pages
 				RowSpacing = 1
 			};
 
-			topGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(24, GridUnitType.Absolute) }); // TODO Create pretty header
+			topGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(64, GridUnitType.Absolute) }); // TODO Create pretty header
 			topGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(40, GridUnitType.Absolute) });
 			topGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 			topGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -83,8 +84,8 @@ namespace VisionTrainer.Pages
 				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-				Image image = new Image { Aspect = Aspect.AspectFill, HeightRequest = 100, WidthRequest = 100 };
-				image.SetBinding(Image.SourceProperty, "PreviewPath");
+				var image = new CachedImage { Aspect = Aspect.AspectFill, HeightRequest = 100, WidthRequest = 100 };
+				image.SetBinding(CachedImage.SourceProperty, "FullPreviewPath");
 
 				grid.Children.Add(image);
 

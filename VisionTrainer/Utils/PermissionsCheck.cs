@@ -75,7 +75,6 @@ namespace VisionTrainer.Utils
 				if (status == PermissionStatus.Granted)
 				{
 					retVal = true;
-
 				}
 
 				else if (status != PermissionStatus.Unknown)

@@ -18,7 +18,7 @@ namespace VisionTrainer.iOS.Services
 {
 	public class MultiMediaPickerService : IMultiMediaPickerService
 	{
-		const string TemporalDirectoryName = "TmpMedia";
+		public string DirectoryName { get; set; } = "TempMedia";
 
 		//Events
 		public event EventHandler<MediaFile> OnMediaPicked;
@@ -29,11 +29,11 @@ namespace VisionTrainer.iOS.Services
 
 		public void Clean()
 		{
-			var documentsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TemporalDirectoryName);
+			var documentsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), DirectoryName);
 
 			if (Directory.Exists(documentsDirectory))
 			{
-				Directory.Delete(documentsDirectory);
+				Directory.Delete(documentsDirectory, true);
 			}
 		}
 
@@ -97,7 +97,6 @@ namespace VisionTrainer.iOS.Services
 				if (UIDevice.CurrentDevice.CheckSystemVersion(9, 0))
 				{
 					fileName = PHAssetResource.GetAssetResources(asset).FirstOrDefault().OriginalFilename;
-
 				}
 
 				switch (asset.MediaType)
@@ -109,19 +108,20 @@ namespace VisionTrainer.iOS.Services
 							{
 								var startIndex = fileName.IndexOf(".", StringComparison.CurrentCulture);
 
-								string path = "";
+								string relativePath = "";
 								if (startIndex != -1)
 								{
-									path = FileHelper.GetOutputPath(MediaFileType.Image, TemporalDirectoryName, $"{fileName.Substring(0, startIndex)}-THUMBNAIL.JPG");
+									relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName.Substring(0, startIndex)}-THUMBNAIL.JPG");
 								}
 								else
 								{
-									path = FileHelper.GetOutputPath(MediaFileType.Image, TemporalDirectoryName, string.Empty);
+									relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, string.Empty);
 								}
 
-								if (!File.Exists(path))
+								if (!File.Exists(relativePath))
 								{
-									img.AsJPEG().Save(path, true);
+									var fullPath = FileHelper.GetFullPath(relativePath);
+									img.AsJPEG().Save(fullPath, true);
 								}
 
 								TaskCompletionSource<string> tvcs = new TaskCompletionSource<string>();
@@ -133,7 +133,7 @@ namespace VisionTrainer.iOS.Services
 
 								PHImageManager.DefaultManager.RequestAvAsset(asset, vOptions, (avAsset, audioMix, vInfo) =>
 								{
-									var vPath = FileHelper.GetOutputPath(MediaFileType.Video, TemporalDirectoryName, fileName);
+									var vPath = FileHelper.GetOutputPath(MediaFileType.Video, DirectoryName, fileName);
 
 									if (!File.Exists(vPath))
 									{
@@ -157,7 +157,7 @@ namespace VisionTrainer.iOS.Services
 								{
 									Type = MediaFileType.Video,
 									Path = videoUrl,
-									PreviewPath = path
+									PreviewPath = relativePath
 								};
 								results.Add(meFile);
 								OnMediaPicked?.Invoke(this, meFile);
@@ -175,9 +175,10 @@ namespace VisionTrainer.iOS.Services
 						PHImageManager.DefaultManager.RequestImageData(asset, options, (data, dataUti, orientation, info) =>
 						{
 
-							string path = FileHelper.GetOutputPath(MediaFileType.Image, TemporalDirectoryName, fileName);
+							var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, fileName);
+							var fullPath = FileHelper.GetFullPath(relativePath);
 
-							if (!File.Exists(path))
+							if (!File.Exists(fullPath))
 							{
 								Debug.WriteLine(dataUti);
 								var imageData = data;
@@ -194,16 +195,14 @@ namespace VisionTrainer.iOS.Services
 								//    imageData = image.AsJPEG(Math.Min(imageQuality,100));
 								//}
 
-								imageData?.Save(path, true);
-
-
+								imageData?.Save(fullPath, true);
 							}
 
 							var meFile = new MediaFile()
 							{
 								Type = MediaFileType.Image,
-								Path = path,
-								PreviewPath = path
+								Path = relativePath,
+								PreviewPath = relativePath
 							};
 
 							results.Add(meFile);

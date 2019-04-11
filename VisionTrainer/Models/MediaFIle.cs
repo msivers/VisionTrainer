@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using SQLite;
+using VisionTrainer.Utils;
 
 namespace VisionTrainer.Models
 {
@@ -30,5 +31,10 @@ namespace VisionTrainer.Models
 			get { return (int)this.Type; }
 			set { Type = (MediaFileType)value; }
 		}
+
+		[Ignore]
+		public string FullPath { get { return FileHelper.GetFullPath(Path); } }
+		[Ignore]
+		public string FullPreviewPath { get { return FileHelper.GetFullPath(PreviewPath); } }
 	}
 }

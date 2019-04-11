@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using VisionTrainer.Interfaces;
 using VisionTrainer.Services;
 using Xamarin.Forms;
 
@@ -120,6 +121,9 @@ namespace VisionTrainer.ViewModels
 			DefaultCameraRear = (Settings.CameraOption == CameraOptions.Rear);
 			ClearDatabaseCommand = new Command(async (obj) =>
 			{
+				var multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
+				multiMediaPickerService.Clean();
+
 				await database.DeleteAllItemsAsync();
 			});
 		}

@@ -25,8 +25,8 @@ namespace VisionTrainer.Utils
 
 		public static string GetOutputPath(MediaFileType type, string path, string name)
 		{
-			path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), path);
-			Directory.CreateDirectory(path);
+			var fullPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
+			Directory.CreateDirectory(fullPath);
 
 			if (string.IsNullOrWhiteSpace(name))
 			{
@@ -37,7 +37,12 @@ namespace VisionTrainer.Utils
 					name = "VID_" + timestamp + ".mp4";
 			}
 
-			return Path.Combine(path, GetUniquePath(type, path, name));
+			return GetUniquePath(type, path, name);
+		}
+
+		public static string GetFullPath(string path)
+		{
+			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
 		}
 	}
 }
