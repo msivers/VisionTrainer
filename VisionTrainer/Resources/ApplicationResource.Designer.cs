@@ -125,6 +125,24 @@ namespace VisionTrainer.Resources {
             }
         }
         
+        internal static string PageCreateBatchTagPrompt {
+            get {
+                return ResourceManager.GetString("PageCreateBatchTagPrompt", resourceCulture);
+            }
+        }
+        
+        internal static string PageCreateBatchRemovePhotoPrompt {
+            get {
+                return ResourceManager.GetString("PageCreateBatchRemovePhotoPrompt", resourceCulture);
+            }
+        }
+        
+        internal static string PageCreateBatchRemoveConfirm {
+            get {
+                return ResourceManager.GetString("PageCreateBatchRemoveConfirm", resourceCulture);
+            }
+        }
+        
         internal static string CameraNotSupported {
             get {
                 return ResourceManager.GetString("CameraNotSupported", resourceCulture);
@@ -212,6 +230,12 @@ namespace VisionTrainer.Resources {
         internal static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
             }
         }
         

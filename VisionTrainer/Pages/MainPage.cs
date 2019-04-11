@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using VisionTrainer.Constants;
 using VisionTrainer.Resources;
 using Xamarin.Forms;
 
@@ -39,28 +40,26 @@ namespace VisionTrainer.Pages
 		void CreateContent()
 		{
 			var textColor = Color.White;
-			var backgroundColor = Color.FromRgb(73, 113, 175);
 
 			var captureNavigationPage = new NavigationPage(new CapturePage());
 			captureNavigationPage.Title = ApplicationResource.NavigationCaptureTitle;
 			//captureNavigationPage.Icon = "person.png";
 			captureNavigationPage.BarTextColor = textColor;
-			captureNavigationPage.BarBackgroundColor = backgroundColor;
+			captureNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
 			Children.Add(captureNavigationPage);
-
 
 			var processNavigationPage = new NavigationPage(new ProcessPage());
 			processNavigationPage.Title = ApplicationResource.NavigationProcessTitle;
 			//processNavigationPage.Icon = "person.png";
 			processNavigationPage.BarTextColor = textColor;
-			processNavigationPage.BarBackgroundColor = backgroundColor;
+			processNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
 			Children.Add(processNavigationPage);
 
 			var settingsNavigationPage = new NavigationPage(new SettingsPage());
 			settingsNavigationPage.Title = ApplicationResource.NavigationSettingsTitle;
 			//settingsNavigationPage.Icon = "settings.png";
 			settingsNavigationPage.BarTextColor = textColor;
-			settingsNavigationPage.BarBackgroundColor = backgroundColor;
+			settingsNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
 			Children.Add(settingsNavigationPage);
 		}
 

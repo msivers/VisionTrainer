@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using VisionTrainer.Services;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
@@ -10,6 +11,9 @@ namespace VisionTrainer.ViewModels
 	public class SettingsViewModel : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		public ICommand ClearDatabaseCommand { get; set; }
+		IDatabase database;
 
 		bool defaultCameraRear;
 		public bool DefaultCameraRear
@@ -26,7 +30,7 @@ namespace VisionTrainer.ViewModels
 				OnPropertyChanged("DefaultCameraRear");
 			}
 		}
-
+		/*
 		#region Training
 		public string TrainingKey
 		{
@@ -108,10 +112,16 @@ namespace VisionTrainer.ViewModels
 			}
 		}
 		#endregion
+		*/
 
 		public SettingsViewModel()
 		{
+			database = ServiceContainer.Resolve<IDatabase>();
 			DefaultCameraRear = (Settings.CameraOption == CameraOptions.Rear);
+			ClearDatabaseCommand = new Command(async (obj) =>
+			{
+				await database.DeleteAllItemsAsync();
+			});
 		}
 
 		protected void OnPropertyChanged(string propertyName)

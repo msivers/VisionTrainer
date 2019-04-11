@@ -12,6 +12,7 @@ namespace VisionTrainer.Services
 		Task<MediaFile> GetItemAsync(int id);
 		Task<int> SaveItemAsync(MediaFile item);
 		Task<int> DeleteItemAsync(MediaFile item);
+		Task DeleteAllItemsAsync();
 	}
 
 	public class TrainerDatabase : IDatabase
@@ -54,6 +55,11 @@ namespace VisionTrainer.Services
 		public Task<int> DeleteItemAsync(MediaFile item)
 		{
 			return database.DeleteAsync(item);
+		}
+
+		public Task DeleteAllItemsAsync()
+		{
+			return database.DeleteAllAsync<MediaFile>();
 		}
 	}
 }

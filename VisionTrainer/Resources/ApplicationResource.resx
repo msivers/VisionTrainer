@@ -54,6 +54,15 @@
     <data name="PageCreateBatchTitle">
         <value>Create New Batch</value>
     </data>
+    <data name="PageCreateBatchTagPrompt">
+        <value>Training Tag</value>
+    </data>
+    <data name="PageCreateBatchRemovePhotoPrompt">
+        <value>Do you want to remove this photo?</value>
+    </data>
+    <data name="PageCreateBatchRemoveConfirm">
+        <value>Remove</value>
+    </data>
     <!-- Camera Entries -->
     <data name="CameraNotSupported">
         <value>Camera Not Available</value>
@@ -101,6 +110,9 @@
     <!-- General -->
     <data name="OK">
         <value>OK</value>
+    </data>
+    <data name="Cancel">
+        <value>Cancel</value>
     </data>
     <data name="GeneralErrorTitle">
         <value>Uh Oh</value>

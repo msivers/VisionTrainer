@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using VisionTrainer.Constants;
 using VisionTrainer.Resources;
 using VisionTrainer.Utils;
 using Xamarin.Forms;
@@ -36,7 +37,7 @@ namespace VisionTrainer.Pages
 			{
 				Text = ApplicationResource.PagePermissionsCameraButton,
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				BackgroundColor = Color.DarkBlue,
+				BackgroundColor = AppColors.HeaderColor,
 				TextColor = Color.White,
 				FontAttributes = FontAttributes.Bold,
 				WidthRequest = 180,
@@ -62,7 +63,7 @@ namespace VisionTrainer.Pages
 			{
 				Text = ApplicationResource.PagePermissionsPhotosButton,
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				BackgroundColor = Color.DarkBlue,
+				BackgroundColor = AppColors.HeaderColor,
 				TextColor = Color.White,
 				FontAttributes = FontAttributes.Bold,
 				WidthRequest = 180,

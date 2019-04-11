@@ -15,6 +15,7 @@ namespace VisionTrainer.ViewModels
 		public event PropertyChangedEventHandler PropertyChanged;
 		IMultiMediaPickerService _multiMediaPickerService;
 		IDatabase database;
+		INavigation Navigation { get; set; }
 
 		ObservableCollection<MediaFile> media;
 		public ObservableCollection<MediaFile> Media
@@ -30,16 +31,26 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref tags, value); }
 		}
 
+		string selectedTag;
+		public string SelectedTag
+		{
+			get { return selectedTag; }
+			set { SetProperty(ref selectedTag, value); }
+		}
+
 		public ICommand SelectImagesCommand { get; set; }
 		public ICommand SelectVideosCommand { get; set; }
-		public ICommand Complete { get; set; }
+		public ICommand TagSelectedCommand { get; set; }
+		public ICommand RemoveImageCommand { get; set; }
+		public ICommand CompleteCommand { get; set; }
 
-		public CreateBatchViewModel()
+		public CreateBatchViewModel(INavigation navigation)
 		{
+			this.Navigation = navigation;
+
 			_multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
 			database = ServiceContainer.Resolve<IDatabase>();
-
-			// TODO Check if we're looking at an existing item
+			Media = new ObservableCollection<MediaFile>();
 
 			Tags = new string[]
 			{
@@ -61,9 +72,21 @@ namespace VisionTrainer.ViewModels
 				await _multiMediaPickerService.PickVideosAsync();
 			});
 
-			Complete = new Command(async (obj) =>
+			RemoveImageCommand = new Command<MediaFile>(async (obj) =>
 			{
-				// TODO store in Database
+				Media.Remove(obj);
+			});
+
+			CompleteCommand = new Command(async (obj) =>
+			{
+				foreach (var item in Media)
+				{
+					if (!string.IsNullOrEmpty(SelectedTag))
+						item.Tag = SelectedTag;
+					await database.SaveItemAsync(item);
+				}
+
+				await Navigation.PopModalAsync();
 			});
 
 			_multiMediaPickerService.OnMediaPicked += (s, a) =>
