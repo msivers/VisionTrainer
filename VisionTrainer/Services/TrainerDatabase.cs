@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SQLite;
+using VisionTrainer.Common.Models;
 using VisionTrainer.Models;
 
 namespace VisionTrainer.Services
@@ -23,6 +24,8 @@ namespace VisionTrainer.Services
 		{
 			database = new SQLiteAsyncConnection(dbPath);
 			database.CreateTableAsync<MediaFile>().Wait();
+			//database.CreateTableAsync<GeoLocation>().Wait();
+			//database.CreateTableAsync<TagArea>().Wait();
 		}
 
 		public Task<List<MediaFile>> GetItemsAsync()

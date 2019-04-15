@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using VisionTrainer.Models;
+using VisionTrainer.Common.Enums;
 
 namespace VisionTrainer.Utils
 {
@@ -43,6 +43,11 @@ namespace VisionTrainer.Utils
 		public static string GetFullPath(string path)
 		{
 			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
+		}
+
+		public static string GetOutputPath(object image, string directoryName, string v)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

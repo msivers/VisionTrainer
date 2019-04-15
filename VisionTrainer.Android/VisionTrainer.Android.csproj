@@ -141,6 +141,10 @@
       <Project>{97D2A0F4-DBB0-4C18-B890-2105B7686D28}</Project>
       <Name>VisionTrainer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VisionTrainer.Common\VisionTrainer.Common.csproj">
+      <Project>{C1B1D1A6-CEC2-4E00-BE88-35D6EEDAF4E7}</Project>
+      <Name>VisionTrainer.Common</Name>
+    </ProjectReference>
   </ItemGroup>
  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

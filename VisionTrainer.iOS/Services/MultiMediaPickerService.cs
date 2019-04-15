@@ -10,6 +10,7 @@ using Foundation;
 using GMImagePicker;
 using Photos;
 using UIKit;
+using VisionTrainer.Common.Enums;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Models;
 using VisionTrainer.Utils;

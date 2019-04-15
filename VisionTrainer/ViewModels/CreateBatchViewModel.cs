@@ -81,8 +81,8 @@ namespace VisionTrainer.ViewModels
 			{
 				foreach (var item in Media)
 				{
-					if (!string.IsNullOrEmpty(SelectedTag))
-						item.Tag = SelectedTag;
+					//if (!string.IsNullOrEmpty(SelectedTag))
+					//item.Tags = new Common.Models.TagArea[] { new Common.Models.TagArea() { Id = SelectedTag } }; // TEMP
 					await database.SaveItemAsync(item);
 				}
 

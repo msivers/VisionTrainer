@@ -11,6 +11,7 @@ using Android.Media;
 using Android.Provider;
 using Android.Widget;
 using Plugin.CurrentActivity;
+using VisionTrainer.Common.Enums;
 using VisionTrainer.Droid.Utils;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Models;
