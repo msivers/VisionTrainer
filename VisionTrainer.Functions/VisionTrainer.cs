@@ -18,7 +18,7 @@ namespace VisionTrainer.Functions
 	{
 		[FunctionName("SubmitTrainingImage")]
 		public static async Task<IActionResult> SubmitTrainingImage(
-			[HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequestMessage req, ILogger log)
+			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -36,6 +36,7 @@ namespace VisionTrainer.Functions
 		{
 			var test = await req.Content.ReadAsStreamAsync();
 
+			var query = req.Properties;
 			//req.Content.
 			if (test != null)
 			{

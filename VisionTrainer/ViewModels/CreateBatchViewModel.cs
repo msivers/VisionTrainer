@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using VisionTrainer.Common.Models;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Models;
 using VisionTrainer.Services;
@@ -14,7 +15,7 @@ namespace VisionTrainer.ViewModels
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		IMultiMediaPickerService _multiMediaPickerService;
-		IDatabase database;
+		IDatabase2 database;
 		INavigation Navigation { get; set; }
 
 		ObservableCollection<MediaFile> media;
@@ -49,7 +50,7 @@ namespace VisionTrainer.ViewModels
 			this.Navigation = navigation;
 
 			_multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
-			database = ServiceContainer.Resolve<IDatabase>();
+			database = ServiceContainer.Resolve<IDatabase2>();
 			Media = new ObservableCollection<MediaFile>();
 
 			Tags = new string[]
@@ -81,9 +82,11 @@ namespace VisionTrainer.ViewModels
 			{
 				foreach (var item in Media)
 				{
-					//if (!string.IsNullOrEmpty(SelectedTag))
-					//item.Tags = new Common.Models.TagArea[] { new Common.Models.TagArea() { Id = SelectedTag } }; // TEMP
-					await database.SaveItemAsync(item);
+					if (!string.IsNullOrEmpty(SelectedTag))
+						item.Tags = new Common.Models.TagArea[] { new Common.Models.TagArea() { Id = SelectedTag } }; // TEMP
+
+					item.Location = new GeoLocation(10, 10);
+					database.SaveItem(item);
 				}
 
 				await Navigation.PopModalAsync();

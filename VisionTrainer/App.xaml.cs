@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using LiteDB;
 using MonkeyCache.FileStore;
 using VisionTrainer.Pages;
 using VisionTrainer.Services;
@@ -20,8 +21,11 @@ namespace VisionTrainer
 			InitializeComponent();
 
 			Barrel.ApplicationId = "VisionTrainer";
-			var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrainerSQLite.db3");
-			ServiceContainer.Register<IDatabase>(new TrainerDatabase(dbPath));
+			//var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrainerSQLite.db3");
+			//ServiceContainer.Register<IDatabase>(new TrainerDatabase(dbPath));
+
+			var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Trainer.db");
+			ServiceContainer.Register<IDatabase2>(new TrainerDb(dbPath));
 
 			MainPage = new MainPage();
 		}

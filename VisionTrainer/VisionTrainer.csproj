@@ -18,7 +18,7 @@
     <PackageReference Include="MonkeyCache.FileStore" Version="1.2.0-beta" />
     <PackageReference Include="Plugin.HttpTransferTasks" Version="2.0.2" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.4.859" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
+    <PackageReference Include="LiteDB" Version="4.1.4" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Constants\" />

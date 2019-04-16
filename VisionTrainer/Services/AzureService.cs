@@ -15,27 +15,20 @@ namespace VisionTrainer.Services
 {
 	public static class AzureService
 	{
-		public static IHttpTask UploadTrainingMedia(MediaFile file)
+		public static async Task<IHttpTask> UploadTrainingMedia(MediaFile file)
 		{
-			// Load the image
-			var imageBytes = File.ReadAllBytes(file.FullPath);
 
 			var data = new MediaData()
 			{
-				//Location = file.Location,
-				//MediaType = file.Type,
-				//Tags = file.Tags
+				Location = file.Location,
+				MediaType = file.Type,
+				Tags = file.Tags
 			};
 
+			var dataQueryString = await QueryString.Encode(data);
+			var url = ProjectConfig.SubmitTrainingImageUrl + "?" + dataQueryString;
 
-			// Create the config file
-			var config = new TaskConfiguration(ProjectConfig.SubmitTrainingImageUrl)
-			{
-				HttpMethod = "post",
-				LocalFilePath = file.FullPath
-			};
-
-			return CrossHttpTransfers.Current.Upload(config);
+			return CrossHttpTransfers.Current.Upload(url, file.FullPath);
 		}
 
 		/*

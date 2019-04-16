@@ -78,7 +78,16 @@ namespace VisionTrainer.Common.Models
 
 		public override string ToString()
 		{
-			return string.Format("{0}, {1}", latitude, longitude);
+			return string.Format("{0},{1}", latitude, longitude);
+		}
+
+		public static GeoLocation Parse(string value)
+		{
+			var values = value.Split(new char[] { ',' });
+			if (values.Length != 2)
+				throw new Exception("Unable To Parse GeoLocation String");
+
+			return new GeoLocation(double.Parse(values[0]), double.Parse(values[1])); ;
 		}
 	}
 }

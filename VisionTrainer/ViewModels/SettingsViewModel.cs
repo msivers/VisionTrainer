@@ -14,7 +14,7 @@ namespace VisionTrainer.ViewModels
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public ICommand ClearDatabaseCommand { get; set; }
-		IDatabase database;
+		IDatabase2 database;
 
 		bool defaultCameraRear;
 		public bool DefaultCameraRear
@@ -117,14 +117,14 @@ namespace VisionTrainer.ViewModels
 
 		public SettingsViewModel()
 		{
-			database = ServiceContainer.Resolve<IDatabase>();
+			database = ServiceContainer.Resolve<IDatabase2>();
 			DefaultCameraRear = (Settings.CameraOption == CameraOptions.Rear);
 			ClearDatabaseCommand = new Command(async (obj) =>
 			{
 				var multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
 				multiMediaPickerService.Clean();
 
-				await database.DeleteAllItemsAsync();
+				database.DeleteAllItems();
 			});
 		}
 
