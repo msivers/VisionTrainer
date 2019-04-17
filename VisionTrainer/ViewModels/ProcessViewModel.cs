@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using VisionTrainer.Models;
 using VisionTrainer.Pages;
@@ -21,7 +20,8 @@ namespace VisionTrainer.ViewModels
 		public ICommand UploadFilesCommand { get; set; }
 		public ICommand RefreshMediaEntriesCommand { get; set; }
 
-		IDatabase2 database;
+		IDatabase database;
+		IUploadManager uploadManager;
 
 		ObservableCollection<MediaFile> media;
 		public ObservableCollection<MediaFile> Media
@@ -33,21 +33,17 @@ namespace VisionTrainer.ViewModels
 		public ProcessViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;
-			database = ServiceContainer.Resolve<IDatabase2>();
+			database = ServiceContainer.Resolve<IDatabase>();
+			uploadManager = ServiceContainer.Resolve<IUploadManager>();
 
 			NewBatchCommand = new Command(async (obj) =>
 			{
 				await Navigation.PushModalAsync(new CreateBatchPage());
 			});
 
-			UploadFilesCommand = new Command((obj) =>
+			UploadFilesCommand = new Command(async (obj) =>
 			{
-				// TODO open an uploads page instead
-				var entries = database.GetItemsNotDone();
-
-				var target = entries.FirstOrDefault();
-
-				var task = AzureService.UploadTrainingMedia(target);
+				await Navigation.PushModalAsync(new UploadingPage());
 			});
 
 			RefreshMediaEntriesCommand = new Command((obj) =>

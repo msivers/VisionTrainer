@@ -67,7 +67,7 @@ namespace VisionTrainer.iOS
 			return null;
 		}
 
-		public async Task<string> Capture(string filename)
+		public async Task<byte[]> Capture(string filename)
 		{
 			var buffer = await output.CaptureStillImageTaskAsync(output.Connections[0]);
 			NSData data = AVCaptureStillImageOutput.JpegStillToNSData(buffer);
@@ -75,17 +75,12 @@ namespace VisionTrainer.iOS
 			var size = UIScreen.MainScreen.Bounds;
 			var image = UIImage.LoadFromData(data).ResizeImageWithAspectRatio((float)size.Width, (float)size.Height); // Hard coded at the moment!
 
-			var documentsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-			string jpgFilename = System.IO.Path.Combine(documentsDirectory, filename + ".jpg");
-
-			NSError error;
-			image.AsJPEG(.9f).Save(jpgFilename, NSDataWritingOptions.FileProtectionNone, out error);
-			if (error != null)
+			using (NSData imageData = image.AsJPEG())
 			{
-				throw new Exception(error.ToString());
+				byte[] myByteArray = new byte[imageData.Length];
+				System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, myByteArray, 0, Convert.ToInt32(imageData.Length));
+				return myByteArray;
 			}
-
-			return jpgFilename;
 		}
 
 		void Initialize()

@@ -10,7 +10,7 @@ namespace VisionTrainer.Droid
 		{
 			// First we get the the dimensions of the file on disk
 			BitmapFactory.Options options = new BitmapFactory.Options { InJustDecodeBounds = true };
-			BitmapFactory.DecodeFile(fileName, options);
+			//BitmapFactory.DecodeFile(fileName, options);
 
 			// Next we calculate the ratio that we need to resize the image by
 			// in order to fit the requested dimensions.

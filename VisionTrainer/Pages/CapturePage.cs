@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using FFImageLoading.Forms;
 using Plugin.Media;
 using VisionTrainer.Resources;
 using VisionTrainer.ViewModels;
@@ -10,33 +11,19 @@ namespace VisionTrainer.Pages
 	public class CapturePage : ContentPage, IStatefulContent
 	{
 		CameraPreview cameraPreview;
-		ActivityIndicator activityIndicator;
 		CaptureViewModel captureModel;
 		Label cameraMissingLabel;
+		CachedImage cachedCapture;
 
 		// Language
-		string messageGeneralErrorTitle = ApplicationResource.GeneralErrorTitle;
-		string messageGeneralErrorSummary = ApplicationResource.GeneralErrorSummary;
 		string messageOK = ApplicationResource.OK;
 		string messageCameraNotSupported = ApplicationResource.CameraNotSupported;
-		string messagePhotosNotSupported = ApplicationResource.PhotosNotSupported;
-		string messageUploading = ApplicationResource.PageCaptureImageUploading;
 		string messageCameraPermissionsMissing = ApplicationResource.CameraPermissionMissing;
-		string messagePhotosPermissionsMissing = ApplicationResource.PhotosPermissionMissing;
 
 		public CapturePage()
 		{
 			BindingContext = captureModel = new CaptureViewModel(Navigation);
 			Title = ApplicationResource.PageCaptureTitle;
-
-			// Activity Indicator
-			activityIndicator = new ActivityIndicator();
-			activityIndicator.IsRunning = false;
-			activityIndicator.IsVisible = false;
-
-			//this.ToolbarItems.Add(
-			//	new ToolbarItem(ApplicationResource.PageCaptureToolbarBrowsePhotos, null, () => PickPhoto()) { Icon = "folder.png" }
-			//);
 
 			if (CrossMedia.Current.IsCameraAvailable)
 			{
@@ -46,11 +33,17 @@ namespace VisionTrainer.Pages
 				cameraPreview = new CameraPreview();
 				cameraPreview.Filename = "capture";
 				cameraPreview.CameraOption = Settings.CameraOption;
-				cameraPreview.CapturePathCallback = new Action<string>(ProcessCameraPhoto);
+				cameraPreview.CaptureBytesCallback = new Action<byte[]>(ProcessCameraPhoto);
 				cameraPreview.CameraReady += (s, e) => StartCamera();
 
 				AbsoluteLayout.SetLayoutBounds(cameraPreview, new Rectangle(1, 1, 1, 1));
 				AbsoluteLayout.SetLayoutFlags(cameraPreview, AbsoluteLayoutFlags.All);
+
+				// Last Capture
+				cachedCapture = new CachedImage();
+				cachedCapture.BackgroundColor = Color.White;
+				AbsoluteLayout.SetLayoutBounds(cachedCapture, new Rectangle(.8, .8, .1, .1));
+				AbsoluteLayout.SetLayoutFlags(cachedCapture, AbsoluteLayoutFlags.SizeProportional);
 
 				// Capture Button
 				var buttonSize = 60;
@@ -67,14 +60,10 @@ namespace VisionTrainer.Pages
 				AbsoluteLayout.SetLayoutBounds(captureButton, new Rectangle(.5, .9, buttonSize, buttonSize));
 				AbsoluteLayout.SetLayoutFlags(captureButton, AbsoluteLayoutFlags.PositionProportional);
 
-				activityIndicator.Color = Color.White;
-				AbsoluteLayout.SetLayoutBounds(activityIndicator, new Rectangle(.5, .5, buttonSize, buttonSize));
-				AbsoluteLayout.SetLayoutFlags(activityIndicator, AbsoluteLayoutFlags.PositionProportional);
-
 				var layout = new AbsoluteLayout();
 				layout.Children.Add(cameraPreview);
+				layout.Children.Add(cachedCapture);
 				layout.Children.Add(captureButton);
-				layout.Children.Add(activityIndicator);
 
 				Content = layout;
 
@@ -91,92 +80,24 @@ namespace VisionTrainer.Pages
 					HorizontalOptions = LayoutOptions.CenterAndExpand
 				};
 
-				activityIndicator.Color = Color.Black;
-				activityIndicator.HorizontalOptions = LayoutOptions.CenterAndExpand;
-
 				var centerLayout = new StackLayout();
 				centerLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
 				centerLayout.VerticalOptions = LayoutOptions.CenterAndExpand;
 				centerLayout.Children.Add(cameraMissingLabel);
-				centerLayout.Children.Add(activityIndicator);
 
 				Content = centerLayout;
 			}
 		}
 
-		void ShowActivityIndicator(bool value)
+		void ProcessCameraPhoto(byte[] imageBytes)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				activityIndicator.IsVisible = value;
-				activityIndicator.IsRunning = value;
-				if (cameraPreview != null)
-				{
-					cameraPreview.Opacity = value ? .6 : 1;
-				}
+			var filename = captureModel.SaveBytes(imageBytes);
 
-				if (cameraMissingLabel != null) cameraMissingLabel.Text = value ? messageUploading : messageCameraNotSupported;
+			cachedCapture.Source = ImageSource.FromStream(() =>
+			{
+				return new MemoryStream(imageBytes);
 			});
 		}
-
-		async void ProcessCameraPhoto(string path)
-		{
-			byte[] imageBytes = File.ReadAllBytes(path);
-
-			ShowActivityIndicator(true);
-			var response = await captureModel.Submit(imageBytes);
-			ShowActivityIndicator(false);
-
-			Device.BeginInvokeOnMainThread(async () =>
-			{
-				if (response.Result)
-					await captureModel.Success();
-				else
-				{
-					var message = string.IsNullOrEmpty(response.Message) ? messageGeneralErrorSummary : response.Message;
-					await DisplayAlert(messageGeneralErrorTitle, message, messageOK);
-				}
-			});
-		}
-
-		/*
-		async void PickPhoto()
-		{
-			if (!CrossMedia.Current.IsPickPhotoSupported)
-			{
-				await DisplayAlert(messagePhotosNotSupported, messagePhotosPermissionsMissing, messageOK);
-				return;
-			}
-			var file = await Plugin.Media.CrossMedia.Current.PickPhotoAsync(new Plugin.Media.Abstractions.PickMediaOptions
-			{
-				PhotoSize = Plugin.Media.Abstractions.PhotoSize.Medium
-			});
-
-			if (file == null)
-				return;
-
-			byte[] imageBytes = null;
-
-			using (var memoryStream = new MemoryStream())
-			{
-				file.GetStream().CopyTo(memoryStream);
-				file.Dispose();
-				imageBytes = memoryStream.ToArray();
-			}
-
-			ShowActivityIndicator(true);
-			var response = await captureModel.Submit(imageBytes);
-			ShowActivityIndicator(false);
-
-			if (response.Result)
-				await captureModel.Success();
-			else
-			{
-				var message = string.IsNullOrEmpty(response.Message) ? messageGeneralErrorSummary : response.Message;
-				await DisplayAlert(messageGeneralErrorTitle, message, messageOK);
-			}
-		}
-		*/
 
 		void CaptureButton_Clicked(object sender, EventArgs e)
 		{

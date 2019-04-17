@@ -1,6 +1,7 @@
 ﻿using System;
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
+using VisionTrainer.Constants;
 
 namespace VisionTrainer
 {
@@ -23,63 +24,83 @@ namespace VisionTrainer
 			set { AppSettings.AddOrUpdateValue(cameraOption, (int)value); }
 		}
 
-		#region Training
-		const string trainingKey = "trainingkey";
-		private static readonly string TrainingKeyDefault = "";
+		const string userIdKey = "userid";
+		private static readonly string UserIdKeyDefault = "unknown";
 
-		public static string TrainingKey
+		public static string UserId
 		{
-			get { return AppSettings.GetValueOrDefault(trainingKey, TrainingKeyDefault); }
-			set { AppSettings.AddOrUpdateValue(trainingKey, (string)value); }
+			get { return AppSettings.GetValueOrDefault(userIdKey, UserIdKeyDefault); }
+			set { AppSettings.AddOrUpdateValue(userIdKey, (string)value); }
 		}
 
-		const string trainingEndpoint = "trainingendpoint";
-		private static readonly string TrainingEndpointDefault = "";
+		const string endpointKey = "endpoint";
+		private static readonly string EndpointKeyDefault = ProjectConfig.BaseUrl;
 
-		public static string TrainingEndpoint
+		public static string Endpoint
 		{
-			get { return AppSettings.GetValueOrDefault(trainingEndpoint, TrainingEndpointDefault); }
-			set { AppSettings.AddOrUpdateValue(trainingEndpoint, (string)value); }
+			get { return AppSettings.GetValueOrDefault(endpointKey, EndpointKeyDefault); }
+			set { AppSettings.AddOrUpdateValue(endpointKey, (string)value); }
 		}
 
-		const string trainingResourceId = "trainingresourceid";
-		private static readonly string TrainingResourceIdDefault = "";
+		/*
+				#region Training
+				const string trainingKey = "trainingkey";
+				private static readonly string TrainingKeyDefault = "";
 
-		public static string TrainingResourceId
-		{
-			get { return AppSettings.GetValueOrDefault(trainingResourceId, TrainingResourceIdDefault); }
-			set { AppSettings.AddOrUpdateValue(trainingResourceId, (string)value); }
-		}
-		#endregion
+				public static string TrainingKey
+				{
+					get { return AppSettings.GetValueOrDefault(trainingKey, TrainingKeyDefault); }
+					set { AppSettings.AddOrUpdateValue(trainingKey, (string)value); }
+				}
 
-		#region Prediction
-		const string predictionKey = "predictionkey";
-		private static readonly string PredictionKeyDefault = "";
+				const string trainingEndpoint = "trainingendpoint";
+				private static readonly string TrainingEndpointDefault = "";
 
-		public static string PredictionKey
-		{
-			get { return AppSettings.GetValueOrDefault(predictionKey, PredictionKeyDefault); }
-			set { AppSettings.AddOrUpdateValue(predictionKey, (string)value); }
-		}
+				public static string TrainingEndpoint
+				{
+					get { return AppSettings.GetValueOrDefault(trainingEndpoint, TrainingEndpointDefault); }
+					set { AppSettings.AddOrUpdateValue(trainingEndpoint, (string)value); }
+				}
 
-		const string predictionEndpoint = "predictionendpoint";
-		private static readonly string PredictionEndpointDefault = "";
+				const string trainingResourceId = "trainingresourceid";
+				private static readonly string TrainingResourceIdDefault = "";
 
-		public static string PredictionEndpoint
-		{
-			get { return AppSettings.GetValueOrDefault(predictionEndpoint, PredictionEndpointDefault); }
-			set { AppSettings.AddOrUpdateValue(predictionEndpoint, (string)value); }
-		}
+				public static string TrainingResourceId
+				{
+					get { return AppSettings.GetValueOrDefault(trainingResourceId, TrainingResourceIdDefault); }
+					set { AppSettings.AddOrUpdateValue(trainingResourceId, (string)value); }
+				}
+				#endregion
 
-		const string predictionResourceId = "predictionresourceid";
-		private static readonly string PredictionResourceIdDefault = "";
+				#region Prediction
+				const string predictionKey = "predictionkey";
+				private static readonly string PredictionKeyDefault = "";
 
-		public static string PredictionResourceId
-		{
-			get { return AppSettings.GetValueOrDefault(predictionResourceId, PredictionResourceIdDefault); }
-			set { AppSettings.AddOrUpdateValue(predictionResourceId, (string)value); }
-		}
-		#endregion
+				public static string PredictionKey
+				{
+					get { return AppSettings.GetValueOrDefault(predictionKey, PredictionKeyDefault); }
+					set { AppSettings.AddOrUpdateValue(predictionKey, (string)value); }
+				}
+
+				const string predictionEndpoint = "predictionendpoint";
+				private static readonly string PredictionEndpointDefault = "";
+
+				public static string PredictionEndpoint
+				{
+					get { return AppSettings.GetValueOrDefault(predictionEndpoint, PredictionEndpointDefault); }
+					set { AppSettings.AddOrUpdateValue(predictionEndpoint, (string)value); }
+				}
+
+				const string predictionResourceId = "predictionresourceid";
+				private static readonly string PredictionResourceIdDefault = "";
+
+				public static string PredictionResourceId
+				{
+					get { return AppSettings.GetValueOrDefault(predictionResourceId, PredictionResourceIdDefault); }
+					set { AppSettings.AddOrUpdateValue(predictionResourceId, (string)value); }
+				}
+				#endregion
+		*/
 	}
 }
 

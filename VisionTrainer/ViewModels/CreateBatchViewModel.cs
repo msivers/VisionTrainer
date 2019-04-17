@@ -15,7 +15,7 @@ namespace VisionTrainer.ViewModels
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		IMultiMediaPickerService _multiMediaPickerService;
-		IDatabase2 database;
+		IDatabase database;
 		INavigation Navigation { get; set; }
 
 		ObservableCollection<MediaFile> media;
@@ -50,7 +50,7 @@ namespace VisionTrainer.ViewModels
 			this.Navigation = navigation;
 
 			_multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
-			database = ServiceContainer.Resolve<IDatabase2>();
+			database = ServiceContainer.Resolve<IDatabase>();
 			Media = new ObservableCollection<MediaFile>();
 
 			Tags = new string[]

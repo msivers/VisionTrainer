@@ -2,6 +2,8 @@
 using System.IO;
 using LiteDB;
 using MonkeyCache.FileStore;
+using VisionTrainer.Constants;
+using VisionTrainer.Interfaces;
 using VisionTrainer.Pages;
 using VisionTrainer.Services;
 using Xamarin.Forms;
@@ -25,7 +27,10 @@ namespace VisionTrainer
 			//ServiceContainer.Register<IDatabase>(new TrainerDatabase(dbPath));
 
 			var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Trainer.db");
-			ServiceContainer.Register<IDatabase2>(new TrainerDb(dbPath));
+			ServiceContainer.Register<IDatabase>(new TrainerDb(dbPath));
+			ServiceContainer.Register<IUploadManager>(new UploadManager());
+
+			ServiceContainer.Resolve<IMultiMediaPickerService>().DirectoryName = ProjectConfig.ImagesDirectory;
 
 			MainPage = new MainPage();
 		}

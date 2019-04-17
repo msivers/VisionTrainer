@@ -16,7 +16,6 @@
     <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
     <PackageReference Include="Xam.Plugin.Media" Version="4.0.1.5" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.2.0-beta" />
-    <PackageReference Include="Plugin.HttpTransferTasks" Version="2.0.2" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.4.859" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
   </ItemGroup>

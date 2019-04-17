@@ -56,16 +56,16 @@ namespace VisionTrainer
 		}
 
 		// File Path callback
-		public static readonly BindableProperty CapturePathCallbackProperty = BindableProperty.Create(
-			propertyName: "CapturePathCallback",
-			returnType: typeof(Action<string>),
+		public static readonly BindableProperty CaptureBytesCallbackProperty = BindableProperty.Create(
+			propertyName: "CaptureBytesCallback",
+			returnType: typeof(Action<byte[]>),
 			declaringType: typeof(CameraPreview),
 			defaultValue: null);
 
-		public Action<string> CapturePathCallback
+		public Action<byte[]> CaptureBytesCallback
 		{
-			get { return (Action<string>)GetValue(CapturePathCallbackProperty); }
-			set { SetValue(CapturePathCallbackProperty, value); }
+			get { return (Action<byte[]>)GetValue(CaptureBytesCallbackProperty); }
+			set { SetValue(CaptureBytesCallbackProperty, value); }
 		}
 
 		public static readonly BindableProperty CaptureCommandProperty = BindableProperty.Create<CameraPreview, ICommand>(p => p.Capture, null);

@@ -44,10 +44,5 @@ namespace VisionTrainer.Utils
 		{
 			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
 		}
-
-		public static string GetOutputPath(object image, string directoryName, string v)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

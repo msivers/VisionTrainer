@@ -6,7 +6,7 @@ using VisionTrainer.Models;
 
 namespace VisionTrainer.Services
 {
-	public interface IDatabase2
+	public interface IDatabase
 	{
 		IEnumerable<MediaFile> GetItems();
 		IEnumerable<MediaFile> GetItemsNotDone();
@@ -16,7 +16,7 @@ namespace VisionTrainer.Services
 		bool DeleteAllItems();
 	}
 
-	public class TrainerDb : IDatabase2
+	public class TrainerDb : IDatabase
 	{
 		const string dbName = @"TrainerDatabase.db";
 		LiteDatabase db;
@@ -42,6 +42,11 @@ namespace VisionTrainer.Services
 				serialize: (loc) => loc.ToString(),
 				deserialize: (bson) => GeoLocation.Parse(bson.AsString)
 			);
+
+			BsonMapper.Global.Entity<MediaFile>()
+				.Id(x => x.Id)
+				.Ignore(x => x.FullPath)
+				.Ignore(x => x.FullPreviewPath);
 		}
 
 		public bool DeleteAllItems()
@@ -51,7 +56,8 @@ namespace VisionTrainer.Services
 
 		public bool DeleteItem(MediaFile item)
 		{
-			return mediaCollection.Delete(item.Id);
+			var result = mediaCollection.Delete(item.Id);
+			return result;
 		}
 
 		public MediaFile GetItem(int id)

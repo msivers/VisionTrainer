@@ -12,7 +12,7 @@ namespace VisionTrainer.Droid
 	{
 		DroidCameraPreview cameraPreview;
 		CameraPreview element;
-		Action<string> capturePathCallbackAction;
+		Action<byte[]> captureBytesCallbackAction;
 		string captureFilename;
 
 		public CameraPreviewRenderer(Context context) : base(context)
@@ -32,7 +32,7 @@ namespace VisionTrainer.Droid
 			if (e.OldElement != null)
 			{
 				// Unsubscribe
-				capturePathCallbackAction = null;
+				captureBytesCallbackAction = null;
 				element.Capture = null;
 				element.StartCamera = null;
 				element.StopCamera = null;
@@ -42,7 +42,7 @@ namespace VisionTrainer.Droid
 			{
 				// Subscribe
 				element = e.NewElement;
-				capturePathCallbackAction = element.CapturePathCallback;
+				captureBytesCallbackAction = element.CaptureBytesCallback;
 				element.Capture = new Command(() => CaptureToFile());
 				element.StartCamera = new Command(() => cameraPreview.StartPreviewing());
 				element.StopCamera = new Command(() => cameraPreview.StopPreviewing());
@@ -63,7 +63,7 @@ namespace VisionTrainer.Droid
 
 		void CaptureToFile()
 		{
-			if (capturePathCallbackAction == null)
+			if (captureBytesCallbackAction == null)
 				return;
 
 			cameraPreview.Capture(captureFilename);
@@ -71,7 +71,7 @@ namespace VisionTrainer.Droid
 
 		void ImageCaptured(object sender, ImageCaptureEventArgs e)
 		{
-			capturePathCallbackAction(e.Filepath);
+			captureBytesCallbackAction(e.Bytes);
 		}
 
 		protected override void Dispose(bool disposing)

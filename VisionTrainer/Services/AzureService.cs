@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Plugin.HttpTransferTasks;
 using VisionTrainer.Common.Messages;
 using VisionTrainer.Common.Models;
 using VisionTrainer.Constants;
@@ -15,46 +12,55 @@ namespace VisionTrainer.Services
 {
 	public static class AzureService
 	{
-		public static async Task<IHttpTask> UploadTrainingMedia(MediaFile file)
+		public static async Task<bool> UploadTrainingMedia(MediaFile file)
 		{
-
 			var data = new MediaData()
 			{
 				Location = file.Location,
 				MediaType = file.Type,
-				Tags = file.Tags
+				Tags = file.Tags,
+				UserId = Settings.UserId
 			};
 
-			var dataQueryString = await QueryString.Encode(data);
-			var url = ProjectConfig.SubmitTrainingImageUrl + "?" + dataQueryString;
+			var stringContent = new StringContent(JsonConvert.SerializeObject(data));
+			var url = ProjectConfig.SubmitTrainingImageUrl;
 
-			return CrossHttpTransfers.Current.Upload(url, file.FullPath);
-		}
-
-		/*
-			public static async Task<AudienceResponse> IdentifyAudience(string location, byte[] image)
+			try
 			{
-				var post = new AudienceRequest();
-				post.Image = Convert.ToBase64String(image);
-				post.Location = location;
+				byte[] image = File.ReadAllBytes(file.FullPath);
+				Uri webService = new Uri(url);
 
-				try
+				using (var client = new HttpClient())
 				{
-					var json = JsonConvert.SerializeObject(post);
-					var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-					return await MakeRequest<AudienceResponse>(ProjectConfig.IdentifyAudienceUrl, httpContent);
-				}
-				catch (Exception ex)
-				{
-					return new AudienceResponse()
+					using (var content = new MultipartFormDataContent("----MyBoundary"))
 					{
-						Message = ex.Message,
-						ErrorCode = 1
-					};
+						using (var memoryStream = new MemoryStream(image))
+						{
+							using (var stream = new StreamContent(memoryStream))
+							{
+								content.Add(stream, "file");
+								content.Add(stringContent, "data");
+
+								using (var message = await client.PostAsync(webService, content))
+								{
+									if (message.ReasonPhrase.ToLower() == "ok")
+									{
+										//content.Dispose();
+										return true;
+									}
+								}
+							}
+						}
+					}
 				}
 			}
-			*/
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+
+			return false;
+		}
 
 		/// <summary>
 		/// Makes the http requests.

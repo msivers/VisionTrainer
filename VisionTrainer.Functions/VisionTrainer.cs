@@ -11,61 +11,56 @@ using System.Net.Http;
 using System.Linq;
 using System.Net;
 using Microsoft.Azure.WebJobs.Host;
+using VisionTrainer.Common.Models;
+using VisionTrainer.Common.Messages;
 
 namespace VisionTrainer.Functions
 {
 	public static class VisionTrainer
 	{
 		[FunctionName("SubmitTrainingImage")]
-		public static async Task<IActionResult> SubmitTrainingImage(
-			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
-		{
-			log.LogInformation("C# HTTP trigger function processed a request.");
-
-			var test = await req.Content.ReadAsByteArrayAsync();
-
-			// TODO pull information out of the query params
-
-
-			return new OkObjectResult($"Hello");
-		}
-
-		[FunctionName("TEMP")]
-		public static async Task<HttpResponseMessage> Run(
+		public static async Task<IActionResult> Run(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, ILogger log)
 		{
-			var test = await req.Content.ReadAsStreamAsync();
+			var response = new BaseResponse();
 
-			var query = req.Properties;
-			//req.Content.
-			if (test != null)
+			try
 			{
+				var provider = new MultipartMemoryStreamProvider();
+				await req.Content.ReadAsMultipartAsync(provider);
 
+				// Grab the file
+				var file = provider.Contents[0];
+				var fileData = await file.ReadAsByteArrayAsync();
+
+				// Grab the Data
+				var data = provider.Contents[1];
+				var stringData = await data.ReadAsStringAsync();
+
+				// Deserialize the JSON
+				var mediaEntry = JsonConvert.DeserializeObject<MediaEntry>(stringData);
+				mediaEntry.FileName = Guid.NewGuid().ToString() + ".jpg";
+				mediaEntry.SubmissionDate = DateTime.Now;
+
+				// Store the image
+				var uri = await FileStorageService.Instance.StoreImage(fileData, "visiontraineruploads", mediaEntry.FileName);
+
+				// Save into the DB
+				var dbService = new DBService();
+				var token = new System.Threading.CancellationToken();
+				var result = await dbService.WriteAsync(mediaEntry, token);
+
+				// TODO Submit for training?
+
+				response.StatusCode = (int)HttpStatusCode.OK;
+				return new OkObjectResult(response);
 			}
-			//application/octet-stream
-
-			//var provider = new MultipartMemoryStreamProvider();
-			//var test = req.Content;
-			//await req.Content.ReadAsMultipartAsync(provider);
-			//var file = provider.Contents.First();
-			//var fileInfo = file.Headers.ContentDisposition;
-			//var fileData = await file.ReadAsByteArrayAsync();
-
-			//var newImage = new Image()
-			//{
-			//	FileName = fileInfo.FileName,
-			//	Size = fileData.LongLength,
-			//	Status = ImageStatus.Processing
-			//};
-
-			//var imageName = await DataHelper.CreateImageRecord(newImage);
-			//if (!(await StorageHelper.SaveToBlobStorage(imageName, fileData)))
-			//return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-
-			return new HttpResponseMessage(HttpStatusCode.Created)
+			catch (Exception ex)
 			{
-				Content = new StringContent("Temp")
-			};
+				response.Message = ex.Message;
+				response.StatusCode = (int)HttpStatusCode.InternalServerError;
+				return new BadRequestObjectResult(response);
+			}
 		}
 	}
 }

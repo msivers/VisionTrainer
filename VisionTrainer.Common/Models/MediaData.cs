@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using VisionTrainer.Common.Enums;
 
@@ -9,6 +8,9 @@ namespace VisionTrainer.Common.Models
 	{
 		[JsonProperty("id")]
 		public string Id { get; set; }
+
+		[JsonProperty("submissionId")]
+		public string UserId { get; set; }
 
 		[JsonProperty("location")]
 		public GeoLocation Location { get; set; }

@@ -49,16 +49,18 @@ namespace VisionTrainer.Pages
 			addPhotosButton.SetBinding(Button.CommandProperty, new Binding("SelectImagesCommand"));
 			topGrid.Children.Add(addPhotosButton, 1, 1);
 
-			// Tab Label
-			var tagLabel = new Label();
-			tagLabel.Text = ApplicationResource.PageCreateBatchTagPrompt;
-			tagLabel.HorizontalOptions = LayoutOptions.Start;
+			/*
+						// Tab Label
+						var tagLabel = new Label();
+						tagLabel.Text = ApplicationResource.PageCreateBatchTagPrompt;
+						tagLabel.HorizontalOptions = LayoutOptions.Start;
 
-			// Tag Selection
-			var tagPicker = new Picker();
-			tagPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("Tags"));
-			tagPicker.SetBinding(Picker.SelectedItemProperty, new Binding("SelectedTag"));
-			tagPicker.HorizontalOptions = LayoutOptions.StartAndExpand;
+						// Tag Selection
+						var tagPicker = new Picker();
+						tagPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("Tags"));
+						tagPicker.SetBinding(Picker.SelectedItemProperty, new Binding("SelectedTag"));
+						tagPicker.HorizontalOptions = LayoutOptions.StartAndExpand;
+			*/
 
 			// Collection View
 			// https://docs.microsoft.com/en-gb/xamarin/xamarin-forms/user-interface/collectionview/selection
@@ -99,8 +101,8 @@ namespace VisionTrainer.Pages
 				Children =
 				{
 					topGrid,
-					tagLabel,
-					tagPicker,
+					//tagLabel,
+					//tagPicker,
 					collectionView
 				}
 			};

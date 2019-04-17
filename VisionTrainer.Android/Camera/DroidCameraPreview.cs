@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using Android;
-using Android.App;
 using Android.Content;
-using Android.Content.PM;
 using Android.Graphics;
 using Android.Hardware.Camera2;
 using Android.Hardware.Camera2.Params;
 using Android.Media;
 using Android.OS;
 using Android.Runtime;
-using Android.Support.V4.Content;
 using Android.Util;
 using Android.Views;
 using Camera2Basic;
 using Camera2Basic.Listeners;
-using Java.IO;
 using Java.Lang;
 using Java.Util;
 using Java.Util.Concurrent;
@@ -28,9 +22,16 @@ namespace VisionTrainer.Droid
 	{
 		public string Filepath { get; private set; }
 
+		public byte[] Bytes { get; set; }
+
 		public ImageCaptureEventArgs(string filePath)
 		{
 			this.Filepath = filePath;
+		}
+
+		public ImageCaptureEventArgs(byte[] bytes)
+		{
+			this.Bytes = bytes;
 		}
 	}
 
@@ -42,10 +43,13 @@ namespace VisionTrainer.Droid
 		{
 			CameraOption = option;
 
+			var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+			var nativePath = Context.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments);
+
 			// Camera Setup
-			File = new Java.IO.File(Context.GetExternalFilesDir(null), "pic.jpg");
+			File = new Java.IO.File(path, "pic.jpg");
 			CaptureCallback = new CameraCaptureListener(this);
-			mOnImageAvailableListener = new ImageAvailableListener(this, File);
+			mOnImageAvailableListener = new ImageAvailableListener(this);
 			mStateCallback = new CameraStateListener(this);
 			mSurfaceTextureListener = new Camera2BasicSurfaceTextureListener(this);
 
@@ -374,12 +378,6 @@ namespace VisionTrainer.Droid
 		// Opens the camera specified by {@link Camera2BasicFragment#mCameraId}.
 		public void OpenCamera(int width, int height)
 		{
-			//if (ContextCompat.CheckSelfPermission(Application.Context, Manifest.Permission.Camera) == Permission.Denied)
-			//{
-			//	//throw new System.Exception("NOPE");
-			//	return;
-			//}
-
 			SetUpCameraOutputs(width, height);
 			ConfigureTransform(width, height);
 
@@ -567,29 +565,20 @@ namespace VisionTrainer.Droid
 			}
 		}
 
+		public void CaptureByteArray(byte[] data)
+		{
+			ImageCaptured?.Invoke(this, new ImageCaptureEventArgs(data));
+		}
+
 		public void OnCaptureResult(CameraResult result)
 		{
 			UnlockFocus();
-
-			if (result == CameraResult.Completed)
-			{
-				// Resize and compress the image
-				var bmp = BitmapUtils.LoadAndResizeBitmap(this.File.Path, 600, 600); // TODO make dynamic
-
-				var stream = new FileStream(this.File.Path, FileMode.Create);
-				bmp.Compress(Bitmap.CompressFormat.Jpeg, 80, stream);
-				stream.Close();
-
-				ImageCaptured?.Invoke(this, new ImageCaptureEventArgs(this.File.Path));
-			}
 		}
 
 		public void LockFocus()
 		{
 			try
 			{
-				// TODO Check if we have permission!!!
-
 				// This is how to tell the camera to lock focus.
 				PreviewRequestBuilder.Set(CaptureRequest.ControlAfTrigger, (int)ControlAFTrigger.Start);
 				// Tell #mCaptureCallback to wait for the lock.

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using VisionTrainer.Common.Enums;
+using VisionTrainer.Constants;
 using VisionTrainer.Models;
+using VisionTrainer.Services;
+using VisionTrainer.Utils;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
@@ -11,56 +16,29 @@ namespace VisionTrainer.ViewModels
 	{
 		public INavigation Navigation { get; set; }
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		byte[] imageData;
-		public byte[] ImageData
-		{
-			get { return imageData; }
-			protected set { SetProperty(ref imageData, value); }
-		}
-
-		bool isBusy;
-		public bool IsBusy
-		{
-			get { return isBusy; }
-			set { SetProperty(ref isBusy, value); }
-		}
+		IDatabase database;
 
 		public CaptureViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;
+			database = ServiceContainer.Resolve<IDatabase>();
 		}
 
-		public async Task<UIResponse> Submit(byte[] bytes)
+		public string SaveBytes(byte[] bytes)
 		{
-			if (IsBusy)
-				return new UIResponse();
+			Directory.CreateDirectory(ProjectConfig.ImagesDirectory);
 
-			IsBusy = true;
-			ImageData = bytes;
+			var fileName = ProjectConfig.ImagesDirectory + "/" + Guid.NewGuid() + ".jpg";
+			var media = new MediaFile()
+			{
+				Path = fileName,
+				PreviewPath = fileName,
+				Type = MediaFileType.Image
+			};
+			File.WriteAllBytes(media.FullPath, bytes);
+			database.SaveItem(media);
 
-			var result = new UIResponse();
-			//AudienceResponse response = await AzureService.CaptureAudience(location, imageData);
-			//if (!response.HasError)
-			//{
-			//	//Saves to the cache with a timespan for expiration
-			//	var capture = new AudienceData() { ImageData = imageData, Location = location, Audience = response.Audience };
-			//	Barrel.Current.Add(StorageIds.CurrentCapture, capture, TimeSpan.FromMinutes(5));
-
-			//	result.Result = true;
-			//}
-			//else
-			//{
-			//	result.Message = response.Message;
-			//}
-
-			IsBusy = false;
-			return result;
-		}
-
-		public async Task Success()
-		{
-			//await Navigation.PushAsync(new CaptureResultsPage());
+			return fileName;
 		}
 
 		bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using VisionTrainer.Constants;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Services;
+using VisionTrainer.Utils;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
@@ -14,7 +17,7 @@ namespace VisionTrainer.ViewModels
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public ICommand ClearDatabaseCommand { get; set; }
-		IDatabase2 database;
+		IDatabase database;
 
 		bool defaultCameraRear;
 		public bool DefaultCameraRear
@@ -29,6 +32,28 @@ namespace VisionTrainer.ViewModels
 				Settings.CameraOption = value ? CameraOptions.Rear : CameraOptions.Front;
 
 				OnPropertyChanged("DefaultCameraRear");
+			}
+		}
+
+		public string UserId
+		{
+			get { return Settings.UserId; }
+			set
+			{
+				if (Settings.UserId == value)
+					return;
+				OnPropertyChanged("UserId");
+			}
+		}
+
+		public string Endpoint
+		{
+			get { return Settings.Endpoint; }
+			set
+			{
+				if (Settings.Endpoint == value)
+					return;
+				OnPropertyChanged("Endpoint");
 			}
 		}
 		/*
@@ -117,13 +142,30 @@ namespace VisionTrainer.ViewModels
 
 		public SettingsViewModel()
 		{
-			database = ServiceContainer.Resolve<IDatabase2>();
+			database = ServiceContainer.Resolve<IDatabase>();
 			DefaultCameraRear = (Settings.CameraOption == CameraOptions.Rear);
-			ClearDatabaseCommand = new Command(async (obj) =>
+			ClearDatabaseCommand = new Command((obj) =>
 			{
+				// Clean the picker
 				var multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
 				multiMediaPickerService.Clean();
 
+				// Clean any files
+				var mediaDirectory = FileHelper.GetFullPath(ProjectConfig.ImagesDirectory);
+				if (Directory.Exists(mediaDirectory))
+				{
+					var list = Directory.GetFiles(mediaDirectory, "*");
+
+					if (list.Length > 0)
+					{
+						for (int i = 0; i < list.Length; i++)
+						{
+							File.Delete(list[i]);
+						}
+					}
+				}
+
+				// Clear the DB
 				database.DeleteAllItems();
 			});
 		}
