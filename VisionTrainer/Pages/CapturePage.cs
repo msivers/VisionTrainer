@@ -41,9 +41,10 @@ namespace VisionTrainer.Pages
 
 				// Last Capture
 				cachedCapture = new CachedImage();
+				cachedCapture.Aspect = Aspect.AspectFill;
 				cachedCapture.BackgroundColor = Color.White;
-				AbsoluteLayout.SetLayoutBounds(cachedCapture, new Rectangle(.8, .8, .1, .1));
-				AbsoluteLayout.SetLayoutFlags(cachedCapture, AbsoluteLayoutFlags.SizeProportional);
+				AbsoluteLayout.SetLayoutBounds(cachedCapture, new Rectangle(5, 5, 80, 80));
+				AbsoluteLayout.SetLayoutFlags(cachedCapture, AbsoluteLayoutFlags.None);
 
 				// Capture Button
 				var buttonSize = 60;

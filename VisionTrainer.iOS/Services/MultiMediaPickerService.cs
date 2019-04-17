@@ -19,7 +19,6 @@ namespace VisionTrainer.iOS.Services
 {
 	public class MultiMediaPickerService : IMultiMediaPickerService
 	{
-		public string DirectoryName { get; set; } = "TempMedia";
 
 		//Events
 		public event EventHandler<MediaFile> OnMediaPicked;
@@ -27,16 +26,6 @@ namespace VisionTrainer.iOS.Services
 
 		GMImagePickerController currentPicker;
 		TaskCompletionSource<IList<MediaFile>> mediaPickTcs;
-
-		public void Clean()
-		{
-			var documentsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), DirectoryName);
-
-			if (Directory.Exists(documentsDirectory))
-			{
-				Directory.Delete(documentsDirectory, true);
-			}
-		}
 
 		public async Task<IList<MediaFile>> PickPhotosAsync()
 		{
@@ -112,11 +101,11 @@ namespace VisionTrainer.iOS.Services
 								string relativePath = "";
 								if (startIndex != -1)
 								{
-									relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName.Substring(0, startIndex)}-THUMBNAIL.JPG");
+									relativePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName.Substring(0, startIndex)}-THUMBNAIL.JPG");
 								}
 								else
 								{
-									relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, string.Empty);
+									relativePath = FileHelper.GetOutputPath(MediaFileType.Image, string.Empty);
 								}
 
 								if (!File.Exists(relativePath))
@@ -134,7 +123,7 @@ namespace VisionTrainer.iOS.Services
 
 								PHImageManager.DefaultManager.RequestAvAsset(asset, vOptions, (avAsset, audioMix, vInfo) =>
 								{
-									var vPath = FileHelper.GetOutputPath(MediaFileType.Video, DirectoryName, fileName);
+									var vPath = FileHelper.GetOutputPath(MediaFileType.Video, fileName);
 
 									if (!File.Exists(vPath))
 									{
@@ -176,7 +165,7 @@ namespace VisionTrainer.iOS.Services
 						PHImageManager.DefaultManager.RequestImageData(asset, options, (data, dataUti, orientation, info) =>
 						{
 
-							var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, fileName);
+							var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, fileName);
 							var fullPath = FileHelper.GetFullPath(relativePath);
 
 							if (!File.Exists(fullPath))

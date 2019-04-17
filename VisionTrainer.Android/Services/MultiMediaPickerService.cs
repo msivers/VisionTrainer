@@ -23,7 +23,6 @@ namespace VisionTrainer.Droid.Services
 	{
 		public static MultiMediaPickerService SharedInstance = new MultiMediaPickerService();
 		int MultiPickerResultCode = 9793;
-		public string DirectoryName { get; set; } = "TempMedia";
 
 		MultiMediaPickerService()
 		{
@@ -101,11 +100,11 @@ namespace VisionTrainer.Droid.Services
 					var thumbImage = ImageHelpers.RotateImage(path, 0.25f);
 
 
-					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName}{ext}");
+					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}{ext}");
 					fullPath = FileHelper.GetFullPath(relativePath);
 					File.WriteAllBytes(fullPath, fullImage);
 
-					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName}-THUMBNAIL{ext}");
+					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}-THUMBNAIL{ext}");
 					File.WriteAllBytes(thumbnailImagePath, thumbImage);
 
 				}
@@ -115,7 +114,7 @@ namespace VisionTrainer.Droid.Services
 					fullPath = path;
 					var bitmap = ThumbnailUtils.CreateVideoThumbnail(path, ThumbnailKind.MiniKind);
 
-					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, DirectoryName, $"{fileName}-THUMBNAIL{ext}");
+					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}-THUMBNAIL{ext}");
 					thumbnailImagePath = FileHelper.GetFullPath(relativePath);
 
 					var stream = new FileStream(thumbnailImagePath, FileMode.Create);
@@ -216,17 +215,6 @@ namespace VisionTrainer.Droid.Services
 
 			return null;
 
-		}
-
-		public void Clean()
-		{
-
-			var documentsDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), DirectoryName);
-
-			if (Directory.Exists(documentsDirectory))
-			{
-				Directory.Delete(documentsDirectory);
-			}
 		}
 
 		public async Task<IList<MediaFile>> PickPhotosAsync()

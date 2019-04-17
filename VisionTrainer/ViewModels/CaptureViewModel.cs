@@ -26,9 +26,7 @@ namespace VisionTrainer.ViewModels
 
 		public string SaveBytes(byte[] bytes)
 		{
-			Directory.CreateDirectory(ProjectConfig.ImagesDirectory);
-
-			var fileName = ProjectConfig.ImagesDirectory + "/" + Guid.NewGuid() + ".jpg";
+			var fileName = Guid.NewGuid() + ".jpg";
 			var media = new MediaFile()
 			{
 				Path = fileName,

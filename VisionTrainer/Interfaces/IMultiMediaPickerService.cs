@@ -11,7 +11,5 @@ namespace VisionTrainer.Interfaces
 		event EventHandler<IList<MediaFile>> OnMediaPickedCompleted;
 		Task<IList<MediaFile>> PickPhotosAsync();
 		Task<IList<MediaFile>> PickVideosAsync();
-		string DirectoryName { get; set; }
-		void Clean();
 	}
 }

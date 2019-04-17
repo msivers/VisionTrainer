@@ -6,7 +6,7 @@ namespace VisionTrainer.Utils
 {
 	public static class FileHelper
 	{
-		public static string GetUniquePath(MediaFileType type, string path, string name)
+		public static string GetUniqueName(MediaFileType type, string name)
 		{
 			string ext = Path.GetExtension(name);
 			if (ext == string.Empty)
@@ -16,17 +16,16 @@ namespace VisionTrainer.Utils
 
 			string nname = name + ext;
 			int i = 1;
-			while (File.Exists(Path.Combine(path, nname)))
+			while (File.Exists(nname))
 				nname = name + "_" + (i++) + ext;
 
-			return Path.Combine(path, nname);
+			return nname;
 		}
 
 
-		public static string GetOutputPath(MediaFileType type, string path, string name)
+		public static string GetOutputPath(MediaFileType type, string name)
 		{
-			var fullPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
-			Directory.CreateDirectory(fullPath);
+			var fullPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
 			if (string.IsNullOrWhiteSpace(name))
 			{
@@ -37,7 +36,7 @@ namespace VisionTrainer.Utils
 					name = "VID_" + timestamp + ".mp4";
 			}
 
-			return GetUniquePath(type, path, name);
+			return GetUniqueName(type, name);
 		}
 
 		public static string GetFullPath(string path)
