@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training;
 
 namespace VisionTrainer.Functions.Services
@@ -15,15 +17,22 @@ namespace VisionTrainer.Functions.Services
 				{
 					ApiKey = Environment.GetEnvironmentVariable("CustomVisionTrainingKey"),
 					Endpoint = Environment.GetEnvironmentVariable("CustomVisionTrainingEndpoint")
+
 				};
 
 				return _trainingClient;
 			}
 		}
 
-		public static void Test()
+		public static async Task UploadImage(byte[] bytes)
 		{
+			var projectId = Environment.GetEnvironmentVariable("CustomVisionProjectId");
 
+			var projectGuid = Guid.Parse(projectId);
+			using (var stream = new MemoryStream(bytes))
+			{
+				var summary = await TrainingClient.CreateImagesFromDataAsync(projectGuid, stream, null);
+			}
 		}
 	}
 }

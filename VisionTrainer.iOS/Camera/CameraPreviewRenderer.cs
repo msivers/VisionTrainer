@@ -15,7 +15,6 @@ namespace VisionTrainer.iOS
 		CameraPreview element;
 		UICameraPreview uiCameraPreview;
 		Action<byte[]> capturePathCallbackAction;
-		string captureFilename;
 
 		protected override void OnElementChanged(ElementChangedEventArgs<CameraPreview> e)
 		{
@@ -33,7 +32,6 @@ namespace VisionTrainer.iOS
 				element.Capture = null;
 				element.StartCamera = null;
 				element.StopCamera = null;
-				captureFilename = "temp";
 			}
 			if (e.NewElement != null)
 			{
@@ -43,7 +41,6 @@ namespace VisionTrainer.iOS
 				element.Capture = new Command(async () => await CaptureToFile());
 				element.StartCamera = new Command(() => uiCameraPreview.StartPreviewing());
 				element.StopCamera = new Command(() => uiCameraPreview.StopPreviewing());
-				captureFilename = element.Filename;
 			}
 		}
 
@@ -63,7 +60,7 @@ namespace VisionTrainer.iOS
 			if (capturePathCallbackAction == null)
 				return;
 
-			var result = await uiCameraPreview.Capture(captureFilename);
+			var result = await uiCameraPreview.Capture();
 			capturePathCallbackAction(result);
 		}
 

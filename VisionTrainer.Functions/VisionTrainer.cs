@@ -1,23 +1,45 @@
 using System;
-using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Net.Http;
-using System.Linq;
-using System.Net;
-using Microsoft.Azure.WebJobs.Host;
-using VisionTrainer.Common.Models;
 using VisionTrainer.Common.Messages;
+using VisionTrainer.Common.Models;
+using VisionTrainer.Functions.Services;
 
 namespace VisionTrainer.Functions
 {
 	public static class VisionTrainer
 	{
+		[FunctionName("UploadImage")]
+		public static async Task<IActionResult> UploadImage(
+			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
+		{
+			log.LogInformation("C# HTTP trigger function processed a request.");
+
+			var imageData = await req.Content.ReadAsByteArrayAsync();
+
+			try
+			{
+				// Store the image
+				var uri = await FileStorageService.Instance.StoreImage(imageData, "uploads", "test.jpg");
+
+				// Submit for training
+				await CustomVisionService.UploadImage(imageData);
+			}
+			catch (Exception ex)
+			{
+				return new BadRequestObjectResult("Something went wrong:" + ex.Message);
+			}
+
+
+			return new OkObjectResult("Complete");
+		}
+
 		[FunctionName("SubmitTrainingImage")]
 		public static async Task<IActionResult> Run(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, ILogger log)
@@ -50,7 +72,8 @@ namespace VisionTrainer.Functions
 				var token = new System.Threading.CancellationToken();
 				var result = await dbService.WriteAsync(mediaEntry, token);
 
-				// TODO Submit for training?
+				// Submit for training
+				await CustomVisionService.UploadImage(fileData);
 
 				response.StatusCode = (int)HttpStatusCode.OK;
 				return new OkObjectResult(response);

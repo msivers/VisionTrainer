@@ -67,20 +67,14 @@ namespace VisionTrainer.iOS
 			return null;
 		}
 
-		public async Task<byte[]> Capture(string filename)
+		public async Task<byte[]> Capture()
 		{
 			var buffer = await output.CaptureStillImageTaskAsync(output.Connections[0]);
-			NSData data = AVCaptureStillImageOutput.JpegStillToNSData(buffer);
+			NSData imageData = AVCaptureStillImageOutput.JpegStillToNSData(buffer);
 
-			var size = UIScreen.MainScreen.Bounds;
-			var image = UIImage.LoadFromData(data).ResizeImageWithAspectRatio((float)size.Width, (float)size.Height); // Hard coded at the moment!
-
-			using (NSData imageData = image.AsJPEG())
-			{
-				byte[] myByteArray = new byte[imageData.Length];
-				System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, myByteArray, 0, Convert.ToInt32(imageData.Length));
-				return myByteArray;
-			}
+			byte[] myByteArray = new byte[imageData.Length];
+			System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, myByteArray, 0, Convert.ToInt32(imageData.Length));
+			return myByteArray;
 		}
 
 		void Initialize()
