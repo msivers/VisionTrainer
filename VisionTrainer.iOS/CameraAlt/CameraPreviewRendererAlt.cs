@@ -1,19 +1,21 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using AVCam;
+using Temp;
 using VisionTrainer;
 using VisionTrainer.Constants;
 using VisionTrainer.iOS;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
-//[assembly: ExportRenderer(typeof(CameraPreview), typeof(CameraPreviewRenderer))]
+[assembly: ExportRenderer(typeof(CameraPreview), typeof(CameraPreviewRendererAlt))]
 namespace VisionTrainer.iOS
 {
-	public class CameraPreviewRenderer : ViewRenderer<CameraPreview, UICameraPreview>
+	public class CameraPreviewRendererAlt : ViewRenderer<CameraPreview, UICameraPreviewAlt>
 	{
 		CameraPreview element;
-		UICameraPreview uiCameraPreview;
+		UICameraPreviewAlt uiCameraPreview;
 		Action<byte[]> capturePathCallbackAction;
 
 		protected override void OnElementChanged(ElementChangedEventArgs<CameraPreview> e)
@@ -22,7 +24,8 @@ namespace VisionTrainer.iOS
 
 			if (Control == null)
 			{
-				uiCameraPreview = new UICameraPreview(e.NewElement.CameraOption);
+				uiCameraPreview = new UICameraPreviewAlt(CameraOptions.Rear);
+				//uiCameraPreview.Initalize();
 				SetNativeControl(uiCameraPreview);
 			}
 			if (e.OldElement != null)
@@ -68,7 +71,7 @@ namespace VisionTrainer.iOS
 		{
 			if (disposing)
 			{
-				Control.CaptureSession.Dispose();
+				//Control.CaptureSession.Dispose();
 				Control.Dispose();
 			}
 			base.Dispose(disposing);

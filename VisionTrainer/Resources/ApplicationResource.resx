@@ -85,6 +85,28 @@
     <data name="CameraPermissionPromptMessage">
         <value>This application requires access to the camera.</value>
     </data>
+    <!-- Microphone Entries -->
+    <data name="MicrophoneNotSupported">
+        <value>Microphone Not Available</value>
+    </data>
+    <data name="MicrophonePermissionMissing">
+        <value>:( Permission not granted to Microphone.</value>
+    </data>
+    <data name="MicrophonePermissionGranted">
+        <value>Microphone Granted</value>
+    </data>
+    <data name="MicrophonePermissionDeniedTitle">
+        <value>Microphone Denied</value>
+    </data>
+    <data name="MicrophonePermissionDeniedMessage">
+        <value>Can not continue, try again.</value>
+    </data>
+    <data name="MicrophonePermissionPromptTitle">
+        <value>Microphone Please</value>
+    </data>
+    <data name="MicrophonePermissionPromptMessage">
+        <value>This application requires access to the Microphone.</value>
+    </data>
     <!-- Photos Entries -->
     <data name="PhotosNotSupported">
         <value>Photos not supported</value>

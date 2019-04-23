@@ -8,6 +8,6 @@ namespace VisionTrainer.Constants
 		//public static string BaseUrl = "https://visiontrainer.azurewebsites.net/api/";
 		public static string BaseUrl = "http://localhost:7071/api/";
 
-		public static string SubmitTrainingImageUrl { get { return Settings.Endpoint + "SubmitTrainingImage"; } }
+		public static string SubmitTrainingMediaUrl { get { return Settings.Endpoint + "SubmitTrainingMedia"; } }
 	}
 }

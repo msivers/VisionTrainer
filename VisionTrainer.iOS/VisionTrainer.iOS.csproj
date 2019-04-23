@@ -109,9 +109,11 @@
     <Compile Include="Camera\UICameraPreview.cs" />
     <Compile Include="Camera\UIImageExtensions.cs" />
     <Compile Include="Services\MultiMediaPickerService.cs" />
-    <Compile Include="Camera\AVCamPhotoCaptureDelegate.cs" />
-    <Compile Include="Camera\AVCamCameraViewController.cs" />
-    <Compile Include="Camera\MissingBindings.cs" />
+    <Compile Include="CameraAlt\AVCamCameraView2.cs" />
+    <Compile Include="CameraAlt\AVCamPhotoCaptureDelegate.cs" />
+    <Compile Include="CameraAlt\AVCamCameraView.cs" />
+    <Compile Include="CameraAlt\CameraPreviewRendererAlt.cs" />
+    <Compile Include="CameraAlt\MissingBindings.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -194,6 +196,7 @@
   <ItemGroup>
     <Folder Include="Camera\" />
     <Folder Include="Services\" />
+    <Folder Include="CameraAlt\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\folder.png" />

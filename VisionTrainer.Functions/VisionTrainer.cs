@@ -15,7 +15,7 @@ namespace VisionTrainer.Functions
 {
 	public static class VisionTrainer
 	{
-		[FunctionName("UploadImage")]
+		[FunctionName("UploadImageTest")]
 		public static async Task<IActionResult> UploadImage(
 			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
 		{
@@ -40,7 +40,7 @@ namespace VisionTrainer.Functions
 			return new OkObjectResult("Complete");
 		}
 
-		[FunctionName("SubmitTrainingImage")]
+		[FunctionName("SubmitTrainingMedia")]
 		public static async Task<IActionResult> Run(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, ILogger log)
 		{
@@ -65,7 +65,7 @@ namespace VisionTrainer.Functions
 				mediaEntry.SubmissionDate = DateTime.Now;
 
 				// Store the image
-				var uri = await FileStorageService.Instance.StoreImage(fileData, "visiontraineruploads", mediaEntry.FileName);
+				var uri = await FileStorageService.Instance.StoreImage(fileData, "visiontrainer", mediaEntry.FileName);
 
 				// Save into the DB
 				var dbService = new DBService();

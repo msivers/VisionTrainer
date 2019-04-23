@@ -8,14 +8,15 @@ using CoreGraphics;
 using Foundation;
 using Photos;
 using UIKit;
+using VisionTrainer;
 
 namespace AVCam
 {
-	public partial class AVCamCameraViewController : UIView, IAVCaptureFileOutputRecordingDelegate
+	// https://devblogs.microsoft.com/xamarin/custom-camera-display-avfoundation/
+	public class AVCamCameraView : UIView, IAVCaptureFileOutputRecordingDelegate
 	{
-		AVCamSetupResult setupResult;
+		AVCamSetupResult setupResult; // TODO Depreciate
 		DispatchQueue sessionQueue;
-		AVCaptureSession session;
 		AVCaptureDeviceInput videoDeviceInput;
 		AVCaptureDeviceDiscoverySession videoDeviceDiscoverySession;
 		AVCamLivePhotoMode livePhotoMode;
@@ -27,35 +28,39 @@ namespace AVCam
 		int inProgressLivePhotoCapturesCount;
 		bool sessionRunning;
 
-		#region CLints changes
-		public AVCaptureVideoPreviewLayer VideoPreviewLayer
-		{
-			get
-			{
-				return (Layer as AVCaptureVideoPreviewLayer);
-			}
-		}
 
-		public AVCaptureSession Session
-		{
-			get
-			{
-				var videoPreviewLayer = VideoPreviewLayer;
-				return videoPreviewLayer == null ? null : videoPreviewLayer.Session;
-			}
-			set
-			{
-				var videoPreviewLayer = VideoPreviewLayer;
-				if (videoPreviewLayer != null)
-					videoPreviewLayer.Session = value;
-			}
-		}
-		#endregion
+		AVCaptureSession session;
+		AVCaptureVideoPreviewLayer VideoPreviewLayer;
+		CameraOptions cameraOptions;
+		public bool IsPreviewing { get; set; }
 
-		public AVCamCameraViewController(IntPtr handle) : base(handle)
+		public AVCamCameraView()
 		{
-			// Create the AVCaptureSession.
-			Session = new AVCaptureSession();
+			#region UIVIew adds
+			session = new AVCaptureSession();
+			VideoPreviewLayer = new AVCaptureVideoPreviewLayer(session)
+			{
+				Frame = Bounds,
+				VideoGravity = AVLayerVideoGravity.ResizeAspectFill
+			};
+
+			var videoDevices = AVCaptureDevice.DevicesWithMediaType(AVMediaType.Video);
+			var cameraPosition = (cameraOptions == CameraOptions.Front) ? AVCaptureDevicePosition.Front : AVCaptureDevicePosition.Back;
+			var device = videoDevices.FirstOrDefault(d => d.Position == cameraPosition);
+
+			if (device == null)
+			{
+				return;
+			}
+
+			NSError error;
+			var input = new AVCaptureDeviceInput(device, out error);
+			session.AddInput(input);
+			Layer.AddSublayer(VideoPreviewLayer);
+			//session.StartRunning();
+			IsPreviewing = true;
+
+			#endregion
 
 			// Create a device discovery session.
 			videoDeviceDiscoverySession = AVCaptureDeviceDiscoverySession.Create(
@@ -64,79 +69,42 @@ namespace AVCam
 				AVCaptureDevicePosition.Unspecified
 			);
 
+
 			// Communicate with the session and other session objects on this queue.
 			sessionQueue = new DispatchQueue("session queue", false);
 
 			setupResult = AVCamSetupResult.Success;
-
-			/*
-				Check video authorization status. Video access is required and audio
-				access is optional. If audio access is denied, audio is not recorded
-				during movie recording.
-			*/
-			switch (AVCaptureDevice.GetAuthorizationStatus(AVMediaType.Video))
-			{
-				case AVAuthorizationStatus.Authorized:
-					// The user has previously granted access to the camera.
-					break;
-
-				case AVAuthorizationStatus.NotDetermined:
-
-					/*
-						The user has not yet been presented with the option to grant
-						video access. We suspend the session queue to delay session
-						setup until the access request has completed.
-						
-						Note that audio access will be implicitly requested when we
-						create an AVCaptureDeviceInput for audio during session setup.
-					*/
-					sessionQueue.Suspend();
-					AVCaptureDevice.RequestAccessForMediaType(AVMediaType.Video, (bool granted) =>
-					{
-						if (!granted)
-						{
-							setupResult = AVCamSetupResult.CameraNotAuthorized;
-						}
-						sessionQueue.Resume();
-					});
-					break;
-				default:
-					{
-						// The user has previously denied access.
-						setupResult = AVCamSetupResult.CameraNotAuthorized;
-						break;
-					}
-			}
-			/*
-				Setup the capture session.
-				In general it is not safe to mutate an AVCaptureSession or any of its
-				inputs, outputs, or connections from multiple threads at the same time.
-
-				Why not do all of this on the main queue?
-				Because -[AVCaptureSession startRunning] is a blocking call which can
-				take a long time. We dispatch session setup to the sessionQueue so
-				that the main queue isn't blocked, which keeps the UI responsive.
-			*/
-			sessionQueue.DispatchAsync(() =>
-		   {
-			   ConfigureSession();
-		   });
 		}
 
 		#region new methods
 		public void Initalize()
 		{
-
+			sessionQueue.DispatchAsync(() =>
+			{
+				ConfigureSession();
+			});
 		}
 
 		public void StartPreviewing()
 		{
-
+			//sessionQueue.DispatchAsync(() =>
+			//{
+			//	AddObservers();
+			//	session.StartRunning();
+			//	sessionRunning = session.Running;
+			//});
 		}
 
 		public void StopPreviewing()
 		{
-
+			//sessionQueue.DispatchAsync(() =>
+			//{
+			//	if (setupResult == AVCamSetupResult.Success)
+			//	{
+			//		session.StopRunning();
+			//		RemoveObservers();
+			//	}
+			//});
 		}
 
 		public void CaptureImage()
@@ -153,63 +121,13 @@ namespace AVCam
 		{
 
 		}
+
+		public override void Draw(CGRect rect)
+		{
+			base.Draw(rect);
+			VideoPreviewLayer.Frame = rect;
+		}
 		#endregion
-
-		public void ViewWillAppear()
-		{
-			sessionQueue.DispatchAsync(() =>
-		   {
-			   switch (setupResult)
-			   {
-				   case AVCamSetupResult.Success:
-					   // Only setup observers and start the session running if setup succeeded.
-					   AddObservers();
-					   session.StartRunning();
-					   sessionRunning = session.Running;
-					   break;
-
-				   case AVCamSetupResult.CameraNotAuthorized:
-					   //sessionQueue.DispatchAsync(() =>
-					   //{
-					   // var message = NSBundle.MainBundle.LocalizedString(@"AVCam doesn't have permission to use the camera, please change privacy settings", @"Alert message when the user has denied access to the camera");
-					   // var alertController = UIAlertController.Create(@"AVCam", message, UIAlertControllerStyle.Alert);
-					   // var cancelAction = UIAlertAction.Create(NSBundle.MainBundle.LocalizedString(@"OK", @"Alert OK button"), UIAlertActionStyle.Cancel, null);
-					   // alertController.AddAction(cancelAction);
-					   // // Provide quick access to Settings.
-					   // var settingsAction = UIAlertAction.Create(NSBundle.MainBundle.LocalizedString(@"Settings", @"Alert button to open Settings"), UIAlertActionStyle.Default, (action) =>
-					   //{
-					   // UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-					   //});
-					   //alertController.AddAction(settingsAction);
-					   //PresentViewController(alertController, true, null);
-					   //});
-					   break;
-				   case AVCamSetupResult.SessionConfigurationFailed:
-					   //sessionQueue.DispatchAsync(() =>
-					   //{
-					   // var message = NSBundle.MainBundle.LocalizedString(@"Unable to capture media", @"Alert message when something goes wrong during capture session configuration");
-					   // var alertController = UIAlertController.Create(@"AVCam", message, UIAlertControllerStyle.Alert);
-					   // var cancelAction = UIAlertAction.Create(NSBundle.MainBundle.LocalizedString(@"OK", @"Alert OK button"), UIAlertActionStyle.Cancel, null);
-					   // alertController.AddAction(cancelAction);
-					   // PresentViewController(alertController, true, null);
-					   //});
-					   break;
-			   }
-		   });
-		}
-
-		public void ViewDidDisappear(bool animated)
-		{
-
-			sessionQueue.DispatchAsync(() =>
-		   {
-			   if (setupResult == AVCamSetupResult.Success)
-			   {
-				   session.StopRunning();
-				   RemoveObservers();
-			   }
-		   });
-		}
 
 		public bool ShouldAutorotate()
 		{
@@ -224,12 +142,11 @@ namespace AVCam
 
 		public void ViewWillTransitionToSize(CoreGraphics.CGSize toSize, IUIViewControllerTransitionCoordinator coordinator)
 		{
-
 			var deviceOrientation = UIDevice.CurrentDevice.Orientation;
 
 			if (deviceOrientation.IsPortrait() || deviceOrientation.IsLandscape())
 			{
-				//VideoPreviewLayer.Connection.VideoOrientation = (AVCaptureVideoOrientation)deviceOrientation;
+				VideoPreviewLayer.Connection.VideoOrientation = (AVCaptureVideoOrientation)deviceOrientation;
 			}
 		}
 
@@ -298,7 +215,7 @@ namespace AVCam
 						initialVideoOrientation = (AVCaptureVideoOrientation)statusBarOrientation;
 					}
 
-					//VideoPreviewLayer.Connection.VideoOrientation = initialVideoOrientation;
+					VideoPreviewLayer.Connection.VideoOrientation = initialVideoOrientation;
 				});
 			}
 			else
@@ -339,7 +256,6 @@ namespace AVCam
 				livePhotoMode = photoOutput.IsLivePhotoCaptureSupported ? AVCamLivePhotoMode.On : AVCamLivePhotoMode.Off;
 				//depthDataDeliveryMode = photoOutput.IsDepthDataDeliverySupported() ? AVCamDepthDataDeliveryMode.On : AVCamDepthDataDeliveryMode.Off;
 
-
 				inProgressPhotoCaptureDelegates = new Dictionary<long, AVCamPhotoCaptureDelegate>();
 				inProgressLivePhotoCapturesCount = 0;
 			}
@@ -354,40 +270,6 @@ namespace AVCam
 			backgroundRecordingId = UIApplication.BackgroundTaskInvalid;
 
 			session.CommitConfiguration();
-		}
-
-		void ResumeInterruptedSession(NSObject sender)
-		{
-			sessionQueue.DispatchAsync(() =>
-		   {
-			   /*
-				   The session might fail to start running, e.g., if a phone or FaceTime call is still
-				   using audio or video. A failure to start the session running will be communicated via
-				   a session runtime error notification. To avoid repeatedly failing to start the session
-				   running, we only try to restart the session running in the session runtime error handler
-				   if we aren't trying to resume the session running.
-			   */
-			   session.StartRunning();
-			   sessionRunning = session.Running;
-			   if (!session.Running)
-			   {
-				   //DispatchQueue.MainQueue.DispatchAsync(() =>
-				   //{
-				   // var message = NSBundle.MainBundle.LocalizedString(@"Unable to resume", @"Alert message when unable to resume the session running");
-				   // var alertController = UIAlertController.Create(@"AVCam", message, UIAlertControllerStyle.Alert);
-				   // var cancelAction = UIAlertAction.Create(NSBundle.MainBundle.LocalizedString(@"OK", @"Alert OK button"), UIAlertActionStyle.Cancel, null);
-				   // alertController.AddAction(cancelAction);
-				   // PresentViewController(alertController, true, null);
-				   //});
-			   }
-			   else
-			   {
-				   //DispatchQueue.MainQueue.DispatchAsync(() =>
-				   //{
-				   // ResumeButton.Hidden = true;
-				   //});
-			   }
-		   });
 		}
 
 		void ToggleCaptureMode(UISegmentedControl captureModeControl)
@@ -439,7 +321,6 @@ namespace AVCam
 			{
 				//LivePhotoModeButton.Hidden = true;
 				//DepthDataDeliveryButton.Hidden = true;
-
 
 				sessionQueue.DispatchAsync(() =>
 				{
@@ -847,17 +728,6 @@ namespace AVCam
 			});
 		}
 
-		[Export("captureOutput:didStartRecordingToOutputFileAtURL:fromConnections:")]
-		public void DidStartRecording(AVCaptureFileOutput captureOutput, NSUrl outputFileUrl, NSObject[] connections)
-		{
-			// Enable the Record button to let the user stop the recording.
-			//DispatchQueue.MainQueue.DispatchAsync(() =>
-			//{
-			//	RecordButton.Enabled = true;
-			//	RecordButton.SetTitle(NSBundle.MainBundle.LocalizedString(@"Stop", @"Recording button stop title"), UIControlState.Normal);
-			//});
-		}
-
 		public void FinishedRecording(AVCaptureFileOutput captureOutput, NSUrl outputFileUrl, NSObject[] connections, NSError error)
 		{
 			/*
@@ -946,8 +816,6 @@ namespace AVCam
 
 		private void AddObservers()
 		{
-			observerList.Add(session.AddObserver("running", NSKeyValueObservingOptions.New, ObserveNewSession));
-
 			if (subjectAreaDidChangeObserver != null)
 				subjectAreaDidChangeObserver.Dispose();
 			subjectAreaDidChangeObserver = NSNotificationCenter.DefaultCenter.AddObserver(AVCaptureDevice.SubjectAreaDidChangeNotification, SubjectAreaDidChange, videoDeviceInput.Device);
@@ -974,31 +842,6 @@ namespace AVCam
 			observerList.Clear();
 		}
 
-		void ObserveNewSession(NSObservedChange change)
-		{
-			bool isSessionRunning = false;
-			NSObject tmpObj = change.NewValue;
-			if (tmpObj is NSNumber) isSessionRunning = ((NSNumber)tmpObj).BoolValue;
-			else if (tmpObj is NSString) isSessionRunning = ((NSString)tmpObj).BoolValue();
-
-			var livePhotoCaptureSupported = photoOutput.IsLivePhotoCaptureSupported;
-			var livePhotoCaptureEnabled = photoOutput.IsLivePhotoCaptureEnabled;
-			var depthDataDeliverySupported = photoOutput.IsDepthDataDeliverySupported();
-			var depthDataDeliveryEnabled = photoOutput.IsDepthDataDeliveryEnabled();
-
-			//DispatchQueue.MainQueue.DispatchAsync(() =>
-			//{
-			//	// Only enable the ability to change camera if the device has more than one camera.
-			//	CameraButton.Enabled = isSessionRunning && (videoDeviceDiscoverySession.UniqueDevicePositionsCount() > 1);
-			//	RecordButton.Enabled = isSessionRunning && (CaptureModeControl.SelectedSegment == (int)AVCamCaptureMode.Movie);
-			//	PhotoButton.Enabled = isSessionRunning;
-			//	CaptureModeControl.Enabled = isSessionRunning;
-			//	LivePhotoModeButton.Enabled = isSessionRunning && livePhotoCaptureEnabled;
-			//	LivePhotoModeButton.Hidden = !(isSessionRunning && livePhotoCaptureSupported); DepthDataDeliveryButton.Enabled = isSessionRunning && depthDataDeliveryEnabled;
-			//	DepthDataDeliveryButton.Hidden = !(isSessionRunning && depthDataDeliverySupported);
-			//});
-		}
-
 		void SubjectAreaDidChange(NSNotification notification)
 		{
 			var devicePoint = new CGPoint(0.5, 0.5);
@@ -1010,7 +853,6 @@ namespace AVCam
 			NSError error = notification.UserInfo[AVCaptureSession.ErrorKey] as NSError;
 			if (error == null)
 			{
-				//ResumeButton.Hidden = false;
 				return;
 			}
 			Console.WriteLine($"Capture session runtime error: {error}");
@@ -1029,19 +871,8 @@ namespace AVCam
 						session.StartRunning();
 						sessionRunning = session.Running;
 					}
-					//else
-					//{
-					//	DispatchQueue.MainQueue.DispatchAsync(() =>
-					//	{
-					//		ResumeButton.Hidden = false;
-					//	});
-					//}
 				});
 			}
-			//else
-			//{
-			//	ResumeButton.Hidden = false;
-			//}
 		}
 
 		void SessionWasInterrupted(NSNotification notification)
@@ -1054,7 +885,6 @@ namespace AVCam
 				music playback in control center will not automatically resume the session
 				running. Also note that it is not always possible to resume, see -[resumeInterruptedSession:].
 			*/
-			var showResumeButton = false;
 
 			var reason = (AVCaptureSessionInterruptionReason)(notification.UserInfo[AVCaptureSession.InterruptionReasonKey] as NSNumber).Int32Value;
 			Console.WriteLine($"Capture session was interrupted with reason {(int)reason}");
@@ -1062,56 +892,17 @@ namespace AVCam
 			if (reason == AVCaptureSessionInterruptionReason.AudioDeviceInUseByAnotherClient ||
 				reason == AVCaptureSessionInterruptionReason.VideoDeviceInUseByAnotherClient)
 			{
-				showResumeButton = true;
+				// Do something
 			}
 			else if (reason == AVCaptureSessionInterruptionReason.VideoDeviceNotAvailableWithMultipleForegroundApps)
 			{
-				// Simply fade-in a label to inform the user that the camera is unavailable.
-				//CameraUnavailableLabel.Alpha = 0.0f;
-				//CameraUnavailableLabel.Hidden = false;
-				//UIView.Animate(0.25, () =>
-				//{
-				//	CameraUnavailableLabel.Alpha = 1.0f;
-				//});
-			}
-
-			if (showResumeButton)
-			{
-				// Simply fade-in a button to enable the user to try to resume the session running.
-				//ResumeButton.Alpha = 0.0f;
-				//ResumeButton.Hidden = false;
-				//UIView.Animate(0.25, () =>
-				//{
-				//	ResumeButton.Alpha = 1.0f;
-				//});
+				// Do something
 			}
 		}
 
 		void SessionInterruptionEnded(NSNotification notification)
 		{
 			Console.WriteLine(@"Capture session interruption ended");
-
-			//if (!ResumeButton.Hidden)
-			//{
-			//	UIView.Animate(0.25, () =>
-			//	{
-			//		ResumeButton.Alpha = 0.0f;
-			//	},
-			//	() =>
-			//	{
-			//		ResumeButton.Hidden = true;
-			//	});
-			//}
-			//if (!CameraUnavailableLabel.Hidden)
-			//{
-			//UIView.Animate(0.25, () =>
-			//{
-			//	CameraUnavailableLabel.Alpha = 0.0f;
-			//},
-			//() =>
-			//{
-			//	CameraUnavailableLabel.Hidden = true;
-			//});
 		}
 	}
 }

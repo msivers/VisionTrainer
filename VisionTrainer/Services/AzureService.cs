@@ -23,7 +23,7 @@ namespace VisionTrainer.Services
 			};
 
 			var stringContent = new StringContent(JsonConvert.SerializeObject(data));
-			var url = ProjectConfig.SubmitTrainingImageUrl;
+			var url = ProjectConfig.SubmitTrainingMediaUrl;
 
 			try
 			{
