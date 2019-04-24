@@ -1,21 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
-using AVCam;
-using Temp;
+using AVCameraCapture;
 using VisionTrainer;
 using VisionTrainer.Constants;
-using VisionTrainer.iOS;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
-[assembly: ExportRenderer(typeof(CameraPreview), typeof(CameraPreviewRendererAlt))]
-namespace VisionTrainer.iOS
+[assembly: ExportRenderer(typeof(CameraPreview), typeof(AVCameraCaptureRenderer))]
+namespace AVCameraCapture
 {
-	public class CameraPreviewRendererAlt : ViewRenderer<CameraPreview, UICameraPreviewAlt>
+	public class AVCameraCaptureRenderer : ViewRenderer<CameraPreview, AVCameraCaptureView>
 	{
 		CameraPreview element;
-		UICameraPreviewAlt uiCameraPreview;
+		AVCameraCaptureView uiCameraPreview;
 		Action<byte[]> capturePathCallbackAction;
 
 		protected override void OnElementChanged(ElementChangedEventArgs<CameraPreview> e)
@@ -24,13 +21,14 @@ namespace VisionTrainer.iOS
 
 			if (Control == null)
 			{
-				uiCameraPreview = new UICameraPreviewAlt(CameraOptions.Rear);
-				//uiCameraPreview.Initalize();
+				uiCameraPreview = new AVCameraCaptureView(e.NewElement.CameraOption);
+				uiCameraPreview.ImageCaptured += UiCameraPreview_ImageCaptured;
 				SetNativeControl(uiCameraPreview);
 			}
 			if (e.OldElement != null)
 			{
 				// Unsubscribe
+				uiCameraPreview.ImageCaptured -= UiCameraPreview_ImageCaptured;
 				capturePathCallbackAction = null;
 				element.Capture = null;
 				element.StartCamera = null;
@@ -41,7 +39,7 @@ namespace VisionTrainer.iOS
 				// Subscribe
 				element = e.NewElement;
 				capturePathCallbackAction = element.CaptureBytesCallback;
-				element.Capture = new Command(async () => await CaptureToFile());
+				element.Capture = new Command(() => uiCameraPreview.Capture());
 				element.StartCamera = new Command(() => uiCameraPreview.StartPreviewing());
 				element.StopCamera = new Command(() => uiCameraPreview.StopPreviewing());
 			}
@@ -58,20 +56,15 @@ namespace VisionTrainer.iOS
 			}
 		}
 
-		async Task CaptureToFile()
+		void UiCameraPreview_ImageCaptured(object sender, ImageCapturedEventArgs e)
 		{
-			if (capturePathCallbackAction == null)
-				return;
-
-			var result = await uiCameraPreview.Capture();
-			capturePathCallbackAction(result);
+			capturePathCallbackAction(e.Data);
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
-				//Control.CaptureSession.Dispose();
 				Control.Dispose();
 			}
 			base.Dispose(disposing);

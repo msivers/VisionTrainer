@@ -105,16 +105,14 @@
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Camera\CameraPreviewRenderer.cs" />
     <Compile Include="Camera\UICameraPreview.cs" />
-    <Compile Include="Camera\UIImageExtensions.cs" />
     <Compile Include="Services\MultiMediaPickerService.cs" />
-    <Compile Include="CameraAlt\AVCamCameraView2.cs" />
     <Compile Include="CameraAlt\AVCamPhotoCaptureDelegate.cs" />
     <Compile Include="CameraAlt\AVCamCameraView.cs" />
-    <Compile Include="CameraAlt\CameraPreviewRendererAlt.cs" />
-    <Compile Include="CameraAlt\MissingBindings.cs" />
-    <Compile Include="CameraAlt\VisionTrainerPhotoCaptureDelegate.cs" />
+    <Compile Include="Camera\AVCameraCaptureView.cs" />
+    <Compile Include="Camera\AVCameraCaptureRenderer.cs" />
+    <Compile Include="Camera\AVCameraCaptureDelegate.cs" />
+    <Compile Include="Camera\MissingBindings.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

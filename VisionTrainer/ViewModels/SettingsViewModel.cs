@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using VisionTrainer.Constants;
-using VisionTrainer.Interfaces;
 using VisionTrainer.Services;
-using VisionTrainer.Utils;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
