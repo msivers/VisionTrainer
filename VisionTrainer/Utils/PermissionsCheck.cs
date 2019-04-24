@@ -52,50 +52,6 @@ namespace VisionTrainer.Utils
 			return retVal;
 		}
 
-		public static async Task<bool> MicrophoneAsync()
-		{
-			var retVal = false;
-			try
-			{
-				var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Microphone);
-				if (status != PermissionStatus.Granted)
-				{
-					if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Microphone))
-						await App.Current.MainPage.DisplayAlert(
-							ApplicationResource.MicrophonePermissionPromptTitle,
-							ApplicationResource.MicrophonePermissionPromptMessage,
-							ApplicationResource.OK);
-
-					var results = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Microphone);
-					if (results.ContainsKey(Permission.Microphone))
-						status = results[Permission.Microphone];
-				}
-
-				if (status == PermissionStatus.Granted)
-				{
-					retVal = true;
-				}
-
-				else if (status != PermissionStatus.Unknown)
-				{
-					await App.Current.MainPage.DisplayAlert(
-						ApplicationResource.MicrophonePermissionDeniedTitle,
-						ApplicationResource.MicrophonePermissionDeniedMessage,
-						ApplicationResource.OK);
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.ToString());
-				await App.Current.MainPage.DisplayAlert(
-					ApplicationResource.GeneralErrorTitle,
-					ApplicationResource.GeneralErrorSummary,
-					ApplicationResource.OK);
-			}
-
-			return retVal;
-		}
-
 		public static async Task<bool> PhotosAsync()
 		{
 			var retVal = false;

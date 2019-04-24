@@ -19,6 +19,7 @@ namespace AVCameraCapture
 		{
 			base.OnElementChanged(e);
 
+
 			if (Control == null)
 			{
 				uiCameraPreview = new AVCameraCaptureView(e.NewElement.CameraOption);
@@ -49,10 +50,17 @@ namespace AVCameraCapture
 		{
 			base.OnElementPropertyChanged(sender, e);
 
+			Console.WriteLine(e.PropertyName);
+
 			if (e.PropertyName == PropertyIds.CameraOption)
 			{
 				var view = (CameraPreview)sender;
 				uiCameraPreview.UpdateCameraOption(view.CameraOption);
+			}
+
+			else if (e.PropertyName == PropertyIds.Width)
+			{
+				uiCameraPreview.SetNeedsDisplay();
 			}
 		}
 

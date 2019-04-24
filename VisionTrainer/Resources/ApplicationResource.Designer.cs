@@ -185,48 +185,6 @@ namespace VisionTrainer.Resources {
             }
         }
         
-        internal static string MicrophoneNotSupported {
-            get {
-                return ResourceManager.GetString("MicrophoneNotSupported", resourceCulture);
-            }
-        }
-        
-        internal static string MicrophonePermissionMissing {
-            get {
-                return ResourceManager.GetString("MicrophonePermissionMissing", resourceCulture);
-            }
-        }
-        
-        internal static string MicrophonePermissionGranted {
-            get {
-                return ResourceManager.GetString("MicrophonePermissionGranted", resourceCulture);
-            }
-        }
-        
-        internal static string MicrophonePermissionDeniedTitle {
-            get {
-                return ResourceManager.GetString("MicrophonePermissionDeniedTitle", resourceCulture);
-            }
-        }
-        
-        internal static string MicrophonePermissionDeniedMessage {
-            get {
-                return ResourceManager.GetString("MicrophonePermissionDeniedMessage", resourceCulture);
-            }
-        }
-        
-        internal static string MicrophonePermissionPromptTitle {
-            get {
-                return ResourceManager.GetString("MicrophonePermissionPromptTitle", resourceCulture);
-            }
-        }
-        
-        internal static string MicrophonePermissionPromptMessage {
-            get {
-                return ResourceManager.GetString("MicrophonePermissionPromptMessage", resourceCulture);
-            }
-        }
-        
         internal static string PhotosNotSupported {
             get {
                 return ResourceManager.GetString("PhotosNotSupported", resourceCulture);

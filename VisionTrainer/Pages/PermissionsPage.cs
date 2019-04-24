@@ -9,11 +9,9 @@ namespace VisionTrainer.Pages
 	public class PermissionsPage : ContentPage
 	{
 		Button cameraButton;
-		Button microphoneButton;
 		Button photosButton;
 
 		bool hasCameraPermission;
-		bool hasMicrophonePermission;
 		bool hasPhotoPermission;
 
 		public PermissionsPage()
@@ -61,31 +59,6 @@ namespace VisionTrainer.Pages
 				}
 			};
 
-			microphoneButton = new Button()
-			{
-				Text = "Microphone Please",
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				BackgroundColor = AppColors.HeaderColor,
-				TextColor = Color.White,
-				FontAttributes = FontAttributes.Bold,
-				WidthRequest = 180,
-				HeightRequest = 40,
-				CornerRadius = 10,
-				Margin = new Thickness(0, 0, 0, 5)
-			};
-			microphoneButton.Clicked += async (sender, e) =>
-			{
-				var hasPermission = await PermissionsCheck.MicrophoneAsync();
-				if (hasPermission)
-				{
-					microphoneButton.IsEnabled = false;
-					microphoneButton.Text = ApplicationResource.MicrophonePermissionGranted;
-					microphoneButton.BackgroundColor = Color.LightGray;
-					hasMicrophonePermission = true;
-					await CheckComplete();
-				}
-			};
-
 			photosButton = new Button()
 			{
 				Text = ApplicationResource.PagePermissionsPhotosButton,
@@ -118,7 +91,6 @@ namespace VisionTrainer.Pages
 			centerLayout.Children.Add(titleLabel);
 			centerLayout.Children.Add(messageLabel);
 			centerLayout.Children.Add(cameraButton);
-			centerLayout.Children.Add(microphoneButton);
 			centerLayout.Children.Add(photosButton);
 
 			Content = centerLayout;
@@ -126,7 +98,7 @@ namespace VisionTrainer.Pages
 
 		async Task CheckComplete()
 		{
-			if (hasCameraPermission && hasPhotoPermission && hasMicrophonePermission)
+			if (hasCameraPermission && hasPhotoPermission)
 				await Navigation.PopModalAsync();
 		}
 	}

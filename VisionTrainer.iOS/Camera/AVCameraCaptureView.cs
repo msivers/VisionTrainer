@@ -47,6 +47,17 @@ namespace AVCameraCapture
 		{
 			base.Draw(rect);
 			previewLayer.Frame = rect;
+
+			var deviceOrientation = UIDevice.CurrentDevice.Orientation;
+
+			// Update orientation
+			if (deviceOrientation.IsPortrait() || deviceOrientation.IsLandscape())
+			{
+				previewLayer.Connection.VideoOrientation = (AVCaptureVideoOrientation)deviceOrientation;
+
+				var photoOutputConnection = photoOutput.ConnectionFromMediaType(AVMediaType.Video);
+				photoOutputConnection.VideoOrientation = previewLayer.Connection.VideoOrientation; ;
+			}
 		}
 
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
@@ -160,16 +171,13 @@ namespace AVCameraCapture
 
 		public void UpdateCameraOption(CameraOptions option)
 		{
-			Console.WriteLine("UpdateCameraOption");
-
-
 			var devices = AVCaptureDeviceDiscoverySession.Create(
 										new AVCaptureDeviceType[] { AVCaptureDeviceType.BuiltInWideAngleCamera, AVCaptureDeviceType.BuiltInDualCamera },
 										AVMediaType.Video,
 										AVCaptureDevicePosition.Unspecified
 									);
 
-			var cameraPosition = (cameraOptions == CameraOptions.Front) ? AVCaptureDevicePosition.Front : AVCaptureDevicePosition.Back;
+			var cameraPosition = (option == CameraOptions.Front) ? AVCaptureDevicePosition.Front : AVCaptureDevicePosition.Back;
 			var device = devices.Devices.FirstOrDefault(d => d.Position == cameraPosition);
 
 			if (device != null)

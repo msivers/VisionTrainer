@@ -147,6 +147,8 @@ namespace VisionTrainer.Pages
 		public void DidDisappear()
 		{
 			StopCamera();
+			if (cachedCapture != null)
+				cachedCapture.Source = null;
 		}
 	}
 }
