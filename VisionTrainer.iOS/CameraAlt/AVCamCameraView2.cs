@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AVCam;
@@ -7,9 +6,9 @@ using AVFoundation;
 using CoreFoundation;
 using CoreGraphics;
 using Foundation;
-using Photos;
 using UIKit;
 using VisionTrainer;
+using VisionTrainer.iOS.CameraAlt;
 
 namespace Temp
 {
@@ -18,11 +17,9 @@ namespace Temp
 		AVCaptureVideoPreviewLayer previewLayer;
 		AVCaptureSession captureSession;
 		AVCapturePhotoOutput photoOutput;
+		AVCapturePhotoSettings photoSettings;
+		VisionTrainerPhotoCaptureDelegate photoCaptureDelegate;
 		CameraOptions cameraOptions;
-
-		//new
-		DispatchQueue sessionQueue;
-
 
 		public event EventHandler<EventArgs> Tapped;
 		public event EventHandler<EventArgs> Captured; // TODO
@@ -56,9 +53,6 @@ namespace Temp
 
 		void Initialize()
 		{
-			// Communicate with the session and other session objects on this queue.
-			sessionQueue = new DispatchQueue("session queue", false);
-
 			// Create the catpure session
 			captureSession = new AVCaptureSession();
 			previewLayer = new AVCaptureVideoPreviewLayer(captureSession)
@@ -77,12 +71,6 @@ namespace Temp
 
 		void SetupVideoInput()
 		{
-			// OLD
-			//var captureDevice = AVCaptureDevice.GetDefaultDevice(AVMediaType.Video);
-			//ConfigureCameraForDevice(captureDevice);
-			//captureDeviceInput = AVCaptureDeviceInput.FromDevice(captureDevice);
-			//captureSession.AddInput(captureDeviceInput);
-
 			// Video Input
 			var videoDevices = AVCaptureDevice.DevicesWithMediaType(AVMediaType.Video);
 			var cameraPosition = (cameraOptions == CameraOptions.Front) ? AVCaptureDevicePosition.Front : AVCaptureDevicePosition.Back;
@@ -97,36 +85,27 @@ namespace Temp
 			captureSession.AddInput(input);
 		}
 
+
 		void SetupPhotoCapture()
 		{
-			// OLD
-			//var dictionary = new NSMutableDictionary();
-			//dictionary[AVVideo.CodecKey] = new NSNumber((int)AVVideoCodec.JPEG);
-			//stillImageOutput = new AVCaptureStillImageOutput() { OutputSettings = new NSDictionary() };
-			//captureSession.AddOutput(stillImageOutput);
-
 			captureSession.SessionPreset = AVCaptureSession.PresetPhoto;
 
 			// Add photo output.
 			photoOutput = new AVCapturePhotoOutput();
 			photoOutput.IsHighResolutionCaptureEnabled = true;
-
-
-			if (captureSession.CanAddOutput(photoOutput))
-			{
-				captureSession.AddOutput(photoOutput);
-				inProgressPhotoCaptureDelegates = new Dictionary<long, AVCamPhotoCaptureDelegate>();
-				//inProgressLivePhotoCapturesCount = 0;
-			}
-			else
-			{
-				Console.WriteLine(@"Could not add photo output to the session");
-				//setupResult = AVCamSetupResult.SessionConfigurationFailed;
-				captureSession.CommitConfiguration();
-				return;
-			}
-
+			captureSession.AddOutput(photoOutput);
 			captureSession.CommitConfiguration();
+
+			// Create Photo Settings
+			photoSettings = AVCapturePhotoSettings.FromFormat(new NSDictionary<NSString, NSObject>(AVVideo.CodecKey, AVVideo.CodecJPEG));
+			photoSettings.IsHighResolutionPhotoEnabled = true;
+			photoSettings.IsDepthDataDeliveryEnabled(false);
+
+			if (photoSettings.AvailablePreviewPhotoPixelFormatTypes.Count() > 0)
+				photoSettings.PreviewPhotoFormat = new NSDictionary<NSString, NSObject>(CoreVideo.CVPixelBuffer.PixelFormatTypeKey, photoSettings.AvailablePreviewPhotoPixelFormatTypes.First());
+
+			// Use a separate object for the photo capture delegate to isolate each capture life cycle.
+			photoCaptureDelegate = new VisionTrainerPhotoCaptureDelegate(photoSettings, CompletionHandler);
 		}
 
 		#region NewMethods
@@ -178,52 +157,19 @@ namespace Temp
 			base.Dispose(disposing);
 		}
 
-		AVCamPhotoCaptureDelegate photoCaptureDelegate;
+
 		public Task<byte[]> Capture()
 		{
 			Console.WriteLine("Capture");
 
-			// Update the photo output's connection to match the video orientation of the video preview layer.
-			var photoOutputConnection = photoOutput.ConnectionFromMediaType(AVMediaType.Video);
-			//photoOutputConnection.VideoOrientation = videoPreviewLayerVideoOrientation;
-
-			AVCapturePhotoSettings photoSettings;
-			photoSettings = AVCapturePhotoSettings.FromFormat(new NSDictionary<NSString, NSObject>(AVVideo.CodecKey, AVVideo.CodecJPEG));
-			photoSettings.IsHighResolutionPhotoEnabled = true;
-			photoSettings.IsDepthDataDeliveryEnabled(false);
-
-			if (photoSettings.AvailablePreviewPhotoPixelFormatTypes.Count() > 0)
-			{
-				photoSettings.PreviewPhotoFormat = new NSDictionary<NSString, NSObject>(CoreVideo.CVPixelBuffer.PixelFormatTypeKey, photoSettings.AvailablePreviewPhotoPixelFormatTypes.First());
-			}
-
-			// Use a separate object for the photo capture delegate to isolate each capture life cycle.
-			photoCaptureDelegate = new AVCamPhotoCaptureDelegate(photoSettings, WillCapturePhotoAnimation, LivePhotoCaptureHandler, CompletionHandler);
-
-			/*
-				The Photo Output keeps a weak reference to the photo capture delegate so
-				we store it in an array to maintain a strong reference to this object
-				until the capture is completed.
-			*/
 			photoOutput.CapturePhoto(photoSettings, photoCaptureDelegate);
-
 
 			return Task.FromResult(new byte[0]);
 		}
 
-		void WillCapturePhotoAnimation()
+		void CompletionHandler(byte[] bytes)
 		{
-
-		}
-
-		void LivePhotoCaptureHandler(bool capturing)
-		{
-
-		}
-
-		void CompletionHandler(AVCamPhotoCaptureDelegate photoCaptureDelegate)
-		{
-
+			Console.WriteLine(bytes.Length);
 		}
 	}
 }

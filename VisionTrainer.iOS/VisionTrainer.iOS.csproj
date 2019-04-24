@@ -114,6 +114,7 @@
     <Compile Include="CameraAlt\AVCamCameraView.cs" />
     <Compile Include="CameraAlt\CameraPreviewRendererAlt.cs" />
     <Compile Include="CameraAlt\MissingBindings.cs" />
+    <Compile Include="CameraAlt\VisionTrainerPhotoCaptureDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
