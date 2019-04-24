@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using VisionTrainer.Common.Enums;
+using VisionTrainer.Models;
 
 namespace VisionTrainer.Utils
 {
@@ -22,7 +23,6 @@ namespace VisionTrainer.Utils
 			return nname;
 		}
 
-
 		public static string GetOutputPath(MediaFileType type, string name)
 		{
 			var fullPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -42,6 +42,17 @@ namespace VisionTrainer.Utils
 		public static string GetFullPath(string path)
 		{
 			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
+		}
+
+		public static void DeleteLocalFiles(MediaFile media)
+		{
+			var fullPath = media.FullPath;
+			if (File.Exists(fullPath))
+				File.Delete(fullPath);
+
+			var fullPreviewPath = media.FullPreviewPath;
+			if (File.Exists(fullPreviewPath))
+				File.Delete(fullPreviewPath);
 		}
 	}
 }

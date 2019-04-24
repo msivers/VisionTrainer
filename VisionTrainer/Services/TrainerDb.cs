@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LiteDB;
 using VisionTrainer.Common.Models;
 using VisionTrainer.Models;
+using VisionTrainer.Utils;
 
 namespace VisionTrainer.Services
 {
@@ -51,11 +52,18 @@ namespace VisionTrainer.Services
 
 		public bool DeleteAllItems()
 		{
+			// todo remove all stored media
+			var collection = GetItems();
+			foreach (var item in collection)
+				FileHelper.DeleteLocalFiles(item);
+
 			return db.DropCollection("media");
 		}
 
 		public bool DeleteItem(MediaFile item)
 		{
+			FileHelper.DeleteLocalFiles(item);
+
 			var result = mediaCollection.Delete(item.Id);
 			return result;
 		}

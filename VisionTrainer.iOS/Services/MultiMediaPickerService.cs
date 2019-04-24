@@ -78,6 +78,7 @@ namespace VisionTrainer.iOS.Services
 			options.Synchronous = false;
 			options.ResizeMode = PHImageRequestOptionsResizeMode.Fast;
 			options.DeliveryMode = PHImageRequestOptionsDeliveryMode.HighQualityFormat;
+
 			bool completed = false;
 			for (var i = 0; i < args.Assets.Length; i++)
 			{
@@ -164,6 +165,8 @@ namespace VisionTrainer.iOS.Services
 
 						PHImageManager.DefaultManager.RequestImageData(asset, options, (data, dataUti, orientation, info) =>
 						{
+							if (fileName.EndsWith(".HEIC", StringComparison.CurrentCulture))
+								fileName = Path.GetFileNameWithoutExtension(fileName) + ".jpg";
 
 							var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, fileName);
 							var fullPath = FileHelper.GetFullPath(relativePath);
@@ -171,19 +174,9 @@ namespace VisionTrainer.iOS.Services
 							if (!File.Exists(fullPath))
 							{
 								Debug.WriteLine(dataUti);
-								var imageData = data;
-								//var image = UIImage.LoadFromData(imageData);
 
-								//if (imageScale < 1.0f)
-								//{
-								//    //begin resizing image
-								//    image = image.ResizeImageWithAspectRatio((float)imageScale);
-								//}
-
-								//if (imageQuality < 100)
-								//{
-								//    imageData = image.AsJPEG(Math.Min(imageQuality,100));
-								//}
+								var image = UIImage.LoadFromData(data);
+								var imageData = image.AsJPEG();
 
 								imageData?.Save(fullPath, true);
 							}

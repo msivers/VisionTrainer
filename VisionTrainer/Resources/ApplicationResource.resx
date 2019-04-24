@@ -51,6 +51,9 @@
     <data name="PageProcessTitle">
         <value>Process</value>
     </data>
+    <data name="PageMediaDetailTitle">
+        <value>Detail</value>
+    </data>
     <data name="PageCreateBatchTitle">
         <value>Create New Batch</value>
     </data>

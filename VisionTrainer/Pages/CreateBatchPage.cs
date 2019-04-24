@@ -69,7 +69,7 @@ namespace VisionTrainer.Pages
 			{
 				string action = await DisplayActionSheet(ApplicationResource.PageCreateBatchRemovePhotoPrompt, ApplicationResource.Cancel, ApplicationResource.PageCreateBatchRemoveConfirm);
 
-				if (action == ApplicationResource.PageCreateBatchRemovePhotoPrompt)
+				if (action == ApplicationResource.PageCreateBatchRemoveConfirm)
 				{
 					var targetMedia = (MediaFile)e.CurrentSelection.FirstOrDefault();
 					var binding = (BindingContext as CreateBatchViewModel);

@@ -142,7 +142,10 @@ namespace VisionTrainer.ViewModels
 			DefaultCameraRear = (Settings.CameraOption == CameraOptions.Rear);
 			ClearDatabaseCommand = new Command((obj) =>
 			{
-				// Clean any files
+				// Clear the DB
+				database.DeleteAllItems();
+
+				// Clean any remaining files
 				var mediaDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 				var list = Directory.EnumerateFiles(mediaDirectory, "*.*", SearchOption.AllDirectories)
 				.Where(s => s.EndsWith(".jpg") || s.EndsWith(".mp4")).ToArray();
@@ -154,9 +157,6 @@ namespace VisionTrainer.ViewModels
 						File.Delete(list[i]);
 					}
 				}
-
-				// Clear the DB
-				database.DeleteAllItems();
 			});
 		}
 

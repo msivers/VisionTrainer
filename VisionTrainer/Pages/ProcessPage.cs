@@ -1,6 +1,7 @@
 ﻿using System;
 using FFImageLoading.Forms;
 using VisionTrainer.Constants;
+using VisionTrainer.Models;
 using VisionTrainer.Resources;
 using VisionTrainer.ViewModels;
 using Xamarin.Forms;
@@ -47,12 +48,10 @@ namespace VisionTrainer.Pages
 			addButton.SetBinding(Button.CommandProperty, new Binding("NewBatchCommand"));
 			topGrid.Children.Add(addButton, 1, 0);
 
-			// TODO Delete list items
-			// TODO remove items once uploaded
-
 			// TableView
 			var itemsListView = new ListView { Margin = new Thickness(6, 0, 6, 0), SeparatorVisibility = SeparatorVisibility.None, RowHeight = 64 };
 			itemsListView.SetBinding(ListView.ItemsSourceProperty, new Binding("Media"));
+			itemsListView.ItemSelected += (sender, e) => (BindingContext as ProcessViewModel).MediaSelectedCommand.Execute(e.SelectedItem);
 			itemsListView.ItemTemplate = new DataTemplate(() =>
 			{
 				Grid grid = new Grid();

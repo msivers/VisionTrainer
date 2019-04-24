@@ -119,6 +119,12 @@ namespace VisionTrainer.Resources {
             }
         }
         
+        internal static string PageMediaDetailTitle {
+            get {
+                return ResourceManager.GetString("PageMediaDetailTitle", resourceCulture);
+            }
+        }
+        
         internal static string PageCreateBatchTitle {
             get {
                 return ResourceManager.GetString("PageCreateBatchTitle", resourceCulture);

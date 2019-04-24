@@ -7,6 +7,7 @@ using VisionTrainer.Common.Models;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Models;
 using VisionTrainer.Services;
+using VisionTrainer.Utils;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
@@ -75,6 +76,7 @@ namespace VisionTrainer.ViewModels
 
 			RemoveImageCommand = new Command<MediaFile>((obj) =>
 			{
+				FileHelper.DeleteLocalFiles(obj);
 				Media.Remove(obj);
 			});
 

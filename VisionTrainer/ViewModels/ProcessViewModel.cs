@@ -19,6 +19,8 @@ namespace VisionTrainer.ViewModels
 		public ICommand NewBatchCommand { get; set; }
 		public ICommand UploadFilesCommand { get; set; }
 		public ICommand RefreshMediaEntriesCommand { get; set; }
+		public ICommand MediaSelectedCommand { get; set; }
+
 
 		IDatabase database;
 		IUploadManager uploadManager;
@@ -28,6 +30,15 @@ namespace VisionTrainer.ViewModels
 		{
 			get { return media; }
 			set { SetProperty(ref media, value); }
+		}
+
+		public ObservableCollection<MediaFile> SelectedItem
+		{
+			//get { return media; }
+			set
+			{
+				Console.WriteLine(value);
+			}
 		}
 
 		public ProcessViewModel(INavigation navigation)
@@ -50,6 +61,11 @@ namespace VisionTrainer.ViewModels
 			{
 				var entries = database.GetItemsNotDone();
 				Media = new ObservableCollection<MediaFile>(entries);
+			});
+
+			MediaSelectedCommand = new Command<MediaFile>(async (obj) =>
+			{
+				await Navigation.PushAsync(new MediaDetailPage(obj));
 			});
 		}
 
