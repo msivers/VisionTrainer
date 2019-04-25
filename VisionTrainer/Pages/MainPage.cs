@@ -41,23 +41,23 @@ namespace VisionTrainer.Pages
 		{
 			var textColor = Color.White;
 
-			var captureNavigationPage = new NavigationPage(new CapturePage());
-			captureNavigationPage.Title = ApplicationResource.NavigationCaptureTitle;
-			//captureNavigationPage.Icon = "person.png";
-			captureNavigationPage.BarTextColor = textColor;
-			captureNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
-			Children.Add(captureNavigationPage);
+			var testNavigationPage = new NavigationPage(new TestInputPage());
+			testNavigationPage.Title = ApplicationResource.NavigationTestTitle;
+			testNavigationPage.Icon = "capture.png";
+			testNavigationPage.BarTextColor = textColor;
+			testNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
+			Children.Add(testNavigationPage);
 
 			var processNavigationPage = new NavigationPage(new ProcessPage());
 			processNavigationPage.Title = ApplicationResource.NavigationProcessTitle;
-			//processNavigationPage.Icon = "person.png";
+			processNavigationPage.Icon = "pictures.png";
 			processNavigationPage.BarTextColor = textColor;
 			processNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
 			Children.Add(processNavigationPage);
 
 			var settingsNavigationPage = new NavigationPage(new SettingsPage());
 			settingsNavigationPage.Title = ApplicationResource.NavigationSettingsTitle;
-			//settingsNavigationPage.Icon = "settings.png";
+			settingsNavigationPage.Icon = "settings.png";
 			settingsNavigationPage.BarTextColor = textColor;
 			settingsNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
 			Children.Add(settingsNavigationPage);

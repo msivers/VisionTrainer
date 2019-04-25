@@ -10,21 +10,17 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class CreateBatchPage : ContentPage
+	public class BrowseMediaPage : ContentPage
 	{
-		public CreateBatchPage()
+		public BrowseMediaPage()
 		{
 			Title = ApplicationResource.PageCreateBatchTitle;
-			BindingContext = new CreateBatchViewModel(Navigation);
+			BindingContext = new BrowseMediaViewModel(Navigation);
 
-			// Browse for images toolbar item
-			var browsePhotosItem = new ToolbarItem()
-			{
-				Text = ApplicationResource.PageCaptureToolbarBrowsePhotos,
-				Icon = "folder.png"
-			};
-			browsePhotosItem.SetBinding(MenuItem.CommandProperty, new Binding("SelectImagesCommand"));
-			this.ToolbarItems.Add(browsePhotosItem);
+			var browseToolbarItem = new ToolbarItem() { Icon = "folder.png" };
+			browseToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("SelectImagesCommand"));
+			this.ToolbarItems.Add(browseToolbarItem);
+
 
 			// Top navigation
 			var topGrid = new Grid
@@ -72,7 +68,7 @@ namespace VisionTrainer.Pages
 				if (action == ApplicationResource.PageCreateBatchRemoveConfirm)
 				{
 					var targetMedia = (MediaFile)e.CurrentSelection.FirstOrDefault();
-					var binding = (BindingContext as CreateBatchViewModel);
+					var binding = (BindingContext as BrowseMediaViewModel);
 					if (binding.RemoveImageCommand.CanExecute(targetMedia))
 						binding.RemoveImageCommand.Execute(targetMedia);
 				}
@@ -100,16 +96,22 @@ namespace VisionTrainer.Pages
 				VerticalOptions = LayoutOptions.StartAndExpand,
 				Children =
 				{
-					topGrid,
-					//tagLabel,
-					//tagPicker,
 					collectionView
 				}
 			};
 		}
 
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+		}
+
 		protected override void OnDisappearing()
 		{
+			BrowseMediaViewModel viewModel = (BrowseMediaViewModel)BindingContext;
+			if (viewModel.CompleteCommand.CanExecute(null))
+				viewModel.CompleteCommand.Execute(null);
+
 			base.OnDisappearing();
 		}
 	}

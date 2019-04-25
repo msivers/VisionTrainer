@@ -14,8 +14,8 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <!-- Navigation Entries -->
-    <data name="NavigationCaptureTitle">
-        <value>Capture</value>
+    <data name="NavigationTestTitle">
+        <value>Test</value>
     </data>
     <data name="NavigationProcessTitle">
         <value>Process</value>

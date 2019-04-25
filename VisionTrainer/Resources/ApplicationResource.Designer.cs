@@ -47,9 +47,9 @@ namespace VisionTrainer.Resources {
             }
         }
         
-        internal static string NavigationCaptureTitle {
+        internal static string NavigationTestTitle {
             get {
-                return ResourceManager.GetString("NavigationCaptureTitle", resourceCulture);
+                return ResourceManager.GetString("NavigationTestTitle", resourceCulture);
             }
         }
         

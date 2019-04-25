@@ -21,7 +21,6 @@ namespace VisionTrainer.Pages
 			var deleteToolbarItem = new ToolbarItem() { Text = "Delete" };
 			deleteToolbarItem.Command = new Command(async () => await PromptDeleteMedia());
 
-
 			//deleteToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("DeleteMediaCommand"));
 
 			ToolbarItems.Add(deleteToolbarItem);

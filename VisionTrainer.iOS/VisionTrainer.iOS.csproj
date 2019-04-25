@@ -218,5 +218,35 @@
     <BundleResource Include="Resources\toggle%403x.png" />
     <BundleResource Include="Resources\toggle%402x.png" />
     <BundleResource Include="Resources\toggle.png" />
+    <BundleResource Include="Resources\capture.png" />
+    <BundleResource Include="Resources\capture%402x.png" />
+    <BundleResource Include="Resources\capture%403x.png" />
+    <BundleResource Include="Resources\close.png" />
+    <BundleResource Include="Resources\close%402x.png" />
+    <BundleResource Include="Resources\close%403x.png" />
+    <BundleResource Include="Resources\pictures.png" />
+    <BundleResource Include="Resources\pictures%402x.png" />
+    <BundleResource Include="Resources\pictures%403x.png" />
+    <BundleResource Include="Resources\settings.png" />
+    <BundleResource Include="Resources\settings%402x.png" />
+    <BundleResource Include="Resources\settings%403x.png" />
+    <BundleResource Include="Resources\upload.png" />
+    <BundleResource Include="Resources\upload%402x.png" />
+    <BundleResource Include="Resources\upload%403x.png" />
+    <BundleResource Include="Resources\captureFilled.png" />
+    <BundleResource Include="Resources\captureFilled%402x.png" />
+    <BundleResource Include="Resources\captureFilled%403x.png" />
+    <BundleResource Include="Resources\closeFilled.png" />
+    <BundleResource Include="Resources\closeFilled%402x.png" />
+    <BundleResource Include="Resources\closeFilled%403x.png" />
+    <BundleResource Include="Resources\folderFilled.png" />
+    <BundleResource Include="Resources\folderFilled%402x.png" />
+    <BundleResource Include="Resources\folderFilled%403x.png" />
+    <BundleResource Include="Resources\toggleFilled.png" />
+    <BundleResource Include="Resources\toggleFilled%402x.png" />
+    <BundleResource Include="Resources\toggleFilled%403x.png" />
+    <BundleResource Include="Resources\uploadFilled.png" />
+    <BundleResource Include="Resources\uploadFilled%402x.png" />
+    <BundleResource Include="Resources\uploadFilled%403x.png" />
   </ItemGroup>
 </Project>

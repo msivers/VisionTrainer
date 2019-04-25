@@ -15,6 +15,47 @@ namespace VisionTrainer.Functions
 {
 	public static class VisionTrainer
 	{
+
+		[FunctionName("LocalModelAvailable")]
+		public static async Task<IActionResult> LocalModelAvailable(
+		[HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req, ILogger log)
+		{
+			var response = new BaseResponse()
+			{
+				StatusCode = (int)HttpStatusCode.OK,
+				Message = "false"
+			};
+
+			return new OkObjectResult(response);
+		}
+
+		[FunctionName("FetchNewLocalModel")]
+		public static async Task<IActionResult> FetchNewLocalModel(
+		[HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req, ILogger log)
+		{
+			var response = new BaseResponse()
+			{
+				StatusCode = (int)HttpStatusCode.OK,
+				Message = "false"
+			};
+
+			return new OkObjectResult(response);
+		}
+
+		[FunctionName("RemoteModelAvailable")]
+		public static async Task<IActionResult> RemoteModelAvailable(
+		[HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req, ILogger log)
+		{
+			var response = new BaseResponse()
+			{
+				StatusCode = (int)HttpStatusCode.OK,
+				Message = "false"
+			};
+
+			return new OkObjectResult(response);
+		}
+
+
 		[FunctionName("UploadImageTest")]
 		public static async Task<IActionResult> UploadImage(
 			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)

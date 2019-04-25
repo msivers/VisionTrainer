@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using VisionTrainer.Services;
@@ -9,9 +7,8 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
 {
-	public class UploadingViewModel
+	public class UploadingViewModel : BaseViewModel
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
 		IDatabase database;
 		IUploadManager uploadManager;
 		bool shouldUpload;
@@ -23,11 +20,18 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref remainingItems, value); }
 		}
 
-		string buttonText;
-		public string ButtonText
+		string uploadButtonText;
+		public string UploadButtonText
 		{
-			get { return buttonText; }
-			set { SetProperty(ref buttonText, value); }
+			get { return uploadButtonText; }
+			set { SetProperty(ref uploadButtonText, value); }
+		}
+
+		bool uploadButtonEnabled;
+		public bool UploadButtonEnabled
+		{
+			get { return uploadButtonEnabled; }
+			set { SetProperty(ref uploadButtonEnabled, value); }
 		}
 
 		public ICommand StartUploadCommand { get; set; }
@@ -36,15 +40,20 @@ namespace VisionTrainer.ViewModels
 		public UploadingViewModel(INavigation navigation)
 		{
 			database = ServiceContainer.Resolve<IDatabase>();
-			ButtonText = "Upload";
-			RemainingItems = "Remaining:";
+			var remainingItemsCount = database.GetItemsNotDone().Count();
+			UploadButtonText = "Upload";
+			UploadButtonEnabled = (remainingItemsCount > 0);
+			RemainingItems = "Remaining:" + remainingItemsCount;
 
 			StartUploadCommand = new Command(async (obj) =>
 			{
-				ButtonText = "Uploading";
+				UploadButtonText = "Uploading";
+				UploadButtonEnabled = false;
 				shouldUpload = true;
 				await Start();
-				await navigation.PopModalAsync();
+
+				if (database.GetItemsNotDone().Count() == 0)
+					await navigation.PopAsync();
 			});
 
 			StopUploadCommand = new Command((obj) =>
@@ -56,19 +65,18 @@ namespace VisionTrainer.ViewModels
 		public async Task Start()
 		{
 			var entries = database.GetItemsNotDone().ToList();
-			int itemCount = entries.Count;
+			int itemCount, totalItems;
+			itemCount = totalItems = entries.Count;
 
 			foreach (var item in entries)
 			{
 				if (!shouldUpload)
+				{
+					UploadButtonEnabled = true;
 					return;
+				}
 
-				Console.WriteLine("Remaining Items {0}", itemCount);
-				RemainingItems = itemCount.ToString();
-				//Device.BeginInvokeOnMainThread(() =>
-				//{
-				//	RemainingItems = itemCount.ToString();
-				//});
+				RemainingItems = string.Format("Remaining Items {0} / {1}", itemCount, totalItems);
 
 				var result = await AzureService.UploadTrainingMedia(item);
 				if (result)
@@ -77,21 +85,6 @@ namespace VisionTrainer.ViewModels
 					itemCount--;
 				}
 			}
-		}
-
-		bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-		{
-			if (Object.Equals(storage, value))
-				return false;
-
-			storage = value;
-			OnPropertyChanged(propertyName);
-			return true;
-		}
-
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

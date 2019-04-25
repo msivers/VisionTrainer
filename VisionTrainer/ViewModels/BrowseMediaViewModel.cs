@@ -12,12 +12,12 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
 {
-	public class CreateBatchViewModel : INotifyPropertyChanged
+	public class BrowseMediaViewModel : BaseViewModel
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
 		IMultiMediaPickerService _multiMediaPickerService;
 		IDatabase database;
 		INavigation Navigation { get; set; }
+		bool popupDisplaying;
 
 		ObservableCollection<MediaFile> media;
 		public ObservableCollection<MediaFile> Media
@@ -46,7 +46,7 @@ namespace VisionTrainer.ViewModels
 		public ICommand RemoveImageCommand { get; set; }
 		public ICommand CompleteCommand { get; set; }
 
-		public CreateBatchViewModel(INavigation navigation)
+		public BrowseMediaViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;
 
@@ -64,14 +64,18 @@ namespace VisionTrainer.ViewModels
 
 			SelectImagesCommand = new Command(async (obj) =>
 			{
+				popupDisplaying = true;
 				Media = new ObservableCollection<MediaFile>();
 				await _multiMediaPickerService.PickPhotosAsync();
+				popupDisplaying = false;
 			});
 
 			SelectVideosCommand = new Command(async (obj) =>
 			{
+				popupDisplaying = true;
 				Media = new ObservableCollection<MediaFile>();
 				await _multiMediaPickerService.PickVideosAsync();
+				popupDisplaying = false;
 			});
 
 			RemoveImageCommand = new Command<MediaFile>((obj) =>
@@ -82,6 +86,9 @@ namespace VisionTrainer.ViewModels
 
 			CompleteCommand = new Command(async (obj) =>
 			{
+				if (popupDisplaying)
+					return;
+
 				foreach (var item in Media)
 				{
 					if (!string.IsNullOrEmpty(SelectedTag))
@@ -90,8 +97,6 @@ namespace VisionTrainer.ViewModels
 					item.Location = new GeoLocation(10, 10);
 					database.SaveItem(item);
 				}
-
-				await Navigation.PopModalAsync();
 			});
 
 			_multiMediaPickerService.OnMediaPicked += (s, a) =>
@@ -101,21 +106,6 @@ namespace VisionTrainer.ViewModels
 					Media.Add(a);
 				});
 			};
-		}
-
-		bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-		{
-			if (Object.Equals(storage, value))
-				return false;
-
-			storage = value;
-			OnPropertyChanged(propertyName);
-			return true;
-		}
-
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

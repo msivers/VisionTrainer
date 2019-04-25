@@ -39,8 +39,9 @@ namespace VisionTrainer.Pages
 				HeightRequest = 40,
 				CornerRadius = 10
 			};
-			startButton.SetBinding(Button.TextProperty, new Binding("ButtonText"));
+			startButton.SetBinding(Button.TextProperty, new Binding("UploadButtonText"));
 			startButton.SetBinding(Button.CommandProperty, new Binding("StartUploadCommand"));
+			startButton.SetBinding(Button.IsEnabledProperty, new Binding("UploadButtonEnabled"));
 
 
 			var centerLayout = new StackLayout();
@@ -52,6 +53,15 @@ namespace VisionTrainer.Pages
 
 
 			Content = centerLayout;
+		}
+
+		protected override void OnDisappearing()
+		{
+			UploadingViewModel viewModel = (UploadingViewModel)BindingContext;
+			if (viewModel.StopUploadCommand.CanExecute(null))
+				viewModel.StopUploadCommand.Execute(null);
+
+			base.OnDisappearing();
 		}
 	}
 }
