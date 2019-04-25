@@ -20,10 +20,10 @@ namespace VisionTrainer.Functions
 		public static async Task<IActionResult> LocalModelAvailable(
 		[HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req, ILogger log)
 		{
-			var response = new BaseResponse()
+			var response = new PredictionModelResponse()
 			{
 				StatusCode = (int)HttpStatusCode.OK,
-				Message = "false"
+				IsAvailable = false
 			};
 
 			return new OkObjectResult(response);
@@ -33,36 +33,39 @@ namespace VisionTrainer.Functions
 		public static async Task<IActionResult> FetchNewLocalModel(
 		[HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req, ILogger log)
 		{
-			var response = new BaseResponse()
+			var response = new PredictionModelResponse()
 			{
 				StatusCode = (int)HttpStatusCode.OK,
-				Message = "false"
+				IsAvailable = false
 			};
 
 			return new OkObjectResult(response);
 		}
 
 		[FunctionName("RemoteModelAvailable")]
-		public static async Task<IActionResult> RemoteModelAvailable(
+		public static IActionResult RemoteModelAvailable(
 		[HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req, ILogger log)
 		{
-			var response = new BaseResponse()
+			var publishedModelName = Environment.GetEnvironmentVariable("CustomVisionPredictionPublishedName");
+			var response = new PredictionModelResponse()
 			{
 				StatusCode = (int)HttpStatusCode.OK,
-				Message = "false"
+				IsAvailable = !string.IsNullOrEmpty(publishedModelName),
+				Name = publishedModelName
 			};
 
 			return new OkObjectResult(response);
 		}
 
-
-		[FunctionName("UploadImageTest")]
-		public static async Task<IActionResult> UploadImage(
-			[HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
+		[FunctionName("SubmitPredictionMedia")]
+		public static async Task<IActionResult> SubmitPredictionMedia(
+			[HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequestMessage req, ILogger log)
 		{
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
 			var imageData = await req.Content.ReadAsByteArrayAsync();
+
+			// todo store some details in the DB?
 
 			try
 			{
@@ -70,7 +73,7 @@ namespace VisionTrainer.Functions
 				var uri = await FileStorageService.Instance.StoreImage(imageData, "uploads", "test.jpg");
 
 				// Submit for training
-				await CustomVisionService.UploadImage(imageData);
+				var result = await CustomVisionService.UploadPredictionImage(imageData);
 			}
 			catch (Exception ex)
 			{
@@ -82,7 +85,7 @@ namespace VisionTrainer.Functions
 		}
 
 		[FunctionName("SubmitTrainingMedia")]
-		public static async Task<IActionResult> Run(
+		public static async Task<IActionResult> SubmitTrainingMedia(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequestMessage req, ILogger log)
 		{
 			var response = new BaseResponse();
@@ -114,7 +117,7 @@ namespace VisionTrainer.Functions
 				var result = await dbService.WriteAsync(mediaEntry, token);
 
 				// Submit for training
-				await CustomVisionService.UploadImage(fileData);
+				await CustomVisionService.UploadTrainingImage(fileData);
 
 				response.StatusCode = (int)HttpStatusCode.OK;
 				return new OkObjectResult(response);

@@ -12,6 +12,18 @@ namespace VisionTrainer.Services
 {
 	public static class AzureService
 	{
+		public static async Task<bool> RemoteModelAvailable()
+		{
+			var result = await MakeGetRequest<PredictionModelResponse>(ProjectConfig.RemoteModelAvailableUrl);
+			return (result == null || result.HasError) ? false : result.IsAvailable;
+		}
+
+		public static async Task<bool> UploadPredictionMedia(MediaFile file)
+		{
+			// todo include manual setting if present
+			throw new NotImplementedException();
+		}
+
 		public static async Task<bool> UploadTrainingMedia(MediaFile file)
 		{
 			var data = new MediaData()
@@ -63,19 +75,49 @@ namespace VisionTrainer.Services
 		}
 
 		/// <summary>
-		/// Makes the http requests.
+		/// Makes post http requests.
 		/// </summary>
 		/// <returns>The request.</returns>
 		/// <param name="url">URL.</param>
 		/// <param name="httpContent">Http content.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		static async Task<T> MakeRequest<T>(string url, HttpContent httpContent, JsonConverter[] converters = null) where T : BaseResponse
+		static async Task<T> MakePostRequest<T>(string url, HttpContent httpContent, JsonConverter[] converters = null) where T : BaseResponse
 		{
 			try
 			{
 				using (var httpClient = new HttpClient())
 				{
 					var httpResponse = await httpClient.PostAsync(url, httpContent);
+					if (httpResponse.Content != null)
+					{
+						var content = await httpResponse.Content.ReadAsStringAsync();
+						var identifyResult = JsonConvert.DeserializeObject<T>(content, converters);
+
+						return identifyResult;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+
+			return default(T);
+		}
+
+		/// <summary>
+		/// Makes get http requests.
+		/// </summary>
+		/// <returns>The request.</returns>
+		/// <param name="url">URL.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		static async Task<T> MakeGetRequest<T>(string url, JsonConverter[] converters = null) where T : BaseResponse
+		{
+			try
+			{
+				using (var httpClient = new HttpClient())
+				{
+					var httpResponse = await httpClient.GetAsync(url);
 					if (httpResponse.Content != null)
 					{
 						var content = await httpResponse.Content.ReadAsStringAsync();

@@ -19,13 +19,6 @@ namespace AVCameraCapture
 		{
 			base.OnElementChanged(e);
 
-
-			if (Control == null)
-			{
-				uiCameraPreview = new AVCameraCaptureView(e.NewElement.CameraOption);
-				uiCameraPreview.ImageCaptured += UiCameraPreview_ImageCaptured;
-				SetNativeControl(uiCameraPreview);
-			}
 			if (e.OldElement != null)
 			{
 				// Unsubscribe
@@ -37,6 +30,13 @@ namespace AVCameraCapture
 			}
 			if (e.NewElement != null)
 			{
+				if (Control == null)
+				{
+					uiCameraPreview = new AVCameraCaptureView(e.NewElement.CameraOption);
+					uiCameraPreview.ImageCaptured += UiCameraPreview_ImageCaptured;
+					SetNativeControl(uiCameraPreview);
+				}
+
 				// Subscribe
 				element = e.NewElement;
 				capturePathCallbackAction = element.CaptureBytesCallback;

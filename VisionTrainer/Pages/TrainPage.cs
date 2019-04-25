@@ -6,12 +6,12 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class ProcessPage : ContentPage
+	public class TrainPage : ContentPage
 	{
-		public ProcessPage()
+		public TrainPage()
 		{
-			Title = ApplicationResource.PageProcessTitle;
-			BindingContext = new ProcessViewModel(this.Navigation);
+			Title = ApplicationResource.PageTrainTitle;
+			BindingContext = new TrainViewModel(this.Navigation);
 
 			//var uploadToolbarItem = new ToolbarItem() { Icon = "upload.png" };
 			//uploadToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("UploadFilesCommand"));
@@ -70,7 +70,7 @@ namespace VisionTrainer.Pages
 			// TableView
 			var itemsListView = new ListView { Margin = new Thickness(6, 0, 6, 0), SeparatorVisibility = SeparatorVisibility.None, RowHeight = 64 };
 			itemsListView.SetBinding(ListView.ItemsSourceProperty, new Binding("Media"));
-			itemsListView.ItemSelected += (sender, e) => (BindingContext as ProcessViewModel).MediaSelectedCommand.Execute(e.SelectedItem);
+			itemsListView.ItemSelected += (sender, e) => (BindingContext as TrainViewModel).MediaSelectedCommand.Execute(e.SelectedItem);
 			itemsListView.ItemTemplate = new DataTemplate(() =>
 			{
 				Grid grid = new Grid();
@@ -106,7 +106,7 @@ namespace VisionTrainer.Pages
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			(BindingContext as ProcessViewModel).RefreshMediaEntriesCommand.Execute(null);
+			(BindingContext as TrainViewModel).RefreshMediaEntriesCommand.Execute(null);
 		}
 	}
 }

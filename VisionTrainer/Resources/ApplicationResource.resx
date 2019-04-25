@@ -15,10 +15,10 @@
     </resheader>
     <!-- Navigation Entries -->
     <data name="NavigationTestTitle">
-        <value>Test</value>
+        <value>Predict</value>
     </data>
-    <data name="NavigationProcessTitle">
-        <value>Process</value>
+    <data name="NavigationTrainTitle">
+        <value>Train</value>
     </data>
     <data name="NavigationSettingsTitle">
         <value>Settings</value>
@@ -48,22 +48,22 @@
     <data name="PagePermissionsPhotosButton">
         <value>Allow Photos Access</value>
     </data>
-    <data name="PageProcessTitle">
-        <value>Process</value>
+    <data name="PageTrainTitle">
+        <value>Train</value>
     </data>
     <data name="PageMediaDetailTitle">
         <value>Detail</value>
     </data>
-    <data name="PageCreateBatchTitle">
-        <value>Create New Batch</value>
+    <data name="PageBrowseMediaTitle">
+        <value>Browse for media</value>
     </data>
-    <data name="PageCreateBatchTagPrompt">
+    <data name="PageBrowseMediaTagPrompt">
         <value>Training Tag</value>
     </data>
-    <data name="PageCreateBatchRemovePhotoPrompt">
+    <data name="PageBrowseMediaRemovePhotoPrompt">
         <value>Do you want to remove this photo?</value>
     </data>
-    <data name="PageCreateBatchRemoveConfirm">
+    <data name="PageBrowseMediaRemoveConfirm">
         <value>Remove</value>
     </data>
     <!-- Camera Entries -->

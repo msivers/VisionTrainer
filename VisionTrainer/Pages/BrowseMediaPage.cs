@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using FFImageLoading.Forms;
-using VisionTrainer.Constants;
 using VisionTrainer.Models;
 using VisionTrainer.Resources;
 using VisionTrainer.ViewModels;
@@ -14,7 +11,7 @@ namespace VisionTrainer.Pages
 	{
 		public BrowseMediaPage()
 		{
-			Title = ApplicationResource.PageCreateBatchTitle;
+			Title = ApplicationResource.PageBrowseMediaTitle;
 			BindingContext = new BrowseMediaViewModel(Navigation);
 
 			var browseToolbarItem = new ToolbarItem() { Icon = "folder.png" };
@@ -22,6 +19,7 @@ namespace VisionTrainer.Pages
 			this.ToolbarItems.Add(browseToolbarItem);
 
 
+			/*
 			// Top navigation
 			var topGrid = new Grid
 			{
@@ -30,32 +28,22 @@ namespace VisionTrainer.Pages
 				RowSpacing = 1
 			};
 
-			topGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(64, GridUnitType.Absolute) }); // TODO Create pretty header
+			topGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(64, GridUnitType.Absolute) });
 			topGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(40, GridUnitType.Absolute) });
 			topGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 			topGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-			// Done button
-			var doneButton = new Button { Text = "Done", FontAttributes = FontAttributes.Bold, TextColor = Color.White };
-			doneButton.SetBinding(Button.CommandProperty, new Binding("CompleteCommand"));
-			topGrid.Children.Add(doneButton, 0, 1);
 
-			// Add button
-			var addPhotosButton = new Button { Text = "Select Photos", FontAttributes = FontAttributes.Bold, TextColor = Color.White };
-			addPhotosButton.SetBinding(Button.CommandProperty, new Binding("SelectImagesCommand"));
-			topGrid.Children.Add(addPhotosButton, 1, 1);
+			// Tab Label
+			var tagLabel = new Label();
+			tagLabel.Text = ApplicationResource.PageCreateBatchTagPrompt;
+			tagLabel.HorizontalOptions = LayoutOptions.Start;
 
-			/*
-						// Tab Label
-						var tagLabel = new Label();
-						tagLabel.Text = ApplicationResource.PageCreateBatchTagPrompt;
-						tagLabel.HorizontalOptions = LayoutOptions.Start;
-
-						// Tag Selection
-						var tagPicker = new Picker();
-						tagPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("Tags"));
-						tagPicker.SetBinding(Picker.SelectedItemProperty, new Binding("SelectedTag"));
-						tagPicker.HorizontalOptions = LayoutOptions.StartAndExpand;
+			// Tag Selection
+			var tagPicker = new Picker();
+			tagPicker.SetBinding(Picker.ItemsSourceProperty, new Binding("Tags"));
+			tagPicker.SetBinding(Picker.SelectedItemProperty, new Binding("SelectedTag"));
+			tagPicker.HorizontalOptions = LayoutOptions.StartAndExpand;
 			*/
 
 			// Collection View
@@ -63,9 +51,9 @@ namespace VisionTrainer.Pages
 			var collectionView = new CollectionView { SelectionMode = SelectionMode.Single };
 			collectionView.SelectionChanged += async (object sender, SelectionChangedEventArgs e) =>
 			{
-				string action = await DisplayActionSheet(ApplicationResource.PageCreateBatchRemovePhotoPrompt, ApplicationResource.Cancel, ApplicationResource.PageCreateBatchRemoveConfirm);
+				string action = await DisplayActionSheet(ApplicationResource.PageBrowseMediaRemovePhotoPrompt, ApplicationResource.Cancel, ApplicationResource.PageBrowseMediaRemoveConfirm);
 
-				if (action == ApplicationResource.PageCreateBatchRemoveConfirm)
+				if (action == ApplicationResource.PageBrowseMediaRemoveConfirm)
 				{
 					var targetMedia = (MediaFile)e.CurrentSelection.FirstOrDefault();
 					var binding = (BindingContext as BrowseMediaViewModel);

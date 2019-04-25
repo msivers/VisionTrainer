@@ -40,9 +40,9 @@ namespace VisionTrainer.Pages
 
 		async Task PromptDeleteMedia()
 		{
-			string action = await DisplayActionSheet(ApplicationResource.PageCreateBatchRemovePhotoPrompt, ApplicationResource.Cancel, ApplicationResource.PageCreateBatchRemoveConfirm);
+			string action = await DisplayActionSheet(ApplicationResource.PageBrowseMediaRemovePhotoPrompt, ApplicationResource.Cancel, ApplicationResource.PageBrowseMediaRemoveConfirm);
 
-			if (action == ApplicationResource.PageCreateBatchRemoveConfirm)
+			if (action == ApplicationResource.PageBrowseMediaRemoveConfirm)
 			{
 				var binding = (BindingContext as MediaDetailViewModel);
 				if (binding.DeleteMediaCommand.CanExecute(null))

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Training;
 
 namespace VisionTrainer.Functions.Services
@@ -24,7 +27,23 @@ namespace VisionTrainer.Functions.Services
 			}
 		}
 
-		public static async Task UploadImage(byte[] bytes)
+		private static CustomVisionPredictionClient _predictionClient;
+		public static CustomVisionPredictionClient PredictionClient
+		{
+			get
+			{
+				_predictionClient = _predictionClient ?? new CustomVisionPredictionClient()
+				{
+					ApiKey = Environment.GetEnvironmentVariable("CustomVisionPredictionKey"),
+					Endpoint = Environment.GetEnvironmentVariable("CustomVisionPredictionEndpoint")
+
+				};
+
+				return _predictionClient;
+			}
+		}
+
+		public static async Task UploadTrainingImage(byte[] bytes)
 		{
 			var projectId = Environment.GetEnvironmentVariable("CustomVisionProjectId");
 
@@ -32,6 +51,20 @@ namespace VisionTrainer.Functions.Services
 			using (var stream = new MemoryStream(bytes))
 			{
 				var summary = await TrainingClient.CreateImagesFromDataAsync(projectGuid, stream, null);
+			}
+		}
+
+		public static async Task<ImagePrediction> UploadPredictionImage(byte[] bytes)
+		{
+			var projectId = Environment.GetEnvironmentVariable("CustomVisionProjectId");
+			var publishedModelName = Environment.GetEnvironmentVariable("CustomVisionPredictionPublishedName");
+			var projectGuid = Guid.Parse(projectId);
+
+			// Make a prediction against the new project
+			using (var stream = new MemoryStream(bytes))
+			{
+				var result = await PredictionClient.ClassifyImageAsync(projectGuid, publishedModelName, stream);
+				return result;
 			}
 		}
 	}

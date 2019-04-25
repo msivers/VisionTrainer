@@ -1,6 +1,4 @@
-﻿using System;
-using VisionTrainer.Constants;
-using VisionTrainer.Resources;
+﻿using VisionTrainer.Constants;
 using VisionTrainer.ViewModels;
 using Xamarin.Forms;
 

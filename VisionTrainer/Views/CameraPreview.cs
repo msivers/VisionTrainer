@@ -43,18 +43,6 @@ namespace VisionTrainer
 			set { SetValue(AutoVisibleProperty, value); }
 		}
 
-		public static readonly BindableProperty FilenameProperty = BindableProperty.Create(
-			propertyName: "Filename",
-			returnType: typeof(string),
-			declaringType: typeof(CameraPreview),
-			defaultValue: null);
-
-		public string Filename
-		{
-			get { return (string)GetValue(FilenameProperty); }
-			set { SetValue(FilenameProperty, value); }
-		}
-
 		// File Path callback
 		public static readonly BindableProperty CaptureBytesCallbackProperty = BindableProperty.Create(
 			propertyName: "CaptureBytesCallback",

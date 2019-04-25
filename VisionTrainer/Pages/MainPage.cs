@@ -3,6 +3,7 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using VisionTrainer.Constants;
 using VisionTrainer.Resources;
+using VisionTrainer.Services;
 using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
@@ -18,6 +19,8 @@ namespace VisionTrainer.Pages
 
 		async Task CheckPermissions()
 		{
+			Settings.ActivePublishedModel = await AzureService.RemoteModelAvailable();
+
 			var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
 			if (status != PermissionStatus.Granted)
 			{
@@ -41,19 +44,19 @@ namespace VisionTrainer.Pages
 		{
 			var textColor = Color.White;
 
-			var testNavigationPage = new NavigationPage(new TestInputPage());
+			var testNavigationPage = new NavigationPage(new PredictionInputPage());
 			testNavigationPage.Title = ApplicationResource.NavigationTestTitle;
 			testNavigationPage.Icon = "capture.png";
 			testNavigationPage.BarTextColor = textColor;
 			testNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
 			Children.Add(testNavigationPage);
 
-			var processNavigationPage = new NavigationPage(new ProcessPage());
-			processNavigationPage.Title = ApplicationResource.NavigationProcessTitle;
-			processNavigationPage.Icon = "pictures.png";
-			processNavigationPage.BarTextColor = textColor;
-			processNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
-			Children.Add(processNavigationPage);
+			var trainNavigationPage = new NavigationPage(new TrainPage());
+			trainNavigationPage.Title = ApplicationResource.NavigationTrainTitle;
+			trainNavigationPage.Icon = "pictures.png";
+			trainNavigationPage.BarTextColor = textColor;
+			trainNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
+			Children.Add(trainNavigationPage);
 
 			var settingsNavigationPage = new NavigationPage(new SettingsPage());
 			settingsNavigationPage.Title = ApplicationResource.NavigationSettingsTitle;

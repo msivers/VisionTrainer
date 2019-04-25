@@ -1,6 +1,5 @@
 ﻿using System;
-using System.IO;
-using FFImageLoading.Forms;
+using System.Threading.Tasks;
 using Plugin.Media;
 using VisionTrainer.Resources;
 using VisionTrainer.ViewModels;
@@ -8,11 +7,10 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class CapturePage : ContentPage, IStatefulContent
+	public class PredictionInputPage : ContentPage
 	{
 		CameraPreview cameraPreview;
-		CaptureViewModel captureModel;
-		CachedImage cachedCapture;
+		PredictionInputViewModel predictionInputModel;
 		Label messageLabel;
 
 		// Language
@@ -20,12 +18,14 @@ namespace VisionTrainer.Pages
 		string messageCameraNotSupported = ApplicationResource.CameraNotSupported;
 		string messageCameraPermissionsMissing = ApplicationResource.CameraPermissionMissing;
 
-		public CapturePage()
+		public PredictionInputPage()
 		{
-			BindingContext = captureModel = new CaptureViewModel(Navigation);
+			BindingContext = predictionInputModel = new PredictionInputViewModel(Navigation);
 			Title = ApplicationResource.PageCaptureTitle;
+
 			var layout = new AbsoluteLayout();
 
+			// TODO move this switch into the viewmodel to determine whats visible?
 			if (CrossMedia.Current.IsCameraAvailable)
 			{
 				BackgroundColor = Color.Black;
@@ -33,18 +33,11 @@ namespace VisionTrainer.Pages
 				// Camera Preview
 				cameraPreview = new CameraPreview();
 				cameraPreview.CameraOption = Settings.CameraOption;
-				cameraPreview.CaptureBytesCallback = new Action<byte[]>(ProcessCameraPhoto);
+				cameraPreview.CaptureBytesCallback = new Action<byte[]>(async (byte[] obj) => await ProcessCameraPhoto(obj));
 				cameraPreview.CameraReady += (s, e) => StartCamera();
 
 				AbsoluteLayout.SetLayoutBounds(cameraPreview, new Rectangle(1, 1, 1, 1));
 				AbsoluteLayout.SetLayoutFlags(cameraPreview, AbsoluteLayoutFlags.All);
-
-				// Last Capture
-				cachedCapture = new CachedImage();
-				cachedCapture.Aspect = Aspect.AspectFill;
-				cachedCapture.BackgroundColor = Color.White;
-				AbsoluteLayout.SetLayoutBounds(cachedCapture, new Rectangle(5, 5, 80, 80));
-				AbsoluteLayout.SetLayoutFlags(cachedCapture, AbsoluteLayoutFlags.None);
 
 				// Capture Button
 				var buttonSize = 60;
@@ -62,7 +55,6 @@ namespace VisionTrainer.Pages
 				AbsoluteLayout.SetLayoutFlags(captureButton, AbsoluteLayoutFlags.PositionProportional);
 
 				layout.Children.Add(cameraPreview);
-				layout.Children.Add(cachedCapture);
 				layout.Children.Add(captureButton);
 
 				Content = layout;
@@ -70,6 +62,10 @@ namespace VisionTrainer.Pages
 				this.ToolbarItems.Add(
 					new ToolbarItem(ApplicationResource.PageCaptureToolbarToggleCamera, null, () => ToggleCamera()) { Icon = "toggle.png" }
 				);
+
+				//this.ToolbarItems.Add(
+				//	new ToolbarItem(ApplicationResource.PageCaptureToolbarBrowsePhotos, null, () => ToggleCamera()) { Icon = "toggle.png" }
+				//);
 			}
 
 			else
@@ -84,17 +80,16 @@ namespace VisionTrainer.Pages
 				AbsoluteLayout.SetLayoutFlags(messageLabel, AbsoluteLayoutFlags.PositionProportional);
 				layout.Children.Add(messageLabel);
 			}
+
 			Content = layout;
 		}
 
-		void ProcessCameraPhoto(byte[] imageBytes)
+		async Task ProcessCameraPhoto(byte[] imageBytes)
 		{
-			var filename = captureModel.SaveBytes(imageBytes);
+			cameraPreview.Opacity = .5;
+			StopCamera();
 
-			cachedCapture.Source = ImageSource.FromStream(() =>
-			{
-				return new MemoryStream(imageBytes);
-			});
+			await predictionInputModel.SaveBytes(imageBytes);
 		}
 
 		void CaptureButton_Clicked(object sender, EventArgs e)
@@ -136,6 +131,14 @@ namespace VisionTrainer.Pages
 			}
 		}
 
+		protected override void OnAppearing()
+		{
+			if (predictionInputModel.RefreshViewCommand.CanExecute(null))
+				predictionInputModel.RefreshViewCommand.Execute(null);
+
+			base.OnAppearing();
+		}
+
 		public void DidAppear()
 		{
 			StartCamera();
@@ -144,8 +147,6 @@ namespace VisionTrainer.Pages
 		public void DidDisappear()
 		{
 			StopCamera();
-			if (cachedCapture != null)
-				cachedCapture.Source = null;
 		}
 	}
 }

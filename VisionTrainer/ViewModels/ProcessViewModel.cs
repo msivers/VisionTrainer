@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
 {
-	public class ProcessViewModel : BaseViewModel
+	public class TrainViewModel : BaseViewModel
 	{
 		public INavigation Navigation { get; set; }
 
@@ -41,7 +41,7 @@ namespace VisionTrainer.ViewModels
 			}
 		}
 
-		public ProcessViewModel(INavigation navigation)
+		public TrainViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;
 			database = ServiceContainer.Resolve<IDatabase>();
@@ -59,7 +59,7 @@ namespace VisionTrainer.ViewModels
 
 			CaptureImagesCommand = new Command(async (obj) =>
 			{
-				await Navigation.PushModalAsync(new CapturePage());
+				await Navigation.PushAsync(new CapturePage());
 			});
 
 			RefreshMediaEntriesCommand = new Command((obj) =>

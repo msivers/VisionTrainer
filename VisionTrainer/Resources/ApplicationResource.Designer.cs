@@ -53,9 +53,9 @@ namespace VisionTrainer.Resources {
             }
         }
         
-        internal static string NavigationProcessTitle {
+        internal static string NavigationTrainTitle {
             get {
-                return ResourceManager.GetString("NavigationProcessTitle", resourceCulture);
+                return ResourceManager.GetString("NavigationTrainTitle", resourceCulture);
             }
         }
         
@@ -113,9 +113,9 @@ namespace VisionTrainer.Resources {
             }
         }
         
-        internal static string PageProcessTitle {
+        internal static string PageTrainTitle {
             get {
-                return ResourceManager.GetString("PageProcessTitle", resourceCulture);
+                return ResourceManager.GetString("PageTrainTitle", resourceCulture);
             }
         }
         
@@ -125,27 +125,27 @@ namespace VisionTrainer.Resources {
             }
         }
         
-        internal static string PageCreateBatchTitle {
+        internal static string PageBrowseMediaTitle {
             get {
-                return ResourceManager.GetString("PageCreateBatchTitle", resourceCulture);
+                return ResourceManager.GetString("PageBrowseMediaTitle", resourceCulture);
             }
         }
         
-        internal static string PageCreateBatchTagPrompt {
+        internal static string PageBrowseMediaTagPrompt {
             get {
-                return ResourceManager.GetString("PageCreateBatchTagPrompt", resourceCulture);
+                return ResourceManager.GetString("PageBrowseMediaTagPrompt", resourceCulture);
             }
         }
         
-        internal static string PageCreateBatchRemovePhotoPrompt {
+        internal static string PageBrowseMediaRemovePhotoPrompt {
             get {
-                return ResourceManager.GetString("PageCreateBatchRemovePhotoPrompt", resourceCulture);
+                return ResourceManager.GetString("PageBrowseMediaRemovePhotoPrompt", resourceCulture);
             }
         }
         
-        internal static string PageCreateBatchRemoveConfirm {
+        internal static string PageBrowseMediaRemoveConfirm {
             get {
-                return ResourceManager.GetString("PageCreateBatchRemoveConfirm", resourceCulture);
+                return ResourceManager.GetString("PageBrowseMediaRemoveConfirm", resourceCulture);
             }
         }
         

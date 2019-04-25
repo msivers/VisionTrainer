@@ -38,6 +38,8 @@ namespace VisionTrainer.ViewModels
 			{
 				if (Settings.UserId == value)
 					return;
+
+				Settings.UserId = value;
 				OnPropertyChanged("UserId");
 			}
 		}
@@ -49,7 +51,22 @@ namespace VisionTrainer.ViewModels
 			{
 				if (Settings.Endpoint == value)
 					return;
+
+				Settings.Endpoint = value;
 				OnPropertyChanged("Endpoint");
+			}
+		}
+
+		public string PublishedModelName
+		{
+			get { return Settings.PublishedModelName; }
+			set
+			{
+				if (Settings.PublishedModelName == value)
+					return;
+
+				Settings.PublishedModelName = value;
+				OnPropertyChanged("PublishedModelName");
 			}
 		}
 		/*
