@@ -51,14 +51,6 @@ namespace VisionTrainer
 			set { AppSettings.AddOrUpdateValue(publishedModelNameKey, (string)value); }
 		}
 
-		const string activePublishedModelKey = "activepublishedmodel";
-
-		public static bool ActivePublishedModel
-		{
-			get { return AppSettings.GetValueOrDefault(activePublishedModelKey, false); }
-			set { AppSettings.AddOrUpdateValue(activePublishedModelKey, value); }
-		}
-
 		/*
 				#region Training
 				const string trainingKey = "trainingkey";

@@ -9,9 +9,14 @@ namespace VisionTrainer.Pages
 {
 	public class PredictionInputPage : ContentPage
 	{
+		AbsoluteLayout pageLayout;
 		CameraPreview cameraPreview;
 		PredictionInputViewModel predictionInputModel;
 		Label messageLabel;
+		Button captureButton;
+		ToolbarItem browseMedaToolbarItem;
+		ToolbarItem toggleCameraToolbarItem;
+		bool cameraIsAvailable;
 
 		// Language
 		string messageOK = ApplicationResource.OK;
@@ -21,15 +26,13 @@ namespace VisionTrainer.Pages
 		public PredictionInputPage()
 		{
 			BindingContext = predictionInputModel = new PredictionInputViewModel(Navigation);
+			predictionInputModel.EndpointAvailable += OnEndpointAvailable;
 			Title = ApplicationResource.PageCaptureTitle;
 
-			var layout = new AbsoluteLayout();
-
-			// TODO move this switch into the viewmodel to determine whats visible?
-			if (CrossMedia.Current.IsCameraAvailable)
+			// Create view assets
+			cameraIsAvailable = CrossMedia.Current.IsCameraAvailable;
+			if (cameraIsAvailable)
 			{
-				BackgroundColor = Color.Black;
-
 				// Camera Preview
 				cameraPreview = new CameraPreview();
 				cameraPreview.CameraOption = Settings.CameraOption;
@@ -41,7 +44,8 @@ namespace VisionTrainer.Pages
 
 				// Capture Button
 				var buttonSize = 60;
-				var captureButton = new Button();
+
+				captureButton = new Button();
 				captureButton.Clicked += CaptureButton_Clicked;
 				captureButton.BackgroundColor = Color.White;
 				captureButton.WidthRequest = buttonSize;
@@ -54,34 +58,66 @@ namespace VisionTrainer.Pages
 				AbsoluteLayout.SetLayoutBounds(captureButton, new Rectangle(.5, .9, buttonSize, buttonSize));
 				AbsoluteLayout.SetLayoutFlags(captureButton, AbsoluteLayoutFlags.PositionProportional);
 
-				layout.Children.Add(cameraPreview);
-				layout.Children.Add(captureButton);
-
-				Content = layout;
-
-				this.ToolbarItems.Add(
-					new ToolbarItem(ApplicationResource.PageCaptureToolbarToggleCamera, null, () => ToggleCamera()) { Icon = "toggle.png" }
-				);
-
-				//this.ToolbarItems.Add(
-				//	new ToolbarItem(ApplicationResource.PageCaptureToolbarBrowsePhotos, null, () => ToggleCamera()) { Icon = "toggle.png" }
-				//);
+				toggleCameraToolbarItem = new ToolbarItem(ApplicationResource.PageCaptureToolbarToggleCamera, null, () => ToggleCamera()) { Icon = "toggle.png" };
 			}
 
+			messageLabel = new Label()
+			{
+				Text = messageCameraNotSupported,
+				HorizontalOptions = LayoutOptions.CenterAndExpand
+			};
+
+			AbsoluteLayout.SetLayoutBounds(messageLabel, new Rectangle(.5, .5, -1, -1));
+			AbsoluteLayout.SetLayoutFlags(messageLabel, AbsoluteLayoutFlags.PositionProportional);
+
+			browseMedaToolbarItem = new ToolbarItem() { Icon = "folder.png" };
+			browseMedaToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("BrowseMediaCommand"));
+
+			pageLayout = new AbsoluteLayout();
+			Content = pageLayout;
+		}
+
+		void OnEndpointAvailable(object sender, PredictionEndpointEventArgs e)
+		{
+			if (e.IsAvailable)
+			{
+				if (!ToolbarItems.Contains(browseMedaToolbarItem))
+					ToolbarItems.Add(browseMedaToolbarItem);
+
+				// If there is a camera available on device
+				if (cameraIsAvailable)
+				{
+					pageLayout.Children.Add(cameraPreview);
+					pageLayout.Children.Add(captureButton);
+
+					if (pageLayout.Children.Contains(messageLabel))
+						pageLayout.Children.Remove(messageLabel);
+
+					if (!ToolbarItems.Contains(toggleCameraToolbarItem))
+						ToolbarItems.Add(toggleCameraToolbarItem);
+				}
+				else
+				{
+					pageLayout.Children.Add(messageLabel);
+				}
+			}
 			else
 			{
-				messageLabel = new Label()
+				if (ToolbarItems.Contains(browseMedaToolbarItem))
+					ToolbarItems.Remove(browseMedaToolbarItem);
+
+				// If there is a camera available on device
+				if (cameraIsAvailable && pageLayout.Children.Contains(cameraPreview))
 				{
-					Text = messageCameraNotSupported,
-					HorizontalOptions = LayoutOptions.CenterAndExpand
-				};
+					pageLayout.Children.Remove(cameraPreview);
+					pageLayout.Children.Remove(captureButton);
 
-				AbsoluteLayout.SetLayoutBounds(messageLabel, new Rectangle(.5, .5, -1, -1));
-				AbsoluteLayout.SetLayoutFlags(messageLabel, AbsoluteLayoutFlags.PositionProportional);
-				layout.Children.Add(messageLabel);
+					if (ToolbarItems.Contains(toggleCameraToolbarItem))
+						ToolbarItems.Remove(toggleCameraToolbarItem);
+				}
+
+				pageLayout.Children.Add(messageLabel);
 			}
-
-			Content = layout;
 		}
 
 		async Task ProcessCameraPhoto(byte[] imageBytes)

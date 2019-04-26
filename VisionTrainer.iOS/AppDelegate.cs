@@ -29,7 +29,7 @@ namespace VisionTrainer.iOS
 			FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
 
 			// Load forms app
-			Xamarin.Calabash.Start();
+			//Xamarin.Calabash.Start();
 			global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
 			global::Xamarin.Forms.Forms.Init();
 			LoadApplication(new App());

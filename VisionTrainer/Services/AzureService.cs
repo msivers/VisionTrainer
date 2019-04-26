@@ -12,10 +12,22 @@ namespace VisionTrainer.Services
 {
 	public static class AzureService
 	{
-		public static async Task<bool> RemoteModelAvailable()
+		static int remoteModelCachedResponse = -1;
+		public static async Task<bool> RemoteModelAvailable(bool useCachedResponse = true)
 		{
+			if (useCachedResponse && remoteModelCachedResponse >= 0)
+				return (remoteModelCachedResponse == 1);
+
 			var result = await MakeGetRequest<PredictionModelResponse>(ProjectConfig.RemoteModelAvailableUrl);
-			return (result == null || result.HasError) ? false : result.IsAvailable;
+
+			if (result == null || result.HasError)
+			{
+				remoteModelCachedResponse = 0;
+				return false;
+			}
+
+			remoteModelCachedResponse = result.IsAvailable ? 1 : 0;
+			return (remoteModelCachedResponse == 1);
 		}
 
 		public static async Task<bool> UploadPredictionMedia(MediaFile file)

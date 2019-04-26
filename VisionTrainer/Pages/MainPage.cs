@@ -19,8 +19,6 @@ namespace VisionTrainer.Pages
 
 		async Task CheckPermissions()
 		{
-			Settings.ActivePublishedModel = await AzureService.RemoteModelAvailable();
-
 			var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
 			if (status != PermissionStatus.Granted)
 			{

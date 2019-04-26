@@ -167,7 +167,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="4.0.0.304370-pre8" />
-    <PackageReference Include="Xamarin.TestCloud.Agent" Version="0.21.4" />
     <PackageReference Include="GMImagePicker.Xamarin">
       <Version>2.3.2</Version>
     </PackageReference>

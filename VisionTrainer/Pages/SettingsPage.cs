@@ -12,9 +12,9 @@ namespace VisionTrainer.Pages
 
 			var cameraSwitch = new SwitchCell { Text = "Rear Camera" };
 			cameraSwitch.SetBinding(SwitchCell.OnProperty, new Binding("DefaultCameraRear", BindingMode.TwoWay));
+
 			var clearDb = new TextCell() { Text = "Delete All Local Entries" };
 			clearDb.SetBinding(TextCell.CommandProperty, new Binding("ClearDatabaseCommand"));
-			// TODO set a prompt first
 
 			var userIdCell = new EntryCell() { Label = "User Id" };
 			userIdCell.SetBinding(EntryCell.TextProperty, new Binding("UserId", BindingMode.TwoWay));
