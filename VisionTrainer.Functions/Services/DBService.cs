@@ -77,7 +77,7 @@ public class DBService
 	/// <returns>The async.</returns>
 	/// <param name="locations">Locations.</param>
 	/// <param name="cancellationToken">Cancellation token.</param>
-	public async Task<bool> DeleteAsync(MediaEntry entry, CancellationToken cancellationToken)
+	public async Task<bool> DeleteAsync(MediaTrainingData entry, CancellationToken cancellationToken)
 	{
 		await CheckInitialized();
 
@@ -107,18 +107,18 @@ public class DBService
 	/// <returns>The async.</returns>
 	/// <param name="locations">Locations.</param>
 	/// <param name="cancellationToken">Cancellation token.</param>
-	public async Task<List<MediaEntry>> ReadAsync(string[] locations, CancellationToken cancellationToken, int maxItemCount = -1)
+	public async Task<List<MediaTrainingData>> ReadAsync(string[] locations, CancellationToken cancellationToken, int maxItemCount = -1)
 	{
 		await CheckInitialized();
 
 		if (locations == null)
 			throw new ArgumentNullException(nameof(locations));
 
-		var items = new List<MediaEntry>();
+		var items = new List<MediaTrainingData>();
 		try
 		{
 			FeedOptions queryOptions = (maxItemCount > 0) ? new FeedOptions { MaxItemCount = maxItemCount } : null;
-			items = Client.CreateDocumentQuery<MediaEntry>(audienceCollection.SelfLink, queryOptions)
+			items = Client.CreateDocumentQuery<MediaTrainingData>(audienceCollection.SelfLink, queryOptions)
 					//.Where(x => locations.Contains(x.Location))
 					.ToList();
 		}
@@ -142,7 +142,7 @@ public class DBService
 	/// <returns>The async.</returns>
 	/// <param name="entry">Changes.</param>
 	/// <param name="cancellationToken">Cancellation token.</param>
-	public async Task<MediaEntry> WriteAsync(MediaEntry entry, CancellationToken cancellationToken)
+	public async Task<MediaTrainingData> WriteAsync(MediaTrainingData entry, CancellationToken cancellationToken)
 	{
 		await CheckInitialized();
 

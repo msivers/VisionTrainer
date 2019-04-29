@@ -10,7 +10,7 @@ namespace VisionTrainer.Pages
 {
 	public class MediaDetailPage : ContentPage
 	{
-		public MediaDetailPage(MediaFile media)
+		public MediaDetailPage(MediaDetails media)
 		{
 			Title = ApplicationResource.PageMediaDetailTitle;
 			BindingContext = new MediaDetailViewModel(this.Navigation, media);

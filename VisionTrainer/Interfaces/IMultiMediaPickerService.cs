@@ -7,9 +7,9 @@ namespace VisionTrainer.Interfaces
 {
 	public interface IMultiMediaPickerService
 	{
-		event EventHandler<MediaFile> OnMediaPicked;
-		event EventHandler<IList<MediaFile>> OnMediaPickedCompleted;
-		Task<IList<MediaFile>> PickPhotosAsync();
-		Task<IList<MediaFile>> PickVideosAsync();
+		event EventHandler<MediaDetails> OnMediaPicked;
+		event EventHandler<IList<MediaDetails>> OnMediaPickedCompleted;
+		Task<IList<MediaDetails>> PickPhotosAsync();
+		Task<IList<MediaDetails>> PickVideosAsync();
 	}
 }

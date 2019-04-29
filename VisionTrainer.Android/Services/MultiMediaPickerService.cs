@@ -28,20 +28,20 @@ namespace VisionTrainer.Droid.Services
 		{
 		}
 
-		public event EventHandler<MediaFile> OnMediaPicked;
-		public event EventHandler<IList<MediaFile>> OnMediaPickedCompleted;
+		public event EventHandler<MediaDetails> OnMediaPicked;
+		public event EventHandler<IList<MediaDetails>> OnMediaPickedCompleted;
 
-		TaskCompletionSource<IList<MediaFile>> mediaPickedTcs;
+		TaskCompletionSource<IList<MediaDetails>> mediaPickedTcs;
 
 		public void OnActivityResult(int requestCode, Result resultCode, Intent data)
 		{
-			ObservableCollection<MediaFile> mediaPicked = null;
+			ObservableCollection<MediaDetails> mediaPicked = null;
 
 			if (requestCode == MultiPickerResultCode)
 			{
 				if (resultCode == Result.Ok)
 				{
-					mediaPicked = new ObservableCollection<MediaFile>();
+					mediaPicked = new ObservableCollection<MediaDetails>();
 					if (data != null)
 					{
 						ClipData clipData = data.ClipData;
@@ -80,9 +80,9 @@ namespace VisionTrainer.Droid.Services
 			}
 		}
 
-		MediaFile CreateMediaFileFromUri(Android.Net.Uri uri)
+		MediaDetails CreateMediaFileFromUri(Android.Net.Uri uri)
 		{
-			MediaFile mediaFile = null;
+			MediaDetails mediaFile = null;
 			var type = CrossCurrentActivity.Current.Activity.ContentResolver.GetType(uri);
 
 			var path = GetRealPathFromURI(uri);
@@ -126,7 +126,7 @@ namespace VisionTrainer.Droid.Services
 
 				if (!string.IsNullOrEmpty(fullPath) && !string.IsNullOrEmpty(thumbnailImagePath))
 				{
-					mediaFile = new MediaFile()
+					mediaFile = new MediaDetails()
 					{
 						Path = fullPath,
 						Type = mediaFileType,
@@ -217,20 +217,20 @@ namespace VisionTrainer.Droid.Services
 
 		}
 
-		public async Task<IList<MediaFile>> PickPhotosAsync()
+		public async Task<IList<MediaDetails>> PickPhotosAsync()
 		{
 			return await PickMediaAsync("image/*", "Select Images", MultiPickerResultCode);
 		}
 
-		public async Task<IList<MediaFile>> PickVideosAsync()
+		public async Task<IList<MediaDetails>> PickVideosAsync()
 		{
 			return await PickMediaAsync("video/*", "Select Videos", MultiPickerResultCode);
 		}
 
-		async Task<IList<MediaFile>> PickMediaAsync(string type, string title, int resultCode)
+		async Task<IList<MediaDetails>> PickMediaAsync(string type, string title, int resultCode)
 		{
 
-			mediaPickedTcs = new TaskCompletionSource<IList<MediaFile>>();
+			mediaPickedTcs = new TaskCompletionSource<IList<MediaDetails>>();
 
 			var imageIntent = new Intent(Intent.ActionPick);
 			imageIntent.SetType(type);

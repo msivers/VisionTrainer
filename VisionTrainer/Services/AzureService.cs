@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models;
 using Newtonsoft.Json;
+using VisionTrainer.Common.Constants;
 using VisionTrainer.Common.Messages;
 using VisionTrainer.Common.Models;
 using VisionTrainer.Constants;
 using VisionTrainer.Models;
+using VisionTrainer.Resources;
+using VisionTrainer.Utils;
 
 namespace VisionTrainer.Services
 {
@@ -30,60 +36,116 @@ namespace VisionTrainer.Services
 			return (remoteModelCachedResponse == 1);
 		}
 
-		public static async Task<bool> UploadPredictionMedia(MediaFile file)
+		public static async Task<ImagePrediction> UploadPredictionMedia(string filePath)
 		{
-			// todo include manual setting if present
-			throw new NotImplementedException();
+			var data = new MediaPredictionData()
+			{
+				TargetModelName = Settings.PublishedModelName,
+				MediaType = FileHelper.GetFileType(filePath),
+				SubmissionId = Settings.UserId
+			};
+
+			byte[] image = File.ReadAllBytes(filePath);
+			var stringContent = new StringContent(JsonConvert.SerializeObject(data));
+			var content = new Dictionary<string, HttpContent>();
+
+			using (var memoryStream = new MemoryStream(image))
+			{
+				using (var stream = new StreamContent(memoryStream))
+				{
+					content.Add(HttpContentIds.Image, stream);
+					content.Add(HttpContentIds.Data, stringContent);
+
+					var response = await PostMultipartRequest<PredictionMediaResponse>(ProjectConfig.SubmitPredictionMediaUrl, content);
+					if (response?.StatusCode == (int)HttpStatusCode.OK && response?.Data != null)
+						return response.Data;
+					else
+						await App.Current.MainPage.DisplayAlert(
+							ApplicationResource.GeneralErrorTitle,
+							"(UploadPredictionMedia) " + response.Message,
+							ApplicationResource.OK);
+				}
+			}
+
+			return null;
 		}
 
-		public static async Task<bool> UploadTrainingMedia(MediaFile file)
+		public static async Task<bool> UploadTrainingMedia(MediaDetails file)
 		{
-			var data = new MediaData()
+			var data = new MediaTrainingData()
 			{
 				Location = file.Location,
 				MediaType = file.Type,
 				Tags = file.Tags,
-				UserId = Settings.UserId
+				SubmissionId = Settings.UserId
 			};
 
+			byte[] image = File.ReadAllBytes(file.FullPath);
 			var stringContent = new StringContent(JsonConvert.SerializeObject(data));
-			var url = ProjectConfig.SubmitTrainingMediaUrl;
+			var content = new Dictionary<string, HttpContent>();
 
+			using (var memoryStream = new MemoryStream(image))
+			{
+				using (var stream = new StreamContent(memoryStream))
+				{
+					content.Add(HttpContentIds.Image, stream);
+					content.Add(HttpContentIds.Data, stringContent);
+
+					var response = await PostMultipartRequest<BaseResponse>(ProjectConfig.SubmitTrainingMediaUrl, content);
+					var result = (response.StatusCode == (int)HttpStatusCode.OK);
+					if (!result) await App.Current.MainPage.DisplayAlert(
+							ApplicationResource.GeneralErrorTitle,
+							"(UploadTrainingMedia) " + response.Message,
+							ApplicationResource.OK);
+
+					return result;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Makes multipart http requests
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="url"></param>
+		/// <param name="content"></param>
+		/// <param name="converters"></param>
+		/// <returns></returns>
+		static async Task<T> PostMultipartRequest<T>(string url, Dictionary<string, HttpContent> content, JsonConverter[] converters = null) where T : BaseResponse
+		{
 			try
 			{
-				byte[] image = File.ReadAllBytes(file.FullPath);
-				Uri webService = new Uri(url);
-
-				using (var client = new HttpClient())
+				using (var httpClient = new HttpClient())
 				{
-					using (var content = new MultipartFormDataContent("----MyBoundary"))
+					using (var postContent = new MultipartFormDataContent("----MyBoundary"))
 					{
-						using (var memoryStream = new MemoryStream(image))
+						foreach (KeyValuePair<string, HttpContent> entry in content)
 						{
-							using (var stream = new StreamContent(memoryStream))
-							{
-								content.Add(stream, "file");
-								content.Add(stringContent, "data");
+							postContent.Add(entry.Value, entry.Key);
+						}
 
-								using (var message = await client.PostAsync(webService, content))
-								{
-									if (message.ReasonPhrase.ToLower() == "ok")
-									{
-										//content.Dispose();
-										return true;
-									}
-								}
-							}
+						var httpResponse = await httpClient.PostAsync(url, postContent);
+						// TODO Handle situations where 401's etc... ie not a 200 response are returned properly with an error
+						//throw new NotImplementedException();
+						if (httpResponse.Content != null)
+						{
+							var result = await httpResponse.Content.ReadAsStringAsync();
+							var parsed = JsonConvert.DeserializeObject<T>(result, converters);
+
+							return parsed;
 						}
 					}
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Console.WriteLine(e.Message);
+				var response = Activator.CreateInstance<T>();
+				response.ErrorCode = (int)HttpStatusCode.ExpectationFailed;
+				response.Message = ex.Message;
+				return response;
 			}
 
-			return false;
+			return default(T);
 		}
 
 		/// <summary>
@@ -103,15 +165,18 @@ namespace VisionTrainer.Services
 					if (httpResponse.Content != null)
 					{
 						var content = await httpResponse.Content.ReadAsStringAsync();
-						var identifyResult = JsonConvert.DeserializeObject<T>(content, converters);
+						var result = JsonConvert.DeserializeObject<T>(content, converters);
 
-						return identifyResult;
+						return result;
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				var response = Activator.CreateInstance<T>();
+				response.ErrorCode = (int)HttpStatusCode.ExpectationFailed;
+				response.Message = ex.Message;
+				return response;
 			}
 
 			return default(T);
@@ -141,7 +206,10 @@ namespace VisionTrainer.Services
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				var response = Activator.CreateInstance<T>();
+				response.ErrorCode = (int)HttpStatusCode.ExpectationFailed;
+				response.Message = ex.Message;
+				return response;
 			}
 
 			return default(T);

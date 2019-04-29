@@ -65,7 +65,6 @@ namespace VisionTrainer.ViewModels
 				if (Settings.PublishedModelName == value)
 					return;
 
-				Console.WriteLine("wtf");
 				Settings.PublishedModelName = value;
 				OnPropertyChanged("PublishedModelName");
 			}

@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Occur.Functions.Utils;
+using VisionTrainer.Common.Constants;
 using VisionTrainer.Common.Messages;
 using VisionTrainer.Common.Models;
 using VisionTrainer.Functions.Services;
@@ -61,27 +66,39 @@ namespace VisionTrainer.Functions
 		public static async Task<IActionResult> SubmitPredictionMedia(
 			[HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequestMessage req, ILogger log)
 		{
-			log.LogInformation("C# HTTP trigger function processed a request.");
-
-			var imageData = await req.Content.ReadAsByteArrayAsync();
-
-			// todo store some details in the DB?
+			var response = new PredictionMediaResponse();
 
 			try
 			{
-				// Store the image
-				var uri = await FileStorageService.Instance.StoreImage(imageData, "uploads", "test.jpg");
+				var provider = new MultipartMemoryStreamProvider();
+				await req.Content.ReadAsMultipartAsync(provider);
+
+				var contents = await MultipartPostUtils.Parse(provider.Contents);
+
+				// Grab the Image
+				var fileContent = contents.GetValueOrDefault(HttpContentIds.Image);
+				if (fileContent == null)
+					throw new ArgumentException("'file' content was not present in the request");
+
+				// Grab the Data
+				var dataContent = contents.GetValueOrDefault(HttpContentIds.Data);
+				if (dataContent == null)
+					throw new ArgumentException("'data' content was not present in the request");
+
+				// Deserialize the JSON
+				var mediaData = JsonConvert.DeserializeObject<MediaPredictionData>(dataContent.Value);
 
 				// Submit for training
-				var result = await CustomVisionService.UploadPredictionImage(imageData);
+				response.Data = await CustomVisionService.UploadPredictionImage(fileContent.Data, mediaData.TargetModelName);
+				response.StatusCode = (int)HttpStatusCode.OK;
+				return new OkObjectResult(response);
 			}
 			catch (Exception ex)
 			{
-				return new BadRequestObjectResult("Something went wrong:" + ex.Message);
+				response.Message = ex.Message;
+				response.StatusCode = (int)HttpStatusCode.InternalServerError;
+				return new BadRequestObjectResult(response);
 			}
-
-
-			return new OkObjectResult("Complete");
 		}
 
 		[FunctionName("SubmitTrainingMedia")]
@@ -104,7 +121,7 @@ namespace VisionTrainer.Functions
 				var stringData = await data.ReadAsStringAsync();
 
 				// Deserialize the JSON
-				var mediaEntry = JsonConvert.DeserializeObject<MediaEntry>(stringData);
+				var mediaEntry = JsonConvert.DeserializeObject<MediaTrainingData>(stringData);
 				mediaEntry.FileName = Guid.NewGuid().ToString() + ".jpg";
 				mediaEntry.SubmissionDate = DateTime.Now;
 

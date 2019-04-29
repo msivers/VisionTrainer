@@ -10,13 +10,10 @@ namespace VisionTrainer.Common.Models
 		public string Id { get; set; }
 
 		[JsonProperty("submissionId")]
-		public string UserId { get; set; }
+		public string SubmissionId { get; set; }
 
 		[JsonProperty("location")]
 		public GeoLocation Location { get; set; }
-
-		[JsonProperty("tags")]
-		public TagArea[] Tags { get; set; }
 
 		[JsonConverter(typeof(StringEnumConverter))]
 		public MediaFileType MediaType { get; set; }

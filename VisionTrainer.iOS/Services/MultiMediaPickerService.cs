@@ -21,26 +21,26 @@ namespace VisionTrainer.iOS.Services
 	{
 
 		//Events
-		public event EventHandler<MediaFile> OnMediaPicked;
-		public event EventHandler<IList<MediaFile>> OnMediaPickedCompleted;
+		public event EventHandler<MediaDetails> OnMediaPicked;
+		public event EventHandler<IList<MediaDetails>> OnMediaPickedCompleted;
 
 		GMImagePickerController currentPicker;
-		TaskCompletionSource<IList<MediaFile>> mediaPickTcs;
+		TaskCompletionSource<IList<MediaDetails>> mediaPickTcs;
 
-		public async Task<IList<MediaFile>> PickPhotosAsync()
+		public async Task<IList<MediaDetails>> PickPhotosAsync()
 		{
 			return await PickMediaAsync("Select Images", PHAssetMediaType.Image);
 		}
 
-		public async Task<IList<MediaFile>> PickVideosAsync()
+		public async Task<IList<MediaDetails>> PickVideosAsync()
 		{
 			return await PickMediaAsync("Select Videos", PHAssetMediaType.Video);
 		}
 
-		async Task<IList<MediaFile>> PickMediaAsync(string title, PHAssetMediaType type)
+		async Task<IList<MediaDetails>> PickMediaAsync(string title, PHAssetMediaType type)
 		{
 
-			mediaPickTcs = new TaskCompletionSource<IList<MediaFile>>();
+			mediaPickTcs = new TaskCompletionSource<IList<MediaDetails>>();
 			currentPicker = new GMImagePickerController()
 			{
 				Title = title,
@@ -67,8 +67,8 @@ namespace VisionTrainer.iOS.Services
 
 		async void FinishedPickingAssets(object sender, MultiAssetEventArgs args)
 		{
-			IList<MediaFile> results = new List<MediaFile>();
-			TaskCompletionSource<IList<MediaFile>> tcs = new TaskCompletionSource<IList<MediaFile>>();
+			IList<MediaDetails> results = new List<MediaDetails>();
+			TaskCompletionSource<IList<MediaDetails>> tcs = new TaskCompletionSource<IList<MediaDetails>>();
 
 			var options = new PHImageRequestOptions()
 			{
@@ -144,7 +144,7 @@ namespace VisionTrainer.iOS.Services
 								});
 
 								var videoUrl = await tvcs.Task;
-								var meFile = new MediaFile()
+								var meFile = new MediaDetails()
 								{
 									Type = MediaFileType.Video,
 									Path = videoUrl,
@@ -181,7 +181,7 @@ namespace VisionTrainer.iOS.Services
 								imageData?.Save(fullPath, true);
 							}
 
-							var meFile = new MediaFile()
+							var meFile = new MediaDetails()
 							{
 								Type = MediaFileType.Image,
 								Path = relativePath,

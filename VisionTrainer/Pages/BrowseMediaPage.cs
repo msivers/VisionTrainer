@@ -55,7 +55,7 @@ namespace VisionTrainer.Pages
 
 				if (action == ApplicationResource.PageBrowseMediaRemoveConfirm)
 				{
-					var targetMedia = (MediaFile)e.CurrentSelection.FirstOrDefault();
+					var targetMedia = (MediaDetails)e.CurrentSelection.FirstOrDefault();
 					var binding = (BindingContext as BrowseMediaViewModel);
 					if (binding.RemoveImageCommand.CanExecute(targetMedia))
 						binding.RemoveImageCommand.Execute(targetMedia);

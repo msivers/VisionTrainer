@@ -25,14 +25,14 @@ namespace VisionTrainer.ViewModels
 		IDatabase database;
 		IUploadManager uploadManager;
 
-		ObservableCollection<MediaFile> media;
-		public ObservableCollection<MediaFile> Media
+		ObservableCollection<MediaDetails> media;
+		public ObservableCollection<MediaDetails> Media
 		{
 			get { return media; }
 			set { SetProperty(ref media, value); }
 		}
 
-		public ObservableCollection<MediaFile> SelectedItem
+		public ObservableCollection<MediaDetails> SelectedItem
 		{
 			//get { return media; }
 			set
@@ -65,10 +65,10 @@ namespace VisionTrainer.ViewModels
 			RefreshMediaEntriesCommand = new Command((obj) =>
 			{
 				var entries = database.GetItemsNotDone();
-				Media = new ObservableCollection<MediaFile>(entries);
+				Media = new ObservableCollection<MediaDetails>(entries);
 			});
 
-			MediaSelectedCommand = new Command<MediaFile>(async (obj) =>
+			MediaSelectedCommand = new Command<MediaDetails>(async (obj) =>
 			{
 				await Navigation.PushAsync(new MediaDetailPage(obj));
 			});

@@ -21,13 +21,16 @@ namespace VisionTrainer.Pages
 		// Language
 		string messageOK = ApplicationResource.OK;
 		string messageCameraNotSupported = ApplicationResource.CameraNotSupported;
+		string messageUploading = ApplicationResource.PagePredictionInputUploading;
 		string messageCameraPermissionsMissing = ApplicationResource.CameraPermissionMissing;
 
 		public PredictionInputPage()
 		{
 			BindingContext = predictionInputModel = new PredictionInputViewModel(Navigation);
 			predictionInputModel.EndpointAvailable += OnEndpointAvailable;
-			Title = ApplicationResource.PageCaptureTitle;
+			predictionInputModel.UploadCompleted += OnResetView;
+
+			Title = ApplicationResource.PagePredictionInputTitle;
 
 			// Create view assets
 			cameraIsAvailable = CrossMedia.Current.IsCameraAvailable;
@@ -61,11 +64,8 @@ namespace VisionTrainer.Pages
 				toggleCameraToolbarItem = new ToolbarItem(ApplicationResource.PageCaptureToolbarToggleCamera, null, () => ToggleCamera()) { Icon = "toggle.png" };
 			}
 
-			messageLabel = new Label()
-			{
-				Text = messageCameraNotSupported,
-				HorizontalOptions = LayoutOptions.CenterAndExpand
-			};
+			messageLabel = new Label() { HorizontalOptions = LayoutOptions.CenterAndExpand };
+			messageLabel.SetBinding(Label.TextProperty, new Binding("MessageLabel"));
 
 			AbsoluteLayout.SetLayoutBounds(messageLabel, new Rectangle(.5, .5, -1, -1));
 			AbsoluteLayout.SetLayoutFlags(messageLabel, AbsoluteLayoutFlags.PositionProportional);
@@ -77,9 +77,16 @@ namespace VisionTrainer.Pages
 			Content = pageLayout;
 		}
 
-		void OnEndpointAvailable(object sender, PredictionEndpointEventArgs e)
+		private void OnResetView(object sender, ResultEventArgs e)
 		{
-			if (e.IsAvailable)
+			ShowUploading(false);
+			if (!e.Value)
+				StartCamera();
+		}
+
+		void OnEndpointAvailable(object sender, ResultEventArgs e)
+		{
+			if (e.Value)
 			{
 				if (!ToolbarItems.Contains(browseMedaToolbarItem))
 					ToolbarItems.Add(browseMedaToolbarItem);
@@ -122,8 +129,7 @@ namespace VisionTrainer.Pages
 
 		async Task ProcessCameraPhoto(byte[] imageBytes)
 		{
-			cameraPreview.Opacity = .5;
-			StopCamera();
+			ShowUploading(true);
 
 			await predictionInputModel.SaveBytes(imageBytes);
 		}
@@ -138,6 +144,15 @@ namespace VisionTrainer.Pages
 
 			if (cameraPreview != null && cameraPreview.Capture != null)
 				cameraPreview.Capture.Execute(null);
+		}
+
+		void ShowUploading(bool value)
+		{
+			if (cameraPreview != null)
+			{
+				if (value) StopCamera();
+				cameraPreview.Opacity = value ? .5 : 1;
+			}
 		}
 
 		void ToggleCamera()
@@ -172,17 +187,15 @@ namespace VisionTrainer.Pages
 			if (predictionInputModel.RefreshViewCommand.CanExecute(null))
 				predictionInputModel.RefreshViewCommand.Execute(null);
 
+			StartCamera();
+
 			base.OnAppearing();
 		}
 
-		public void DidAppear()
-		{
-			StartCamera();
-		}
-
-		public void DidDisappear()
+		protected override void OnDisappearing()
 		{
 			StopCamera();
+			base.OnDisappearing();
 		}
 	}
 }

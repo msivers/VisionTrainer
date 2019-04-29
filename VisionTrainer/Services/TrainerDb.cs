@@ -9,11 +9,11 @@ namespace VisionTrainer.Services
 {
 	public interface IDatabase
 	{
-		IEnumerable<MediaFile> GetItems();
-		IEnumerable<MediaFile> GetItemsNotDone();
-		MediaFile GetItem(int id);
-		int SaveItem(MediaFile item);
-		bool DeleteItem(MediaFile item);
+		IEnumerable<MediaDetails> GetItems();
+		IEnumerable<MediaDetails> GetItemsNotDone();
+		MediaDetails GetItem(int id);
+		int SaveItem(MediaDetails item);
+		bool DeleteItem(MediaDetails item);
 		bool DeleteAllItems();
 	}
 
@@ -21,14 +21,14 @@ namespace VisionTrainer.Services
 	{
 		const string dbName = @"TrainerDatabase.db";
 		LiteDatabase db;
-		LiteCollection<MediaFile> mediaCollection;
+		LiteCollection<MediaDetails> mediaCollection;
 		//LiteCollection<GeoLocation> locationCollection;
 		//LiteCollection<TagArea> tagCollection;
 
 		public TrainerDb(string path)
 		{
 			db = new LiteDatabase(path);
-			mediaCollection = db.GetCollection<MediaFile>("media");
+			mediaCollection = db.GetCollection<MediaDetails>("media");
 			//locationCollection = db.GetCollection<GeoLocation>("locations");
 			//tagCollection = db.GetCollection<TagArea>("tags");
 
@@ -44,7 +44,7 @@ namespace VisionTrainer.Services
 				deserialize: (bson) => GeoLocation.Parse(bson.AsString)
 			);
 
-			BsonMapper.Global.Entity<MediaFile>()
+			BsonMapper.Global.Entity<MediaDetails>()
 				.Id(x => x.Id)
 				.Ignore(x => x.FullPath)
 				.Ignore(x => x.FullPreviewPath);
@@ -60,7 +60,7 @@ namespace VisionTrainer.Services
 			return db.DropCollection("media");
 		}
 
-		public bool DeleteItem(MediaFile item)
+		public bool DeleteItem(MediaDetails item)
 		{
 			FileHelper.DeleteLocalFiles(item);
 
@@ -68,22 +68,22 @@ namespace VisionTrainer.Services
 			return result;
 		}
 
-		public MediaFile GetItem(int id)
+		public MediaDetails GetItem(int id)
 		{
 			return mediaCollection.FindById(id);
 		}
 
-		public IEnumerable<MediaFile> GetItems()
+		public IEnumerable<MediaDetails> GetItems()
 		{
 			return mediaCollection.FindAll();
 		}
 
-		public IEnumerable<MediaFile> GetItemsNotDone()
+		public IEnumerable<MediaDetails> GetItemsNotDone()
 		{
 			return mediaCollection.Find(x => !x.Complete);
 		}
 
-		public int SaveItem(MediaFile item)
+		public int SaveItem(MediaDetails item)
 		{
 			return mediaCollection.Insert(item);
 		}

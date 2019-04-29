@@ -14,7 +14,7 @@ namespace VisionTrainer.ViewModels
 		public INavigation Navigation { get; set; }
 		public ICommand DeleteMediaCommand { get; set; }
 		IDatabase database;
-		MediaFile media;
+		MediaDetails media;
 
 		public string MediaFilePath
 		{
@@ -22,7 +22,7 @@ namespace VisionTrainer.ViewModels
 			//set { SetProperty(ref selectedTag, value); }
 		}
 
-		public MediaDetailViewModel(INavigation navigation, MediaFile media)
+		public MediaDetailViewModel(INavigation navigation, MediaDetails media)
 		{
 			Navigation = navigation;
 			database = ServiceContainer.Resolve<IDatabase>();

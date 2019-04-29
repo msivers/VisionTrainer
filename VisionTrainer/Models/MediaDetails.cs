@@ -4,7 +4,7 @@ using VisionTrainer.Utils;
 
 namespace VisionTrainer.Models
 {
-	public class MediaFile
+	public class MediaDetails
 	{
 		public int Id { get; set; }
 		public int GroupId { get; set; }
@@ -15,7 +15,7 @@ namespace VisionTrainer.Models
 		public GeoLocation Location { get; set; }
 		public MediaFileType Type { get; set; }
 
-		public string FullPath { get { return FileHelper.GetFullPath(Path); } }
-		public string FullPreviewPath { get { return FileHelper.GetFullPath(PreviewPath); } }
+		public string FullPath { get { return FileHelper.GetFullPath(this.Path); } }
+		public string FullPreviewPath { get { return FileHelper.GetFullPath(this.PreviewPath); } }
 	}
 }

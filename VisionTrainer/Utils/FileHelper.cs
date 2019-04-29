@@ -44,7 +44,7 @@ namespace VisionTrainer.Utils
 			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path);
 		}
 
-		public static void DeleteLocalFiles(MediaFile media)
+		public static void DeleteLocalFiles(MediaDetails media)
 		{
 			var fullPath = media.FullPath;
 			if (File.Exists(fullPath))
@@ -53,6 +53,20 @@ namespace VisionTrainer.Utils
 			var fullPreviewPath = media.FullPreviewPath;
 			if (File.Exists(fullPreviewPath))
 				File.Delete(fullPreviewPath);
+		}
+
+		public static MediaFileType GetFileType(string path)
+		{
+			var ext = Path.GetExtension(path);
+			//return (ext == ".jpg") ? ".jpg" : ".mp4");
+
+			switch (ext)
+			{
+				case ".mp4":
+					return MediaFileType.Video;
+				default:
+					return MediaFileType.Image;
+			}
 		}
 	}
 }

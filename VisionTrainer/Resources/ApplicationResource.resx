@@ -27,6 +27,12 @@
     <data name="PageCaptureTitle">
         <value>Capture</value>
     </data>
+    <data name="PagePredictionInputTitle">
+        <value>Capture</value>
+    </data>
+    <data name="PagePredictionInputUploading">
+        <value>Uploading</value>
+    </data>
     <data name="PageCaptureToolbarBrowsePhotos">
         <value>Pick Photo</value>
     </data>
@@ -65,6 +71,9 @@
     </data>
     <data name="PageBrowseMediaRemoveConfirm">
         <value>Remove</value>
+    </data>
+    <data name="PagePredictionResultsTitle">
+        <value>Results</value>
     </data>
     <!-- Camera Entries -->
     <data name="CameraNotSupported">

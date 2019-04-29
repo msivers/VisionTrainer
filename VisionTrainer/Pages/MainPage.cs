@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using VisionTrainer.Constants;
@@ -38,16 +40,42 @@ namespace VisionTrainer.Pages
 			CreateContent();
 		}
 
+		void CreateDebugPrediction()
+		{
+			var media = new Models.MediaDetails()
+			{
+				Path = "IMG_0111.jpg"
+			};
+
+			var predictions = new List<PredictionModel>
+				{
+					new PredictionModel(tagName:"test", boundingBox:new BoundingBox(.25,.25, .5, .5), probability:.5),
+					new PredictionModel(tagName:"test", boundingBox:new BoundingBox(.1,.1, .2, .2), probability:.8)
+
+				};
+
+			var imagePrediction = new ImagePrediction(predictions: predictions);
+
+			var testNavigationPage = new NavigationPage(new PredictionResultsPage(media, imagePrediction));
+			testNavigationPage.Title = ApplicationResource.NavigationTestTitle;
+			testNavigationPage.Icon = "capture.png";
+			testNavigationPage.BarTextColor = Color.White;
+			testNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
+			Children.Add(testNavigationPage);
+		}
+
 		void CreateContent()
 		{
 			var textColor = Color.White;
 
-			var testNavigationPage = new NavigationPage(new PredictionInputPage());
-			testNavigationPage.Title = ApplicationResource.NavigationTestTitle;
-			testNavigationPage.Icon = "capture.png";
-			testNavigationPage.BarTextColor = textColor;
-			testNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
-			Children.Add(testNavigationPage);
+			//CreateDebugPrediction();
+
+			var predictionNavigationPage = new NavigationPage(new PredictionInputPage());
+			predictionNavigationPage.Title = ApplicationResource.NavigationTestTitle;
+			predictionNavigationPage.Icon = "capture.png";
+			predictionNavigationPage.BarTextColor = textColor;
+			predictionNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
+			Children.Add(predictionNavigationPage);
 
 			var trainNavigationPage = new NavigationPage(new TrainPage());
 			trainNavigationPage.Title = ApplicationResource.NavigationTrainTitle;

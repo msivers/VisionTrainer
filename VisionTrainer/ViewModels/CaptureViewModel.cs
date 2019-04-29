@@ -26,7 +26,7 @@ namespace VisionTrainer.ViewModels
 		public string SaveBytes(byte[] bytes)
 		{
 			var fileName = Guid.NewGuid() + ".jpg";
-			var media = new MediaFile()
+			var media = new MediaDetails()
 			{
 				Path = fileName,
 				PreviewPath = fileName,

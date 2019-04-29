@@ -19,8 +19,8 @@ namespace VisionTrainer.ViewModels
 		INavigation Navigation { get; set; }
 		bool popupDisplaying;
 
-		ObservableCollection<MediaFile> media;
-		public ObservableCollection<MediaFile> Media
+		ObservableCollection<MediaDetails> media;
+		public ObservableCollection<MediaDetails> Media
 		{
 			get { return media; }
 			set { SetProperty(ref media, value); }
@@ -52,7 +52,7 @@ namespace VisionTrainer.ViewModels
 
 			_multiMediaPickerService = ServiceContainer.Resolve<IMultiMediaPickerService>();
 			database = ServiceContainer.Resolve<IDatabase>();
-			Media = new ObservableCollection<MediaFile>();
+			Media = new ObservableCollection<MediaDetails>();
 
 			Tags = new string[]
 			{
@@ -65,7 +65,7 @@ namespace VisionTrainer.ViewModels
 			SelectImagesCommand = new Command(async (obj) =>
 			{
 				popupDisplaying = true;
-				Media = new ObservableCollection<MediaFile>();
+				Media = new ObservableCollection<MediaDetails>();
 				await _multiMediaPickerService.PickPhotosAsync();
 				popupDisplaying = false;
 			});
@@ -73,12 +73,12 @@ namespace VisionTrainer.ViewModels
 			SelectVideosCommand = new Command(async (obj) =>
 			{
 				popupDisplaying = true;
-				Media = new ObservableCollection<MediaFile>();
+				Media = new ObservableCollection<MediaDetails>();
 				await _multiMediaPickerService.PickVideosAsync();
 				popupDisplaying = false;
 			});
 
-			RemoveImageCommand = new Command<MediaFile>((obj) =>
+			RemoveImageCommand = new Command<MediaDetails>((obj) =>
 			{
 				FileHelper.DeleteLocalFiles(obj);
 				Media.Remove(obj);

@@ -71,6 +71,18 @@ namespace VisionTrainer.Resources {
             }
         }
         
+        internal static string PagePredictionInputTitle {
+            get {
+                return ResourceManager.GetString("PagePredictionInputTitle", resourceCulture);
+            }
+        }
+        
+        internal static string PagePredictionInputUploading {
+            get {
+                return ResourceManager.GetString("PagePredictionInputUploading", resourceCulture);
+            }
+        }
+        
         internal static string PageCaptureToolbarBrowsePhotos {
             get {
                 return ResourceManager.GetString("PageCaptureToolbarBrowsePhotos", resourceCulture);
@@ -146,6 +158,12 @@ namespace VisionTrainer.Resources {
         internal static string PageBrowseMediaRemoveConfirm {
             get {
                 return ResourceManager.GetString("PageBrowseMediaRemoveConfirm", resourceCulture);
+            }
+        }
+        
+        internal static string PagePredictionResultsTitle {
+            get {
+                return ResourceManager.GetString("PagePredictionResultsTitle", resourceCulture);
             }
         }
         

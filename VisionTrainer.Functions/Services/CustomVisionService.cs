@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
@@ -54,16 +53,16 @@ namespace VisionTrainer.Functions.Services
 			}
 		}
 
-		public static async Task<ImagePrediction> UploadPredictionImage(byte[] bytes)
+		public static async Task<ImagePrediction> UploadPredictionImage(byte[] bytes, string modelName = null)
 		{
 			var projectId = Environment.GetEnvironmentVariable("CustomVisionProjectId");
-			var publishedModelName = Environment.GetEnvironmentVariable("CustomVisionPredictionPublishedName");
+			var publishedModelName = (!string.IsNullOrEmpty(modelName)) ? modelName : Environment.GetEnvironmentVariable("CustomVisionPredictionPublishedName");
 			var projectGuid = Guid.Parse(projectId);
 
 			// Make a prediction against the new project
 			using (var stream = new MemoryStream(bytes))
 			{
-				var result = await PredictionClient.ClassifyImageAsync(projectGuid, publishedModelName, stream);
+				var result = await PredictionClient.DetectImageAsync(projectGuid, publishedModelName, stream);
 				return result;
 			}
 		}

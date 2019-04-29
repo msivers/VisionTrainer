@@ -5,38 +5,49 @@ using System.Windows.Input;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
 using VisionTrainer.Common.Enums;
+using VisionTrainer.Pages;
+using VisionTrainer.Resources;
 using VisionTrainer.Services;
 using VisionTrainer.Utils;
 using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
 {
-	public delegate void PredictionEndpointEventHandler(object sender, PredictionEndpointEventArgs e);
+	public delegate void ResultEventHandler(object sender, ResultEventArgs e);
 
-	public class PredictionEndpointEventArgs : EventArgs
+	public class ResultEventArgs : EventArgs
 	{
-		public bool IsAvailable { get; private set; }
+		public bool Value { get; private set; }
 
-		public PredictionEndpointEventArgs(bool isAvilalble)
+		public ResultEventArgs(bool isAvilalble)
 		{
-			IsAvailable = isAvilalble;
+			Value = isAvilalble;
 		}
 	}
 
 	public class PredictionInputViewModel : BaseViewModel
 	{
 		IDatabase database;
-		byte[] mediaBytes;
+		Models.MediaDetails predictionMedia;
 
 		public INavigation Navigation { get; set; }
 		public ICommand RefreshViewCommand { get; set; }
 		public ICommand BrowseMediaCommand { get; set; }
-		public event PredictionEndpointEventHandler EndpointAvailable;
+		public event ResultEventHandler EndpointAvailable;
+		public event ResultEventHandler UploadCompleted;
+
+		string messageLabel;
+		public string MessageLabel
+		{
+			get { return messageLabel; }
+			set { SetProperty(ref messageLabel, value); }
+		}
 
 		public PredictionInputViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;
 			database = ServiceContainer.Resolve<IDatabase>();
+			MessageLabel = ApplicationResource.CameraNotSupported;
 
 			RefreshViewCommand = new Command(async () =>
 			{
@@ -44,7 +55,7 @@ namespace VisionTrainer.ViewModels
 				var hasModelName = !string.IsNullOrEmpty(Settings.PublishedModelName);
 				bool isAvilable = (hasActiveModel || hasModelName);
 
-				var eventData = new PredictionEndpointEventArgs(isAvilable);
+				var eventData = new ResultEventArgs(isAvilable);
 				EndpointAvailable?.Invoke(this, eventData);
 			});
 
@@ -54,20 +65,16 @@ namespace VisionTrainer.ViewModels
 		public async Task SaveBytes(byte[] bytes)
 		{
 			var fileName = Guid.NewGuid() + ".jpg";
-			var media = new Models.MediaFile()
+			predictionMedia = new Models.MediaDetails()
 			{
 				Path = fileName,
 				PreviewPath = fileName,
 				Type = MediaFileType.Image
 			};
-			File.WriteAllBytes(media.FullPath, bytes);
-			database.SaveItem(media);
+			File.WriteAllBytes(predictionMedia.FullPath, bytes);
+			database.SaveItem(predictionMedia);
 
-			await UploadFile(media.FullPath);
-
-			throw new NotImplementedException();
-			//var result = await AzureService.UploadTestMedia(media);
-			// TODO submit image through to service for checking
+			await UploadMedia(predictionMedia.FullPath);
 		}
 
 		async Task PickPhoto()
@@ -80,12 +87,30 @@ namespace VisionTrainer.ViewModels
 			if (file == null)
 				return;
 
-			await UploadFile(file.Path);
+			predictionMedia = new Models.MediaDetails()
+			{
+				Path = file.Path,
+				PreviewPath = file.Path,
+				Type = MediaFileType.Image
+			};
+			database.SaveItem(predictionMedia);
+
+			MessageLabel = ApplicationResource.PagePredictionInputUploading;
+
+			await UploadMedia(predictionMedia.FullPath);
+
+			MessageLabel = ApplicationResource.CameraNotSupported;
 		}
 
-		async Task UploadFile(string path)
+		async Task UploadMedia(string filePath)
 		{
+			var result = await AzureService.UploadPredictionMedia(filePath);
 
+			var success = (result != null);
+			UploadCompleted?.Invoke(this, new ResultEventArgs(success));
+
+			if (success)
+				await Navigation.PushAsync(new PredictionResultsPage(predictionMedia, result));
 		}
 	}
 }
