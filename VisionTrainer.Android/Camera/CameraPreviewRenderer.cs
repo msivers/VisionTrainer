@@ -13,7 +13,6 @@ namespace VisionTrainer.Droid
 		DroidCameraPreview cameraPreview;
 		CameraPreview element;
 		Action<byte[]> captureBytesCallbackAction;
-		string captureFilename;
 
 		public CameraPreviewRenderer(Context context) : base(context)
 		{
@@ -36,7 +35,6 @@ namespace VisionTrainer.Droid
 				element.Capture = null;
 				element.StartCamera = null;
 				element.StopCamera = null;
-				captureFilename = "temp";
 			}
 			if (e.NewElement != null)
 			{
@@ -46,7 +44,6 @@ namespace VisionTrainer.Droid
 				element.Capture = new Command(() => CaptureToFile());
 				element.StartCamera = new Command(() => cameraPreview.StartPreviewing());
 				element.StopCamera = new Command(() => cameraPreview.StopPreviewing());
-				captureFilename = element.Filename;
 			}
 		}
 
@@ -66,7 +63,7 @@ namespace VisionTrainer.Droid
 			if (captureBytesCallbackAction == null)
 				return;
 
-			cameraPreview.Capture(captureFilename);
+			cameraPreview.Capture();
 		}
 
 		void ImageCaptured(object sender, ImageCaptureEventArgs e)

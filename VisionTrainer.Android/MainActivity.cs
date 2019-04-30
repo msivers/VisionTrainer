@@ -9,6 +9,7 @@ using Android.OS;
 using Plugin.Permissions;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Droid.Services;
+using Lottie.Forms;
 
 namespace VisionTrainer.Droid
 {

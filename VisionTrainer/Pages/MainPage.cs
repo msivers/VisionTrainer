@@ -64,11 +64,23 @@ namespace VisionTrainer.Pages
 			Children.Add(testNavigationPage);
 		}
 
+		void CreateAnimationPage()
+		{
+
+
+			var testNavigationPage = new NavigationPage(new AnimationPage());
+			testNavigationPage.Title = "Anim";
+			testNavigationPage.BarTextColor = Color.White;
+			testNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
+			Children.Add(testNavigationPage);
+		}
+
 		void CreateContent()
 		{
 			var textColor = Color.White;
 
 			//CreateDebugPrediction();
+			//CreateAnimationPage();
 
 			var predictionNavigationPage = new NavigationPage(new PredictionInputPage());
 			predictionNavigationPage.Title = ApplicationResource.NavigationTestTitle;

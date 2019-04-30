@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
 using VisionTrainer.Common.Enums;
+using VisionTrainer.Models;
 using VisionTrainer.Pages;
 using VisionTrainer.Resources;
 using VisionTrainer.Services;
@@ -13,28 +14,37 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.ViewModels
 {
-	public delegate void ResultEventHandler(object sender, ResultEventArgs e);
+	public delegate void PageStateEventHandler(object sender, PageStateEventArgs e);
 
-	public class ResultEventArgs : EventArgs
+	public class PageStateEventArgs : EventArgs
 	{
-		public bool Value { get; private set; }
+		public PredictionPageState State { get; private set; }
 
-		public ResultEventArgs(bool isAvilalble)
+		public PageStateEventArgs(PredictionPageState state)
 		{
-			Value = isAvilalble;
+			State = state;
 		}
+	}
+
+	public enum PredictionPageState
+	{
+		None,
+		NoModelAvailable,
+		NoCameraReady,
+		CameraReady,
+		Uploading
 	}
 
 	public class PredictionInputViewModel : BaseViewModel
 	{
 		IDatabase database;
-		Models.MediaDetails predictionMedia;
+		MediaDetails predictionMedia;
+		PredictionPageState pageState = PredictionPageState.None;
 
 		public INavigation Navigation { get; set; }
 		public ICommand RefreshViewCommand { get; set; }
 		public ICommand BrowseMediaCommand { get; set; }
-		public event ResultEventHandler EndpointAvailable;
-		public event ResultEventHandler UploadCompleted;
+		public event PageStateEventHandler UpdatePageState;
 
 		string messageLabel;
 		public string MessageLabel
@@ -55,15 +65,33 @@ namespace VisionTrainer.ViewModels
 				var hasModelName = !string.IsNullOrEmpty(Settings.PublishedModelName);
 				bool isAvilable = (hasActiveModel || hasModelName);
 
-				var eventData = new ResultEventArgs(isAvilable);
-				EndpointAvailable?.Invoke(this, eventData);
+				PredictionPageState state;
+				if (isAvilable)
+					state = (CrossMedia.Current.IsCameraAvailable) ? PredictionPageState.CameraReady : PredictionPageState.NoCameraReady;
+				else
+					state = PredictionPageState.NoModelAvailable;
+
+				SetPageState(state);
 			});
 
 			BrowseMediaCommand = new Command(async () => await PickPhoto());
 		}
 
+		void SetPageState(PredictionPageState state)
+		{
+			if (pageState == state)
+				return;
+
+			pageState = state;
+
+			var eventData = new PageStateEventArgs(pageState);
+			UpdatePageState?.Invoke(this, eventData);
+		}
+
 		public async Task SaveBytes(byte[] bytes)
 		{
+			SetPageState(PredictionPageState.Uploading);
+
 			var fileName = Guid.NewGuid() + ".jpg";
 			predictionMedia = new Models.MediaDetails()
 			{
@@ -95,11 +123,10 @@ namespace VisionTrainer.ViewModels
 			};
 			database.SaveItem(predictionMedia);
 
-			MessageLabel = ApplicationResource.PagePredictionInputUploading;
+			// Update the state
+			SetPageState(PredictionPageState.Uploading);
 
 			await UploadMedia(predictionMedia.FullPath);
-
-			MessageLabel = ApplicationResource.CameraNotSupported;
 		}
 
 		async Task UploadMedia(string filePath)
@@ -107,10 +134,16 @@ namespace VisionTrainer.ViewModels
 			var result = await AzureService.UploadPredictionMedia(filePath);
 
 			var success = (result != null);
-			UploadCompleted?.Invoke(this, new ResultEventArgs(success));
 
 			if (success)
+			{
 				await Navigation.PushAsync(new PredictionResultsPage(predictionMedia, result));
+			}
+			else
+			{
+				var state = (CrossMedia.Current.IsCameraAvailable) ? PredictionPageState.CameraReady : PredictionPageState.NoCameraReady;
+				SetPageState(state);
+			}
 		}
 	}
 }

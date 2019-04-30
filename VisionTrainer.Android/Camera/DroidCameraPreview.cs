@@ -510,7 +510,7 @@ namespace VisionTrainer.Droid
 			return (ORIENTATIONS.Get(rotation) + mSensorOrientation + 270) % 360;
 		}
 
-		public void Capture(string filename)
+		public void Capture()
 		{
 			if (State != CameraState.Preview)
 				return;
