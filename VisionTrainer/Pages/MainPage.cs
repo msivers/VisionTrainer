@@ -66,8 +66,6 @@ namespace VisionTrainer.Pages
 
 		void CreateAnimationPage()
 		{
-
-
 			var testNavigationPage = new NavigationPage(new AnimationPage());
 			testNavigationPage.Title = "Anim";
 			testNavigationPage.BarTextColor = Color.White;

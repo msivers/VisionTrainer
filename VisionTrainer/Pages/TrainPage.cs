@@ -43,7 +43,7 @@ namespace VisionTrainer.Pages
 			// Upload Button
 			var uploadButton = new ImageButton()
 			{
-				Source = "uploadFilled.png",
+				Source = "upload_alt.png",
 				Margin = new Thickness(5)
 			};
 			uploadButton.SetBinding(Button.CommandProperty, new Binding("UploadFilesCommand"));
@@ -52,7 +52,7 @@ namespace VisionTrainer.Pages
 			// Capture Button
 			var captureButton = new ImageButton()
 			{
-				Source = "captureFilled.png",
+				Source = "capture_alt.png",
 				Margin = new Thickness(5)
 			};
 			captureButton.SetBinding(Button.CommandProperty, new Binding("CaptureImagesCommand"));
@@ -61,7 +61,7 @@ namespace VisionTrainer.Pages
 			// Add Button
 			var addButton = new ImageButton()
 			{
-				Source = "folderFilled.png",
+				Source = "folder_alt.png",
 				Margin = new Thickness(5)
 			};
 			addButton.SetBinding(Button.CommandProperty, new Binding("AddMediaCommand"));

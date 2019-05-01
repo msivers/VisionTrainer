@@ -73,13 +73,13 @@ namespace VisionTrainer.Droid
 
 		protected override void Dispose(bool disposing)
 		{
+			base.Dispose(disposing);
 			if (disposing)
 			{
 				cameraPreview.ImageCaptured -= ImageCaptured;
-				Control.CaptureSession.Dispose();
+				Control.CaptureSession?.Dispose();
 				Control.Dispose();
 			}
-			base.Dispose(disposing);
 		}
 	}
 }

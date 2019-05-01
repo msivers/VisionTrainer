@@ -51,65 +51,14 @@ namespace VisionTrainer
 			set { AppSettings.AddOrUpdateValue(publishedModelNameKey, (string)value); }
 		}
 
-		/*
-				#region Training
-				const string trainingKey = "trainingkey";
-				private static readonly string TrainingKeyDefault = "";
+		const string apiKeyId = "apikey";
+		private static readonly string ApiKeyDefault = "";
 
-				public static string TrainingKey
-				{
-					get { return AppSettings.GetValueOrDefault(trainingKey, TrainingKeyDefault); }
-					set { AppSettings.AddOrUpdateValue(trainingKey, (string)value); }
-				}
-
-				const string trainingEndpoint = "trainingendpoint";
-				private static readonly string TrainingEndpointDefault = "";
-
-				public static string TrainingEndpoint
-				{
-					get { return AppSettings.GetValueOrDefault(trainingEndpoint, TrainingEndpointDefault); }
-					set { AppSettings.AddOrUpdateValue(trainingEndpoint, (string)value); }
-				}
-
-				const string trainingResourceId = "trainingresourceid";
-				private static readonly string TrainingResourceIdDefault = "";
-
-				public static string TrainingResourceId
-				{
-					get { return AppSettings.GetValueOrDefault(trainingResourceId, TrainingResourceIdDefault); }
-					set { AppSettings.AddOrUpdateValue(trainingResourceId, (string)value); }
-				}
-				#endregion
-
-				#region Prediction
-				const string predictionKey = "predictionkey";
-				private static readonly string PredictionKeyDefault = "";
-
-				public static string PredictionKey
-				{
-					get { return AppSettings.GetValueOrDefault(predictionKey, PredictionKeyDefault); }
-					set { AppSettings.AddOrUpdateValue(predictionKey, (string)value); }
-				}
-
-				const string predictionEndpoint = "predictionendpoint";
-				private static readonly string PredictionEndpointDefault = "";
-
-				public static string PredictionEndpoint
-				{
-					get { return AppSettings.GetValueOrDefault(predictionEndpoint, PredictionEndpointDefault); }
-					set { AppSettings.AddOrUpdateValue(predictionEndpoint, (string)value); }
-				}
-
-				const string predictionResourceId = "predictionresourceid";
-				private static readonly string PredictionResourceIdDefault = "";
-
-				public static string PredictionResourceId
-				{
-					get { return AppSettings.GetValueOrDefault(predictionResourceId, PredictionResourceIdDefault); }
-					set { AppSettings.AddOrUpdateValue(predictionResourceId, (string)value); }
-				}
-				#endregion
-		*/
+		public static string ApiKey
+		{
+			get { return AppSettings.GetValueOrDefault(apiKeyId, ApiKeyDefault); }
+			set { AppSettings.AddOrUpdateValue(apiKeyId, (string)value); }
+		}
 	}
 }
 

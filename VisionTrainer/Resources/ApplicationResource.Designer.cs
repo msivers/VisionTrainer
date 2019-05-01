@@ -167,6 +167,12 @@ namespace VisionTrainer.Resources {
             }
         }
         
+        internal static string PageUploadingTitle {
+            get {
+                return ResourceManager.GetString("PageUploadingTitle", resourceCulture);
+            }
+        }
+        
         internal static string CameraNotSupported {
             get {
                 return ResourceManager.GetString("CameraNotSupported", resourceCulture);

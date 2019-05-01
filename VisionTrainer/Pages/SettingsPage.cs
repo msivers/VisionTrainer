@@ -22,6 +22,9 @@ namespace VisionTrainer.Pages
 			var endpointCell = new EntryCell() { Label = "Endpoint" };
 			endpointCell.SetBinding(EntryCell.TextProperty, new Binding("Endpoint", BindingMode.TwoWay));
 
+			var apiKeyCell = new EntryCell() { Label = "Api Key" };
+			apiKeyCell.SetBinding(EntryCell.TextProperty, new Binding("ApiKey", BindingMode.TwoWay));
+
 			var modelNameCell = new EntryCell() { Label = "Published Model Name" };
 			modelNameCell.SetBinding(EntryCell.TextProperty, new Binding("PublishedModelName", BindingMode.TwoWay));
 
@@ -33,6 +36,7 @@ namespace VisionTrainer.Pages
 					{
 						userIdCell,
 						endpointCell,
+						apiKeyCell,
 						modelNameCell
 					},
 					new TableSection("Camera") {

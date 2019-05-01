@@ -10,7 +10,7 @@ namespace VisionTrainer.Pages
 		public AnimationPage()
 		{
 			var animationView = new AnimationView();
-			animationView.Animation = "spinner.json"; //https://lottiefiles.com/271-loader
+			animationView.Animation = "complete.json"; //https://lottiefiles.com/271-loader
 			animationView.AutoPlay = true;
 			animationView.WidthRequest = animationView.HeightRequest = 100;
 			animationView.Loop = true;

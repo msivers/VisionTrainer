@@ -75,6 +75,9 @@
     <data name="PagePredictionResultsTitle">
         <value>Results</value>
     </data>
+    <data name="PageUploadingTitle">
+        <value>Upload Media</value>
+    </data>
     <!-- Camera Entries -->
     <data name="CameraNotSupported">
         <value>Camera Not Available</value>

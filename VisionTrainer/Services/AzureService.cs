@@ -115,7 +115,7 @@ namespace VisionTrainer.Services
 		{
 			try
 			{
-				using (var httpClient = new HttpClient())
+				using (var httpClient = GetConfiguredClient())
 				{
 					using (var postContent = new MultipartFormDataContent("----MyBoundary"))
 					{
@@ -159,7 +159,7 @@ namespace VisionTrainer.Services
 		{
 			try
 			{
-				using (var httpClient = new HttpClient())
+				using (var httpClient = GetConfiguredClient())
 				{
 					var httpResponse = await httpClient.PostAsync(url, httpContent);
 					if (httpResponse.Content != null)
@@ -192,7 +192,7 @@ namespace VisionTrainer.Services
 		{
 			try
 			{
-				using (var httpClient = new HttpClient())
+				using (var httpClient = GetConfiguredClient())
 				{
 					var httpResponse = await httpClient.GetAsync(url);
 					if (httpResponse.Content != null)
@@ -213,6 +213,20 @@ namespace VisionTrainer.Services
 			}
 
 			return default(T);
+		}
+
+		/// <summary>
+		/// Returns a configured instance of an HttpClient
+		/// </summary>
+		/// <returns></returns>
+		static HttpClient GetConfiguredClient()
+		{
+			var client = new HttpClient();
+
+			if (!string.IsNullOrEmpty(Settings.ApiKey))
+				client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", Settings.ApiKey);
+
+			return client;
 		}
 	}
 }

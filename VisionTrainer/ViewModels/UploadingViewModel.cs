@@ -27,11 +27,25 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref uploadButtonText, value); }
 		}
 
+		string animation;
+		public string Animation
+		{
+			get { return animation; }
+			set { SetProperty(ref animation, value); }
+		}
+
 		bool uploadButtonEnabled;
 		public bool UploadButtonEnabled
 		{
 			get { return uploadButtonEnabled; }
 			set { SetProperty(ref uploadButtonEnabled, value); }
+		}
+
+		bool showAnimation;
+		public bool ShowAnimation
+		{
+			get { return showAnimation; }
+			set { SetProperty(ref showAnimation, value); }
 		}
 
 		public ICommand StartUploadCommand { get; set; }
@@ -42,22 +56,38 @@ namespace VisionTrainer.ViewModels
 			database = ServiceContainer.Resolve<IDatabase>();
 			var remainingItemsCount = database.GetItemsNotDone().Count();
 			UploadButtonText = "Upload";
-			UploadButtonEnabled = (remainingItemsCount > 0);
-			RemainingItems = "Remaining:" + remainingItemsCount;
+
+			var hasItems = (remainingItemsCount > 0);
+			if (hasItems)
+			{
+				UploadButtonEnabled = (remainingItemsCount > 0);
+				RemainingItems = remainingItemsCount + " items remaining";
+				Animation = "spinner.json";
+			}
+			else
+			{
+				Animation = "complete.json";
+				ShowAnimation = true;
+			}
 
 			StartUploadCommand = new Command(async (obj) =>
 			{
 				UploadButtonText = "Uploading";
 				UploadButtonEnabled = false;
 				shouldUpload = true;
+				ShowAnimation = true;
 				await Start();
 
 				if (database.GetItemsNotDone().Count() == 0)
+				{
+					ShowAnimation = false;
 					await navigation.PopAsync();
+				}
 			});
 
 			StopUploadCommand = new Command((obj) =>
 			{
+				ShowAnimation = false;
 				shouldUpload = false;
 			});
 		}
