@@ -80,7 +80,9 @@ namespace VisionTrainer.Pages
 			//CreateDebugPrediction();
 			//CreateAnimationPage();
 
-			var predictionNavigationPage = new NavigationPage(new PredictionInputPage());
+			var predictionNavigationPage = new NavigationPage(new UploadingPage());
+			//var predictionNavigationPage = new NavigationPage(new PredictionInputPage());
+
 			predictionNavigationPage.Title = ApplicationResource.NavigationTestTitle;
 			predictionNavigationPage.Icon = "capture.png";
 			predictionNavigationPage.BarTextColor = textColor;

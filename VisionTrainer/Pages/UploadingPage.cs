@@ -16,11 +16,10 @@ namespace VisionTrainer.Pages
 			BindingContext = new UploadingViewModel(Navigation);
 
 			animationView = new AnimationView();
-			animationView.Loop = true;
-			animationView.Play();
-			//animationView.SetBinding(AnimationView.IsPlayingProperty, new Binding("ShowAnimation"));
-			//animationView.SetBinding(AnimationView.IsVisibleProperty, new Binding("ShowAnimation"));
+			animationView.SetBinding(AnimationView.IsPlayingProperty, new Binding("ShowAnimation"));
+			animationView.SetBinding(AnimationView.IsVisibleProperty, new Binding("ShowAnimation"));
 			animationView.SetBinding(AnimationView.AnimationProperty, new Binding("Animation"));
+			animationView.SetBinding(AnimationView.LoopProperty, new Binding("ShouldLoopAnimation"));
 
 			AbsoluteLayout.SetLayoutBounds(animationView, new Rectangle(.5, .4, 100, 100));
 			AbsoluteLayout.SetLayoutFlags(animationView, AbsoluteLayoutFlags.PositionProportional);
@@ -39,12 +38,12 @@ namespace VisionTrainer.Pages
 			var startButton = new Button()
 			{
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				BackgroundColor = AppColors.HeaderColor,
-				TextColor = Color.White,
+				//BackgroundColor = AppColors.HeaderColor,
+				//TextColor = Color.White,
 				FontAttributes = FontAttributes.Bold,
 				WidthRequest = 180,
 				HeightRequest = 40,
-				CornerRadius = 10
+				//CornerRadius = 10
 			};
 			startButton.SetBinding(Button.TextProperty, new Binding("UploadButtonText"));
 			startButton.SetBinding(Button.CommandProperty, new Binding("StartUploadCommand"));
@@ -57,6 +56,9 @@ namespace VisionTrainer.Pages
 			uploadingLayout.Children.Add(messageLabel);
 			uploadingLayout.Children.Add(animationView);
 			uploadingLayout.Children.Add(startButton);
+
+			animationView.AutoPlay = true;
+			animationView.Play();
 
 			Content = uploadingLayout;
 		}

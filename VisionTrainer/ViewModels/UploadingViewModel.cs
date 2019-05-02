@@ -48,6 +48,13 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref showAnimation, value); }
 		}
 
+		bool shouldLoopAnimation;
+		public bool ShouldLoopAnimation
+		{
+			get { return shouldLoopAnimation; }
+			set { SetProperty(ref shouldLoopAnimation, value); }
+		}
+
 		public ICommand StartUploadCommand { get; set; }
 		public ICommand StopUploadCommand { get; set; }
 
@@ -63,11 +70,13 @@ namespace VisionTrainer.ViewModels
 				UploadButtonEnabled = (remainingItemsCount > 0);
 				RemainingItems = remainingItemsCount + " items remaining";
 				Animation = "spinner.json";
+				ShouldLoopAnimation = true;
 			}
 			else
 			{
 				Animation = "complete.json";
 				ShowAnimation = true;
+				ShouldLoopAnimation = false;
 			}
 
 			StartUploadCommand = new Command(async (obj) =>

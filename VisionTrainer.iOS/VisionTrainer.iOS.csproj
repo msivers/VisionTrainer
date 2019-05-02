@@ -241,7 +241,6 @@
     <BundleResource Include="Resources\upload%402x.png" />
     <BundleResource Include="Resources\upload%403x.png" />
     <BundleResource Include="Resources\spinner.json" />
-    <BundleResource Include="Resources\complete.json" />
     <BundleResource Include="Resources\capture_alt.png" />
     <BundleResource Include="Resources\capture_alt%402x.png" />
     <BundleResource Include="Resources\capture_alt%403x.png" />
@@ -257,5 +256,6 @@
     <BundleResource Include="Resources\upload_alt.png" />
     <BundleResource Include="Resources\upload_alt%402x.png" />
     <BundleResource Include="Resources\upload_alt%403x.png" />
+    <BundleResource Include="Resources\complete.json" />
   </ItemGroup>
 </Project>
