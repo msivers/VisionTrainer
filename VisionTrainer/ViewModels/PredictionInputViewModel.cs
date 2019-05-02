@@ -79,9 +79,6 @@ namespace VisionTrainer.ViewModels
 
 		void SetPageState(PredictionPageState state)
 		{
-			if (pageState == state)
-				return;
-
 			pageState = state;
 
 			var eventData = new PageStateEventArgs(pageState);
@@ -135,7 +132,7 @@ namespace VisionTrainer.ViewModels
 
 			var success = (result != null);
 
-			if (success)
+			if (success && App.CurrentTabPage.GetType() == typeof(PredictionInputPage))
 			{
 				await Navigation.PushAsync(new PredictionResultsPage(predictionMedia, result));
 			}

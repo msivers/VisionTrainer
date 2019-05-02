@@ -13,19 +13,6 @@ namespace VisionTrainer.Pages
 			Title = ApplicationResource.PageTrainTitle;
 			BindingContext = new TrainViewModel(this.Navigation);
 
-			//var uploadToolbarItem = new ToolbarItem() { Icon = "upload.png" };
-			//uploadToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("UploadFilesCommand"));
-			//this.ToolbarItems.Add(uploadToolbarItem);
-
-			//var captureToolbarItem = new ToolbarItem() { Icon = "capture.png" };
-			//captureToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("CaptureImagesCommand"));
-			//this.ToolbarItems.Add(captureToolbarItem);
-
-			//var browseToolbarItem = new ToolbarItem() { Icon = "folder.png" };
-			//browseToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("AddMediaCommand"));
-			//this.ToolbarItems.Add(browseToolbarItem);
-
-
 			// Top navigation
 			var topGrid = new Grid
 			{
@@ -38,7 +25,6 @@ namespace VisionTrainer.Pages
 			topGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 			topGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 			topGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
 
 			// Upload Button
 			var uploadButton = new ImageButton()

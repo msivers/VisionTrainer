@@ -13,6 +13,7 @@ namespace VisionTrainer
 		public static int ScreenWidth;
 		public static int ScreenHeight;
 		public static int CameraRatio;
+		public static Page CurrentTabPage;
 
 		public App()
 		{

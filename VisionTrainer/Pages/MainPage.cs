@@ -102,24 +102,12 @@ namespace VisionTrainer.Pages
 			Children.Add(settingsNavigationPage);
 		}
 
-
 		protected override void OnCurrentPageChanged()
 		{
 			base.OnCurrentPageChanged();
 
 			var navPage = (NavigationPage)CurrentPage;
-			if (currentStatefulPage != null && currentStatefulPage != navPage.CurrentPage)
-			{
-				currentStatefulPage.DidDisappear();
-				currentStatefulPage = null;
-			}
-
-			if (navPage.CurrentPage is IStatefulContent)
-			{
-				var stateful = (IStatefulContent)navPage.CurrentPage;
-				stateful.DidAppear();
-				currentStatefulPage = stateful;
-			}
+			App.CurrentTabPage = navPage.CurrentPage;
 		}
 	}
 }
