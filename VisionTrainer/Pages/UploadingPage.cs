@@ -20,9 +20,22 @@ namespace VisionTrainer.Pages
 			animationView.SetBinding(AnimationView.IsVisibleProperty, new Binding("ShowAnimation"));
 			animationView.SetBinding(AnimationView.AnimationProperty, new Binding("Animation"));
 			animationView.SetBinding(AnimationView.LoopProperty, new Binding("ShouldLoopAnimation"));
+			animationView.AutoPlay = true;
+			animationView.Play();
 
-			AbsoluteLayout.SetLayoutBounds(animationView, new Rectangle(.5, .4, 100, 100));
-			AbsoluteLayout.SetLayoutFlags(animationView, AbsoluteLayoutFlags.PositionProportional);
+			var heroImage = new Image();
+			heroImage.HeightRequest = heroImage.WidthRequest = 200;
+			heroImage.SetBinding(Image.SourceProperty, new Binding("HeroImage"));
+
+			var titleLabel = new Label()
+			{
+				WidthRequest = 300,
+				FontAttributes = FontAttributes.Bold,
+				TextColor = Color.Black,
+				HorizontalOptions = LayoutOptions.Center,
+				HorizontalTextAlignment = TextAlignment.Center
+			};
+			titleLabel.SetBinding(Label.TextProperty, new Binding("StatusTitle"));
 
 			var messageLabel = new Label()
 			{
@@ -31,34 +44,78 @@ namespace VisionTrainer.Pages
 				HorizontalOptions = LayoutOptions.Center,
 				HorizontalTextAlignment = TextAlignment.Center
 			};
-			messageLabel.SetBinding(Label.TextProperty, new Binding("RemainingItems"));
-			AbsoluteLayout.SetLayoutBounds(messageLabel, new Rectangle(.5, 0, 400, 40));
-			AbsoluteLayout.SetLayoutFlags(messageLabel, AbsoluteLayoutFlags.PositionProportional);
+			messageLabel.SetBinding(Label.TextProperty, new Binding("StatusMessage"));
 
 			var startButton = new Button()
 			{
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				//BackgroundColor = AppColors.HeaderColor,
-				//TextColor = Color.White,
+				BackgroundColor = AppColors.ButtonColor,
 				FontAttributes = FontAttributes.Bold,
 				WidthRequest = 180,
 				HeightRequest = 40,
-				//CornerRadius = 10
+				CornerRadius = 20
 			};
 			startButton.SetBinding(Button.TextProperty, new Binding("UploadButtonText"));
 			startButton.SetBinding(Button.CommandProperty, new Binding("StartUploadCommand"));
 			startButton.SetBinding(Button.IsEnabledProperty, new Binding("UploadButtonEnabled"));
+			startButton.SetBinding(Button.IsVisibleProperty, new Binding("UploadEnabled"));
+
 			AbsoluteLayout.SetLayoutBounds(startButton, new Rectangle(.5, 1, 180, 40));
 			AbsoluteLayout.SetLayoutFlags(startButton, AbsoluteLayoutFlags.PositionProportional);
 
-			var uploadingLayout = new AbsoluteLayout();
+			var uploadingLayout = new RelativeLayout();
 			uploadingLayout.Margin = new Thickness(40);
-			uploadingLayout.Children.Add(messageLabel);
-			uploadingLayout.Children.Add(animationView);
-			uploadingLayout.Children.Add(startButton);
 
-			animationView.AutoPlay = true;
-			animationView.Play();
+			uploadingLayout.Children.Add(heroImage,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (heroImage.Width / 2);
+				}),
+				Constraint.RelativeToParent((parent) =>
+				{
+					return parent.Height * .3 - (heroImage.Height / 2);
+				})
+			);
+			uploadingLayout.Children.Add(animationView,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (heroImage.Width / 2);
+				}),
+				Constraint.RelativeToParent((parent) =>
+				{
+					return parent.Height * .3 - (heroImage.Height / 2);
+				})
+			);
+			uploadingLayout.Children.Add(startButton,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (startButton.Width / 2);
+				}),
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Height * .9) - startButton.Height;
+				})
+			);
+			uploadingLayout.Children.Add(messageLabel,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (messageLabel.Width / 2);
+				}),
+				Constraint.RelativeToView(startButton, (parent, sibling) =>
+				{
+					return startButton.Y - messageLabel.Height - 40;
+				})
+			);
+			uploadingLayout.Children.Add(titleLabel,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (titleLabel.Width / 2);
+				}),
+				Constraint.RelativeToView(messageLabel, (parent, sibling) =>
+				{
+					return messageLabel.Y - titleLabel.Height - 10;
+				})
+			);
 
 			Content = uploadingLayout;
 		}

@@ -164,6 +164,12 @@
     <AndroidResource Include="Resources\mipmap-xxhdpi\toggle.png" />
     <AndroidResource Include="Resources\mipmap-xxhdpi\upload_alt.png" />
     <AndroidResource Include="Resources\mipmap-xxhdpi\upload.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\AllComplete.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\CameraUpload.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\AllComplete.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\CameraUpload.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\AllComplete.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\CameraUpload.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
@@ -191,6 +197,7 @@
     <AndroidAsset Include="Assets\check.json" />
     <AndroidAsset Include="Assets\spinner.json" />
     <AndroidAsset Include="Assets\complete.json" />
+    <AndroidAsset Include="Assets\pulse.json" />
   </ItemGroup>
  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

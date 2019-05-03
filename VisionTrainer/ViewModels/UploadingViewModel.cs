@@ -13,11 +13,18 @@ namespace VisionTrainer.ViewModels
 		IUploadManager uploadManager;
 		bool shouldUpload;
 
-		string remainingItems;
-		public string RemainingItems
+		string statusTitle;
+		public string StatusTitle
 		{
-			get { return remainingItems; }
-			set { SetProperty(ref remainingItems, value); }
+			get { return statusTitle; }
+			set { SetProperty(ref statusTitle, value); }
+		}
+
+		string statusMessage;
+		public string StatusMessage
+		{
+			get { return statusMessage; }
+			set { SetProperty(ref statusMessage, value); }
 		}
 
 		string uploadButtonText;
@@ -32,6 +39,13 @@ namespace VisionTrainer.ViewModels
 		{
 			get { return animation; }
 			set { SetProperty(ref animation, value); }
+		}
+
+		bool uploadEnabled;
+		public bool UploadEnabled
+		{
+			get { return uploadEnabled; }
+			set { SetProperty(ref uploadEnabled, value); }
 		}
 
 		bool uploadButtonEnabled;
@@ -55,6 +69,13 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref shouldLoopAnimation, value); }
 		}
 
+		ImageSource heroImage;
+		public ImageSource HeroImage
+		{
+			get { return heroImage; }
+			set { SetProperty(ref heroImage, value); }
+		}
+
 		public ICommand StartUploadCommand { get; set; }
 		public ICommand StopUploadCommand { get; set; }
 
@@ -62,25 +83,32 @@ namespace VisionTrainer.ViewModels
 		{
 			database = ServiceContainer.Resolve<IDatabase>();
 			var remainingItemsCount = database.GetItemsNotDone().Count();
-			UploadButtonText = "Upload";
 
 			var hasItems = (remainingItemsCount > 0);
 			if (hasItems)
 			{
+				var itemDescription = (remainingItemsCount > 1) ? "items" : "item";
 				UploadButtonEnabled = (remainingItemsCount > 0);
-				RemainingItems = remainingItemsCount + " items remaining";
+				StatusTitle = "Upload Media for Training";
+				StatusMessage = remainingItemsCount + " " + itemDescription + " waiting for submission.\nUse wifi as files may be large.";
 				Animation = "spinner.json";
+				UploadButtonText = "Upload";
 				ShouldLoopAnimation = true;
+				UploadEnabled = true;
+				HeroImage = ImageSource.FromFile("CameraUpload");
 			}
 			else
 			{
+				StatusTitle = "Complete";
+				StatusMessage = "There are no items to upload";
 				Animation = "complete.json";
-				ShowAnimation = true;
-				ShouldLoopAnimation = false;
+				ShowAnimation = false;
+				HeroImage = ImageSource.FromFile("AllComplete");
 			}
 
 			StartUploadCommand = new Command(async (obj) =>
 			{
+				StatusTitle = "Uploading Media";
 				UploadButtonText = "Uploading";
 				UploadButtonEnabled = false;
 				shouldUpload = true;
@@ -115,7 +143,7 @@ namespace VisionTrainer.ViewModels
 					return;
 				}
 
-				RemainingItems = string.Format("Remaining Items {0} / {1}", itemCount, totalItems);
+				StatusMessage = string.Format("Remaining Items {0} / {1}", itemCount, totalItems);
 
 				var result = await AzureService.UploadTrainingMedia(item);
 				if (result)

@@ -257,5 +257,12 @@
     <BundleResource Include="Resources\upload_alt%402x.png" />
     <BundleResource Include="Resources\upload_alt%403x.png" />
     <BundleResource Include="Resources\complete.json" />
+    <BundleResource Include="Resources\CameraUpload.png" />
+    <BundleResource Include="Resources\CameraUpload%402x.png" />
+    <BundleResource Include="Resources\CameraUpload%403x.png" />
+    <BundleResource Include="Resources\AllComplete.png" />
+    <BundleResource Include="Resources\AllComplete%402x.png" />
+    <BundleResource Include="Resources\AllComplete%403x.png" />
+    <BundleResource Include="Resources\pulse.json" />
   </ItemGroup>
 </Project>
