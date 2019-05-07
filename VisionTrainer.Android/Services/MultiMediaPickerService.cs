@@ -99,7 +99,6 @@ namespace VisionTrainer.Droid.Services
 					var fullImage = ImageHelpers.RotateImage(path, 1);
 					var thumbImage = ImageHelpers.RotateImage(path, 0.25f);
 
-
 					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}{ext}");
 					fullPath = FileHelper.GetFullPath(relativePath);
 					File.WriteAllBytes(fullPath, fullImage);
@@ -130,7 +129,8 @@ namespace VisionTrainer.Droid.Services
 					{
 						Path = fullPath,
 						Type = mediaFileType,
-						PreviewPath = thumbnailImagePath
+						PreviewPath = thumbnailImagePath,
+						Date = DateTime.Now
 					};
 				}
 

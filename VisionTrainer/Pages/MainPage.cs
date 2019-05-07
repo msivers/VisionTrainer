@@ -7,15 +7,19 @@ using VisionTrainer.Constants;
 using VisionTrainer.Resources;
 using VisionTrainer.Services;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 namespace VisionTrainer.Pages
 {
-	public class MainPage : TabbedPage
+	public class MainPage : Xamarin.Forms.TabbedPage
 	{
 		IStatefulContent currentStatefulPage;
 
 		public MainPage()
 		{
+			On<Android>().SetToolbarPlacement(ToolbarPlacement.Bottom);
+
 			CheckPermissions();
 		}
 
@@ -24,7 +28,7 @@ namespace VisionTrainer.Pages
 			var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
 			if (status != PermissionStatus.Granted)
 			{
-				Application.Current.ModalPopping += HandleModalPopping;
+				Xamarin.Forms.Application.Current.ModalPopping += HandleModalPopping;
 				await Navigation.PushModalAsync(new PermissionsPage(), false);
 			}
 
@@ -36,7 +40,7 @@ namespace VisionTrainer.Pages
 
 		private void HandleModalPopping(object sender, ModalPoppingEventArgs e)
 		{
-			Application.Current.ModalPopping -= HandleModalPopping;
+			Xamarin.Forms.Application.Current.ModalPopping -= HandleModalPopping;
 			CreateContent();
 		}
 

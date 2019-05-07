@@ -1,12 +1,13 @@
 ﻿using System;
 namespace Camera2Basic
 {
-    public enum CameraState
-    {
-        Preview,
-        WaitingLock,
-        WaitingPrecapture,
-        WaitingNonPrecapture,
-        PictureTaken
-    }
+	public enum CameraState
+	{
+		Stopped,
+		Preview,
+		WaitingLock,
+		WaitingPrecapture,
+		WaitingNonPrecapture,
+		PictureTaken
+	}
 }

@@ -30,7 +30,8 @@ namespace VisionTrainer.Pages
 			var uploadButton = new ImageButton()
 			{
 				Source = "upload_alt.png",
-				Margin = new Thickness(5)
+				Margin = new Thickness(5),
+				BackgroundColor = Color.Transparent
 			};
 			uploadButton.SetBinding(Button.CommandProperty, new Binding("UploadFilesCommand"));
 			topGrid.Children.Add(uploadButton, 0, 0);
@@ -39,7 +40,8 @@ namespace VisionTrainer.Pages
 			var captureButton = new ImageButton()
 			{
 				Source = "capture_alt.png",
-				Margin = new Thickness(5)
+				Margin = new Thickness(5),
+				BackgroundColor = Color.Transparent
 			};
 			captureButton.SetBinding(Button.CommandProperty, new Binding("CaptureImagesCommand"));
 			topGrid.Children.Add(captureButton, 1, 0);
@@ -48,7 +50,8 @@ namespace VisionTrainer.Pages
 			var addButton = new ImageButton()
 			{
 				Source = "folder_alt.png",
-				Margin = new Thickness(5)
+				Margin = new Thickness(5),
+				BackgroundColor = Color.Transparent
 			};
 			addButton.SetBinding(Button.CommandProperty, new Binding("AddMediaCommand"));
 			topGrid.Children.Add(addButton, 2, 0);
@@ -69,12 +72,21 @@ namespace VisionTrainer.Pages
 				image.SetBinding(CachedImage.SourceProperty, "FullPreviewPath");
 				grid.Children.Add(image, 0, 0);
 
+				var vertLayout = new StackLayout() { Orientation = StackOrientation.Vertical };
+
 				Label idLabel = new Label() { VerticalOptions = LayoutOptions.Center };
 				idLabel.TextColor = Color.SlateGray;
 				idLabel.FontSize = 12;
-
 				idLabel.SetBinding(Label.TextProperty, "Type");
-				grid.Children.Add(idLabel, 2, 0);
+				vertLayout.Children.Add(idLabel);
+
+				Label dateLabel = new Label() { VerticalOptions = LayoutOptions.Center };
+				dateLabel.TextColor = Color.Black;
+				dateLabel.FontSize = 10;
+				dateLabel.SetBinding(Label.TextProperty, "Date");
+				vertLayout.Children.Add(dateLabel);
+
+				grid.Children.Add(vertLayout, 2, 0);
 
 				return new ViewCell() { View = grid };
 			});

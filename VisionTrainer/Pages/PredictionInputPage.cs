@@ -40,7 +40,6 @@ namespace VisionTrainer.Pages
 				cameraPreview = new CameraPreview();
 				cameraPreview.CameraOption = Settings.CameraOption;
 				cameraPreview.CaptureBytesCallback = new Action<byte[]>(async (byte[] obj) => await ProcessCameraPhoto(obj));
-				cameraPreview.CameraReady += (s, e) => StartCamera();
 				cameraPreview.IsVisible = false;
 
 				layout.Children.Add(cameraPreview,

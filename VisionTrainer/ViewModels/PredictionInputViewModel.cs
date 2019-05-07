@@ -126,7 +126,8 @@ namespace VisionTrainer.ViewModels
 			{
 				Path = fileName,
 				PreviewPath = fileName,
-				Type = MediaFileType.Image
+				Type = MediaFileType.Image,
+				Date = DateTime.Now
 			};
 			File.WriteAllBytes(predictionMedia.FullPath, bytes);
 			database.SaveItem(predictionMedia);
@@ -148,7 +149,8 @@ namespace VisionTrainer.ViewModels
 			{
 				Path = file.Path,
 				PreviewPath = file.Path,
-				Type = MediaFileType.Image
+				Type = MediaFileType.Image,
+				Date = DateTime.Now
 			};
 			database.SaveItem(predictionMedia);
 

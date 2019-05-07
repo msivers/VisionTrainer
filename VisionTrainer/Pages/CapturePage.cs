@@ -45,7 +45,7 @@ namespace VisionTrainer.Pages
 				cachedCapture.Aspect = Aspect.AspectFill;
 				cachedCapture.BackgroundColor = Color.White;
 
-				layout.Children.Add(cameraPreview,
+				layout.Children.Add(cachedCapture,
 					Constraint.Constant(5),
 					Constraint.Constant(5),
 					Constraint.Constant(80),
@@ -156,7 +156,7 @@ namespace VisionTrainer.Pages
 				DisplayAlert(ApplicationResource.CameraNotSupportedTitle, ApplicationResource.CameraPermissionMissing, ApplicationResource.OK);
 				return;
 			}
-
+			Console.WriteLine("Clicked");
 			if (cameraPreview != null && cameraPreview.Capture != null)
 				cameraPreview.Capture.Execute(null);
 		}

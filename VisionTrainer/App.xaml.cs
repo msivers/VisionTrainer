@@ -21,7 +21,6 @@ namespace VisionTrainer
 
 			var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Trainer.db");
 			ServiceContainer.Register<IDatabase>(new TrainerDb(dbPath));
-			ServiceContainer.Register<IUploadManager>(new UploadManager());
 
 			MainPage = new MainPage();
 		}

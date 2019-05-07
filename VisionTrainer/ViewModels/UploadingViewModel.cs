@@ -10,7 +10,6 @@ namespace VisionTrainer.ViewModels
 	public class UploadingViewModel : BaseViewModel
 	{
 		IDatabase database;
-		IUploadManager uploadManager;
 		bool shouldUpload;
 
 		string statusTitle;

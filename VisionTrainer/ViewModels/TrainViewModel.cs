@@ -21,9 +21,7 @@ namespace VisionTrainer.ViewModels
 		public ICommand MediaSelectedCommand { get; set; }
 		public ICommand CaptureImagesCommand { get; set; }
 
-
 		IDatabase database;
-		IUploadManager uploadManager;
 
 		ObservableCollection<MediaDetails> media;
 		public ObservableCollection<MediaDetails> Media
@@ -45,7 +43,6 @@ namespace VisionTrainer.ViewModels
 		{
 			this.Navigation = navigation;
 			database = ServiceContainer.Resolve<IDatabase>();
-			uploadManager = ServiceContainer.Resolve<IUploadManager>();
 
 			AddMediaCommand = new Command(async (obj) =>
 			{
@@ -64,7 +61,7 @@ namespace VisionTrainer.ViewModels
 
 			RefreshMediaEntriesCommand = new Command((obj) =>
 			{
-				var entries = database.GetItemsNotDone();
+				var entries = database.GetItemsNotDone().OrderByDescending(x => x.Date);
 				Media = new ObservableCollection<MediaDetails>(entries);
 			});
 

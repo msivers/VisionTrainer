@@ -51,7 +51,8 @@ namespace VisionTrainer.ViewModels
 			{
 				Path = fileName,
 				PreviewPath = fileName,
-				Type = MediaFileType.Image
+				Type = MediaFileType.Image,
+				Date = DateTime.Now
 			};
 			File.WriteAllBytes(media.FullPath, bytes);
 			database.SaveItem(media);

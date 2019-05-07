@@ -1,4 +1,5 @@
-﻿using VisionTrainer.Common.Enums;
+﻿using System;
+using VisionTrainer.Common.Enums;
 using VisionTrainer.Common.Models;
 using VisionTrainer.Utils;
 
@@ -14,6 +15,7 @@ namespace VisionTrainer.Models
 		public TagArea[] Tags { get; set; }
 		public GeoLocation Location { get; set; }
 		public MediaFileType Type { get; set; }
+		public DateTime Date { get; set; }
 
 		public string FullPath { get { return FileHelper.GetFullPath(this.Path); } }
 		public string FullPreviewPath { get { return FileHelper.GetFullPath(this.PreviewPath); } }

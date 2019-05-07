@@ -42,8 +42,14 @@ namespace VisionTrainer.Droid
 				element = e.NewElement;
 				captureBytesCallbackAction = element.CaptureBytesCallback;
 				element.Capture = new Command(() => CaptureToFile());
-				element.StartCamera = new Command(() => cameraPreview.StartPreviewing());
-				element.StopCamera = new Command(() => cameraPreview.StopPreviewing());
+				element.StartCamera = new Command(() =>
+				{
+					cameraPreview.StartPreviewing();
+				});
+				element.StopCamera = new Command(() =>
+				{
+					cameraPreview.StopPreviewing();
+				});
 			}
 		}
 

@@ -148,7 +148,8 @@ namespace VisionTrainer.iOS.Services
 								{
 									Type = MediaFileType.Video,
 									Path = videoUrl,
-									PreviewPath = relativePath
+									PreviewPath = relativePath,
+									Date = DateTime.Now
 								};
 								results.Add(meFile);
 								OnMediaPicked?.Invoke(this, meFile);
@@ -185,7 +186,8 @@ namespace VisionTrainer.iOS.Services
 							{
 								Type = MediaFileType.Image,
 								Path = relativePath,
-								PreviewPath = relativePath
+								PreviewPath = relativePath,
+								Date = DateTime.Now
 							};
 
 							results.Add(meFile);

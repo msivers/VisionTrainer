@@ -61,6 +61,8 @@ namespace VisionTrainer.Droid
 			ORIENTATIONS.Append((int)SurfaceOrientation.Rotation90, 0);
 			ORIENTATIONS.Append((int)SurfaceOrientation.Rotation180, 270);
 			ORIENTATIONS.Append((int)SurfaceOrientation.Rotation270, 180);
+
+			State = CameraState.Stopped;
 		}
 
 		// bool changed, int left, int top, int right, int bottom
@@ -366,13 +368,16 @@ namespace VisionTrainer.Droid
 			{
 				mTextureView.SurfaceTextureListener = mSurfaceTextureListener;
 			}
+
+			State = CameraState.Preview;
 		}
 
 		public void StopPreviewing()
 		{
 			Log.Error("CameraPreview", "StopPreviewing");
 			CloseCamera();
-			StopBackgroundThread(); ;
+			StopBackgroundThread();
+			State = CameraState.Stopped;
 		}
 
 		// Opens the camera specified by {@link Camera2BasicFragment#mCameraId}.
@@ -556,7 +561,7 @@ namespace VisionTrainer.Droid
 				// This is how to tell the camera to trigger.
 				PreviewRequestBuilder.Set(CaptureRequest.ControlAePrecaptureTrigger, (int)ControlAEPrecaptureTrigger.Start);
 				// Tell #mCaptureCallback to wait for the precapture sequence to be set.
-				State = Camera2Basic.CameraState.WaitingPrecapture; ;
+				State = Camera2Basic.CameraState.WaitingPrecapture;
 				CaptureSession.Capture(PreviewRequestBuilder.Build(), CaptureCallback, BackgroundHandler);
 			}
 			catch (CameraAccessException e)
