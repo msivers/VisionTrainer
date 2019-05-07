@@ -62,6 +62,7 @@ namespace VisionTrainer.Pages
 				Grid grid = new Grid();
 				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60, GridUnitType.Absolute) });
+				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Absolute) });
 				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 				CachedImage image = new CachedImage { Aspect = Aspect.AspectFill, WidthRequest = 60, HeightRequest = 60 };
@@ -69,8 +70,11 @@ namespace VisionTrainer.Pages
 				grid.Children.Add(image, 0, 0);
 
 				Label idLabel = new Label() { VerticalOptions = LayoutOptions.Center };
-				idLabel.SetBinding(Label.TextProperty, "Tag");
-				grid.Children.Add(idLabel, 1, 0);
+				idLabel.TextColor = Color.SlateGray;
+				idLabel.FontSize = 12;
+
+				idLabel.SetBinding(Label.TextProperty, "Type");
+				grid.Children.Add(idLabel, 2, 0);
 
 				return new ViewCell() { View = grid };
 			});

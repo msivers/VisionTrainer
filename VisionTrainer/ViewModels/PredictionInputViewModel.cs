@@ -46,6 +46,13 @@ namespace VisionTrainer.ViewModels
 		public ICommand BrowseMediaCommand { get; set; }
 		public event PageStateEventHandler UpdatePageState;
 
+		string titleLabel;
+		public string TitleLabel
+		{
+			get { return titleLabel; }
+			set { SetProperty(ref titleLabel, value); }
+		}
+
 		string messageLabel;
 		public string MessageLabel
 		{
@@ -53,11 +60,17 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref messageLabel, value); }
 		}
 
+		ImageSource heroImage;
+		public ImageSource HeroImage
+		{
+			get { return heroImage; }
+			set { SetProperty(ref heroImage, value); }
+		}
+
 		public PredictionInputViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;
 			database = ServiceContainer.Resolve<IDatabase>();
-			MessageLabel = ApplicationResource.CameraNotSupported;
 
 			RefreshViewCommand = new Command(async () =>
 			{
@@ -67,9 +80,28 @@ namespace VisionTrainer.ViewModels
 
 				PredictionPageState state;
 				if (isAvilable)
-					state = (CrossMedia.Current.IsCameraAvailable) ? PredictionPageState.CameraReady : PredictionPageState.NoCameraReady;
+				{
+					if (CrossMedia.Current.IsCameraAvailable)
+					{
+						HeroImage = null;
+						state = PredictionPageState.CameraReady;
+					}
+					else
+					{
+						HeroImage = ImageSource.FromFile("CameraMissing");
+						TitleLabel = ApplicationResource.CameraNotSupportedTitle;
+						MessageLabel = ApplicationResource.CameraNotSupportedMessage;
+						state = PredictionPageState.NoCameraReady;
+
+					}
+				}
 				else
+				{
+					HeroImage = ImageSource.FromFile("CloudMissing");
+					TitleLabel = ApplicationResource.PredictionModelUnavailableTitle;
+					MessageLabel = ApplicationResource.PredictionModelUnavailableMessage;
 					state = PredictionPageState.NoModelAvailable;
+				}
 
 				SetPageState(state);
 			});

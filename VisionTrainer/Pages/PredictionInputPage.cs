@@ -10,14 +10,15 @@ namespace VisionTrainer.Pages
 {
 	public class PredictionInputPage : ContentPage
 	{
-		AbsoluteLayout mainLayout;
-
+		RelativeLayout layout;
 
 		CameraPreview cameraPreview;
+		Image heroImage;
 		PredictionInputViewModel predictionInputModel;
+		Label titleLabel;
 		Label messageLabel;
 		Button captureButton;
-		AnimationView uploadingAnimationView;
+		AnimationView animationView;
 		ToolbarItem browseMedaToolbarItem;
 		ToolbarItem toggleCameraToolbarItem;
 		bool cameraIsAvailable;
@@ -28,7 +29,7 @@ namespace VisionTrainer.Pages
 			predictionInputModel.UpdatePageState += OnPageStateChanged;
 
 			Title = ApplicationResource.PagePredictionInputTitle;
-			mainLayout = new AbsoluteLayout();
+			layout = new RelativeLayout();
 
 			// Camera Layout
 			cameraIsAvailable = CrossMedia.Current.IsCameraAvailable;
@@ -42,8 +43,11 @@ namespace VisionTrainer.Pages
 				cameraPreview.CameraReady += (s, e) => StartCamera();
 				cameraPreview.IsVisible = false;
 
-				AbsoluteLayout.SetLayoutBounds(cameraPreview, new Rectangle(1, 1, 1, 1));
-				AbsoluteLayout.SetLayoutFlags(cameraPreview, AbsoluteLayoutFlags.All);
+				layout.Children.Add(cameraPreview,
+					Constraint.Constant(0),
+					Constraint.Constant(0),
+					Constraint.RelativeToParent((parent) => { return parent.Width; }),
+					Constraint.RelativeToParent((parent) => { return parent.Height; }));
 
 				// Capture Button
 				var buttonSize = 60;
@@ -59,47 +63,100 @@ namespace VisionTrainer.Pages
 				captureButton.HorizontalOptions = LayoutOptions.Center;
 				captureButton.IsVisible = false;
 
-				AbsoluteLayout.SetLayoutBounds(captureButton, new Rectangle(.5, .9, buttonSize, buttonSize));
-				AbsoluteLayout.SetLayoutFlags(captureButton, AbsoluteLayoutFlags.PositionProportional);
-
-				mainLayout.Children.Add(cameraPreview);
-				mainLayout.Children.Add(captureButton);
+				layout.Children.Add(captureButton,
+					Constraint.RelativeToParent((parent) => { return (parent.Width * .5) - (buttonSize * .5); }),
+					Constraint.RelativeToParent((parent) => { return (parent.Height * .9) - (buttonSize * .5); }));
 
 				toggleCameraToolbarItem = new ToolbarItem(ApplicationResource.PageCaptureToolbarToggleCamera, null, () => ToggleCamera()) { Icon = "toggle.png" };
 			}
 
-			// Uploading Layout
-			uploadingAnimationView = new AnimationView();
-			uploadingAnimationView.Animation = "spinner.json";
-			uploadingAnimationView.IsVisible = false;
+			animationView = new AnimationView();
+			animationView.Animation = "spinner.json";
+			animationView.IsVisible = false;
+			layout.Children.Add(animationView,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (heroImage.Width / 2);
+				}),
+				Constraint.RelativeToParent((parent) =>
+				{
+					return parent.Height * .3 - (heroImage.Height / 2);
+				})
+			);
 
-			AbsoluteLayout.SetLayoutBounds(uploadingAnimationView, new Rectangle(.5, .5, 100, 100));
-			AbsoluteLayout.SetLayoutFlags(uploadingAnimationView, AbsoluteLayoutFlags.PositionProportional);
-			mainLayout.Children.Add(uploadingAnimationView);
+			heroImage = new Image();
+			heroImage.HeightRequest = heroImage.WidthRequest = 200;
+			heroImage.SetBinding(Image.SourceProperty, new Binding("HeroImage"));
+			heroImage.SizeChanged += (s, e) =>
+			{
+				layout.ForceLayout();
+			};
 
-			// Message Layout
-			messageLabel = new Label() { HorizontalOptions = LayoutOptions.CenterAndExpand };
+			layout.Children.Add(heroImage,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (heroImage.Width / 2);
+				}),
+				Constraint.RelativeToParent((parent) =>
+				{
+					return parent.Height * .3 - (heroImage.Height / 2);
+				})
+			);
+
+			messageLabel = new Label()
+			{
+				WidthRequest = 300,
+				TextColor = Color.SlateGray,
+				HorizontalOptions = LayoutOptions.Center,
+				HorizontalTextAlignment = TextAlignment.Center
+			};
 			messageLabel.SetBinding(Label.TextProperty, new Binding("MessageLabel"));
-			messageLabel.IsVisible = false;
+			layout.Children.Add(messageLabel,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (messageLabel.Width / 2);
+				}),
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Height * .8) - (messageLabel.Height);
+				})
+			);
 
-			AbsoluteLayout.SetLayoutBounds(messageLabel, new Rectangle(.5, .5, -1, -1));
-			AbsoluteLayout.SetLayoutFlags(messageLabel, AbsoluteLayoutFlags.PositionProportional);
-			mainLayout.Children.Add(messageLabel);
+			titleLabel = new Label()
+			{
+				WidthRequest = 300,
+				HeightRequest = 20,
+				FontAttributes = FontAttributes.Bold,
+				TextColor = Color.Black,
+				HorizontalOptions = LayoutOptions.Center,
+				HorizontalTextAlignment = TextAlignment.Center
+			};
+			titleLabel.SetBinding(Label.TextProperty, new Binding("TitleLabel"));
+			layout.Children.Add(titleLabel,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (titleLabel.Width / 2);
+				}),
+				Constraint.RelativeToView(messageLabel, (parent, sibling) =>
+				{
+					return messageLabel.Y - titleLabel.Height - 10;
+				})
+			);
 
 			browseMedaToolbarItem = new ToolbarItem() { Icon = "folder.png" };
 			browseMedaToolbarItem.SetBinding(ToolbarItem.CommandProperty, new Binding("BrowseMediaCommand"));
 
-			Content = mainLayout;
+			Content = layout;
 		}
 
 		private void OnPageStateChanged(object sender, PageStateEventArgs e)
 		{
 			if (e.State == PredictionPageState.NoModelAvailable)
 			{
-				Console.WriteLine("No Model Available");
-
+				heroImage.IsVisible = true;
+				titleLabel.IsVisible = true;
 				messageLabel.IsVisible = true;
-				uploadingAnimationView.IsVisible = false;
+				animationView.IsVisible = false;
 				if (cameraIsAvailable)
 				{
 					cameraPreview.IsVisible = false;
@@ -109,10 +166,8 @@ namespace VisionTrainer.Pages
 
 			else if (e.State == PredictionPageState.CameraReady)
 			{
-				Console.WriteLine("Camera Ready");
-
-				if (uploadingAnimationView.IsPlaying)
-					uploadingAnimationView.Pause();
+				if (animationView.IsPlaying)
+					animationView.Pause();
 
 				if (!ToolbarItems.Contains(browseMedaToolbarItem))
 					ToolbarItems.Add(browseMedaToolbarItem);
@@ -122,8 +177,10 @@ namespace VisionTrainer.Pages
 					ToolbarItems.Add(toggleCameraToolbarItem);
 				toggleCameraToolbarItem.IsEnabled = true;
 
+				heroImage.IsVisible = false;
+				titleLabel.IsVisible = false;
 				messageLabel.IsVisible = false;
-				uploadingAnimationView.IsVisible = false;
+				animationView.IsVisible = false;
 				cameraPreview.IsVisible = true;
 				captureButton.IsVisible = true;
 
@@ -132,10 +189,8 @@ namespace VisionTrainer.Pages
 
 			else if (e.State == PredictionPageState.NoCameraReady)
 			{
-				Console.WriteLine("No Camera Ready");
-
-				if (uploadingAnimationView.IsPlaying)
-					uploadingAnimationView.Pause();
+				if (animationView.IsPlaying)
+					animationView.Pause();
 
 				if (!ToolbarItems.Contains(browseMedaToolbarItem))
 				{
@@ -143,8 +198,10 @@ namespace VisionTrainer.Pages
 					browseMedaToolbarItem.IsEnabled = true;
 				}
 
+				heroImage.IsVisible = true;
+				titleLabel.IsVisible = true;
 				messageLabel.IsVisible = true;
-				uploadingAnimationView.IsVisible = false;
+				animationView.IsVisible = false;
 				if (cameraIsAvailable)
 				{
 					cameraPreview.IsVisible = false;
@@ -154,13 +211,13 @@ namespace VisionTrainer.Pages
 
 			else if (e.State == PredictionPageState.Uploading)
 			{
-				Console.WriteLine("Uploading");
-
 				if (browseMedaToolbarItem != null) browseMedaToolbarItem.IsEnabled = false;
 				if (toggleCameraToolbarItem != null) toggleCameraToolbarItem.IsEnabled = false;
 
+				heroImage.IsVisible = true;
+				titleLabel.IsVisible = false;
 				messageLabel.IsVisible = false;
-				uploadingAnimationView.IsVisible = true;
+				animationView.IsVisible = true;
 				if (cameraIsAvailable)
 				{
 					cameraPreview.IsVisible = false;
@@ -168,8 +225,8 @@ namespace VisionTrainer.Pages
 					StopCamera();
 				}
 
-				uploadingAnimationView.Play();
-				uploadingAnimationView.Loop = true;
+				animationView.Play();
+				animationView.Loop = true;
 			}
 		}
 
@@ -215,10 +272,10 @@ namespace VisionTrainer.Pages
 
 		protected override void OnDisappearing()
 		{
-			uploadingAnimationView.Pause();
+			animationView.Pause();
 
 			messageLabel.IsVisible = false;
-			uploadingAnimationView.IsVisible = false;
+			animationView.IsVisible = false;
 			if (cameraIsAvailable)
 			{
 				StopCamera();

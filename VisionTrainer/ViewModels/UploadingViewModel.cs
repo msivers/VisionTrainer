@@ -91,7 +91,7 @@ namespace VisionTrainer.ViewModels
 				UploadButtonEnabled = (remainingItemsCount > 0);
 				StatusTitle = "Upload Media for Training";
 				StatusMessage = remainingItemsCount + " " + itemDescription + " waiting for submission.\nUse wifi as files may be large.";
-				Animation = "spinner.json";
+				Animation = "pulse.json";
 				UploadButtonText = "Upload";
 				ShouldLoopAnimation = true;
 				UploadEnabled = true;

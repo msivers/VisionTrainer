@@ -173,9 +173,27 @@ namespace VisionTrainer.Resources {
             }
         }
         
-        internal static string CameraNotSupported {
+        internal static string PredictionModelUnavailableTitle {
             get {
-                return ResourceManager.GetString("CameraNotSupported", resourceCulture);
+                return ResourceManager.GetString("PredictionModelUnavailableTitle", resourceCulture);
+            }
+        }
+        
+        internal static string PredictionModelUnavailableMessage {
+            get {
+                return ResourceManager.GetString("PredictionModelUnavailableMessage", resourceCulture);
+            }
+        }
+        
+        internal static string CameraNotSupportedTitle {
+            get {
+                return ResourceManager.GetString("CameraNotSupportedTitle", resourceCulture);
+            }
+        }
+        
+        internal static string CameraNotSupportedMessage {
+            get {
+                return ResourceManager.GetString("CameraNotSupportedMessage", resourceCulture);
             }
         }
         

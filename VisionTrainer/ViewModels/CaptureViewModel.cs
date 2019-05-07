@@ -17,6 +17,27 @@ namespace VisionTrainer.ViewModels
 		public INavigation Navigation { get; set; }
 		IDatabase database;
 
+		string titleLabel;
+		public string TitleLabel
+		{
+			get { return titleLabel; }
+			set { SetProperty(ref titleLabel, value); }
+		}
+
+		string messageLabel;
+		public string MessageLabel
+		{
+			get { return messageLabel; }
+			set { SetProperty(ref messageLabel, value); }
+		}
+
+		ImageSource heroImage;
+		public ImageSource HeroImage
+		{
+			get { return heroImage; }
+			set { SetProperty(ref heroImage, value); }
+		}
+
 		public CaptureViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;

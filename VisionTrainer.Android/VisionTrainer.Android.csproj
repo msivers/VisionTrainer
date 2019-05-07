@@ -170,6 +170,12 @@
     <AndroidResource Include="Resources\mipmap-xhdpi\CameraUpload.png" />
     <AndroidResource Include="Resources\mipmap-xxhdpi\AllComplete.png" />
     <AndroidResource Include="Resources\mipmap-xxhdpi\CameraUpload.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\CameraMissing.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\CameraMissing.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\CameraMissing.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\CloudMissing.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\CloudMissing.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\CloudMissing.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

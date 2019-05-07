@@ -78,9 +78,19 @@
     <data name="PageUploadingTitle">
         <value>Upload Media</value>
     </data>
+    <!-- Prediction Model -->
+    <data name="PredictionModelUnavailableTitle">
+        <value>Prediction Model Unavailable</value>
+    </data>
+    <data name="PredictionModelUnavailableMessage">
+        <value>A prediction model has not been published for this app yet.</value>
+    </data>
     <!-- Camera Entries -->
-    <data name="CameraNotSupported">
+    <data name="CameraNotSupportedTitle">
         <value>Camera Not Available</value>
+    </data>
+    <data name="CameraNotSupportedMessage">
+        <value>This device does not have a camera or does not have permission to access the camera</value>
     </data>
     <data name="CameraPermissionMissing">
         <value>:( Permission not granted to camera.</value>

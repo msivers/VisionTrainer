@@ -264,5 +264,11 @@
     <BundleResource Include="Resources\AllComplete%402x.png" />
     <BundleResource Include="Resources\AllComplete%403x.png" />
     <BundleResource Include="Resources\pulse.json" />
+    <BundleResource Include="Resources\CameraMissing.png" />
+    <BundleResource Include="Resources\CameraMissing%402x.png" />
+    <BundleResource Include="Resources\CameraMissing%403x.png" />
+    <BundleResource Include="Resources\CloudMissing.png" />
+    <BundleResource Include="Resources\CloudMissing%402x.png" />
+    <BundleResource Include="Resources\CloudMissing%403x.png" />
   </ItemGroup>
 </Project>

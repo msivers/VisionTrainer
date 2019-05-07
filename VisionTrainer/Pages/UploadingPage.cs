@@ -9,6 +9,7 @@ namespace VisionTrainer.Pages
 	public class UploadingPage : ContentPage
 	{
 		AnimationView animationView;
+		RelativeLayout uploadingLayout;
 
 		public UploadingPage()
 		{
@@ -21,11 +22,13 @@ namespace VisionTrainer.Pages
 			animationView.SetBinding(AnimationView.AnimationProperty, new Binding("Animation"));
 			animationView.SetBinding(AnimationView.LoopProperty, new Binding("ShouldLoopAnimation"));
 			animationView.AutoPlay = true;
+			animationView.HeightRequest = animationView.WidthRequest = 200;
 			animationView.Play();
 
 			var heroImage = new Image();
 			heroImage.HeightRequest = heroImage.WidthRequest = 200;
 			heroImage.SetBinding(Image.SourceProperty, new Binding("HeroImage"));
+			heroImage.SizeChanged += HeroImage_SizeChanged;
 
 			var titleLabel = new Label()
 			{
@@ -63,19 +66,9 @@ namespace VisionTrainer.Pages
 			AbsoluteLayout.SetLayoutBounds(startButton, new Rectangle(.5, 1, 180, 40));
 			AbsoluteLayout.SetLayoutFlags(startButton, AbsoluteLayoutFlags.PositionProportional);
 
-			var uploadingLayout = new RelativeLayout();
+			uploadingLayout = new RelativeLayout();
 			uploadingLayout.Margin = new Thickness(40);
 
-			uploadingLayout.Children.Add(heroImage,
-				Constraint.RelativeToParent((parent) =>
-				{
-					return (parent.Width * .5) - (heroImage.Width / 2);
-				}),
-				Constraint.RelativeToParent((parent) =>
-				{
-					return parent.Height * .3 - (heroImage.Height / 2);
-				})
-			);
 			uploadingLayout.Children.Add(animationView,
 				Constraint.RelativeToParent((parent) =>
 				{
@@ -86,6 +79,17 @@ namespace VisionTrainer.Pages
 					return parent.Height * .3 - (heroImage.Height / 2);
 				})
 			);
+			uploadingLayout.Children.Add(heroImage,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (heroImage.Width / 2);
+				}),
+				Constraint.RelativeToParent((parent) =>
+				{
+					return parent.Height * .3 - (heroImage.Height / 2);
+				})
+			);
+
 			uploadingLayout.Children.Add(startButton,
 				Constraint.RelativeToParent((parent) =>
 				{
@@ -118,6 +122,11 @@ namespace VisionTrainer.Pages
 			);
 
 			Content = uploadingLayout;
+		}
+
+		private void HeroImage_SizeChanged(object sender, System.EventArgs e)
+		{
+			uploadingLayout.ForceLayout();
 		}
 
 		protected override void OnDisappearing()

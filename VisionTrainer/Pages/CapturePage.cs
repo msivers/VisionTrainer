@@ -13,18 +13,16 @@ namespace VisionTrainer.Pages
 		CameraPreview cameraPreview;
 		CaptureViewModel captureModel;
 		CachedImage cachedCapture;
+		Label titleLabel;
 		Label messageLabel;
-
-		// Language
-		string messageOK = ApplicationResource.OK;
-		string messageCameraNotSupported = ApplicationResource.CameraNotSupported;
-		string messageCameraPermissionsMissing = ApplicationResource.CameraPermissionMissing;
+		Image heroImage;
+		RelativeLayout layout;
 
 		public CapturePage()
 		{
 			BindingContext = captureModel = new CaptureViewModel(Navigation);
 			Title = ApplicationResource.PageCaptureTitle;
-			var layout = new AbsoluteLayout();
+			layout = new RelativeLayout();
 
 			if (CrossMedia.Current.IsCameraAvailable)
 			{
@@ -36,15 +34,22 @@ namespace VisionTrainer.Pages
 				cameraPreview.CaptureBytesCallback = new Action<byte[]>(ProcessCameraPhoto);
 				cameraPreview.CameraReady += (s, e) => StartCamera();
 
-				AbsoluteLayout.SetLayoutBounds(cameraPreview, new Rectangle(1, 1, 1, 1));
-				AbsoluteLayout.SetLayoutFlags(cameraPreview, AbsoluteLayoutFlags.All);
+				layout.Children.Add(cameraPreview,
+					Constraint.Constant(0),
+					Constraint.Constant(0),
+					Constraint.RelativeToParent((parent) => { return parent.Width; }),
+					Constraint.RelativeToParent((parent) => { return parent.Height; }));
 
 				// Last Capture
 				cachedCapture = new CachedImage();
 				cachedCapture.Aspect = Aspect.AspectFill;
 				cachedCapture.BackgroundColor = Color.White;
-				AbsoluteLayout.SetLayoutBounds(cachedCapture, new Rectangle(5, 5, 80, 80));
-				AbsoluteLayout.SetLayoutFlags(cachedCapture, AbsoluteLayoutFlags.None);
+
+				layout.Children.Add(cameraPreview,
+					Constraint.Constant(5),
+					Constraint.Constant(5),
+					Constraint.Constant(80),
+					Constraint.Constant(80));
 
 				// Capture Button
 				var buttonSize = 60;
@@ -58,14 +63,9 @@ namespace VisionTrainer.Pages
 				captureButton.BorderColor = Color.Black;
 				captureButton.HorizontalOptions = LayoutOptions.Center;
 
-				AbsoluteLayout.SetLayoutBounds(captureButton, new Rectangle(.5, .9, buttonSize, buttonSize));
-				AbsoluteLayout.SetLayoutFlags(captureButton, AbsoluteLayoutFlags.PositionProportional);
-
-				layout.Children.Add(cameraPreview);
-				layout.Children.Add(cachedCapture);
-				layout.Children.Add(captureButton);
-
-				Content = layout;
+				layout.Children.Add(captureButton,
+					Constraint.RelativeToParent((parent) => { return (parent.Width * .5) - (buttonSize * .5); }),
+					Constraint.RelativeToParent((parent) => { return (parent.Height * .9) - (buttonSize * .5); }));
 
 				this.ToolbarItems.Add(
 					new ToolbarItem(ApplicationResource.PageCaptureToolbarToggleCamera, null, () => ToggleCamera()) { Icon = "toggle.png" }
@@ -74,16 +74,68 @@ namespace VisionTrainer.Pages
 
 			else
 			{
-				messageLabel = new Label()
+				heroImage = new Image();
+				heroImage.HeightRequest = heroImage.WidthRequest = 200;
+				heroImage.Source = ImageSource.FromFile("CameraMissing");
+				heroImage.SizeChanged += (s, e) =>
 				{
-					Text = messageCameraNotSupported,
-					HorizontalOptions = LayoutOptions.CenterAndExpand
+					layout.ForceLayout();
 				};
 
-				AbsoluteLayout.SetLayoutBounds(messageLabel, new Rectangle(.5, .5, -1, -1));
-				AbsoluteLayout.SetLayoutFlags(messageLabel, AbsoluteLayoutFlags.PositionProportional);
-				layout.Children.Add(messageLabel);
+
+				layout.Children.Add(heroImage,
+					Constraint.RelativeToParent((parent) =>
+					{
+						return (parent.Width * .5) - (heroImage.Width / 2);
+					}),
+					Constraint.RelativeToParent((parent) =>
+					{
+						return parent.Height * .3 - (heroImage.Height / 2);
+					})
+				);
+
+				messageLabel = new Label()
+				{
+					WidthRequest = 300,
+					TextColor = Color.SlateGray,
+					HorizontalOptions = LayoutOptions.Center,
+					HorizontalTextAlignment = TextAlignment.Center
+				};
+				messageLabel.Text = ApplicationResource.CameraNotSupportedMessage;
+
+				layout.Children.Add(messageLabel,
+				Constraint.RelativeToParent((parent) =>
+				{
+					return (parent.Width * .5) - (messageLabel.Width / 2);
+				}),
+					Constraint.RelativeToParent((parent) =>
+					{
+						return (parent.Height * .8) - (messageLabel.Height);
+					})
+				);
+
+				titleLabel = new Label()
+				{
+					WidthRequest = 300,
+					HeightRequest = 20,
+					FontAttributes = FontAttributes.Bold,
+					TextColor = Color.Black,
+					HorizontalOptions = LayoutOptions.Center,
+					HorizontalTextAlignment = TextAlignment.Center
+				};
+				titleLabel.Text = ApplicationResource.CameraNotSupportedTitle;
+				layout.Children.Add(titleLabel,
+				Constraint.RelativeToParent((parent) =>
+					{
+						return (parent.Width * .5) - (titleLabel.Width / 2);
+					}),
+					Constraint.RelativeToView(messageLabel, (parent, sibling) =>
+					{
+						return messageLabel.Y - titleLabel.Height - 10;
+					})
+				);
 			}
+
 			Content = layout;
 		}
 
@@ -101,7 +153,7 @@ namespace VisionTrainer.Pages
 		{
 			if (!CrossMedia.Current.IsCameraAvailable)
 			{
-				DisplayAlert(messageCameraNotSupported, messageCameraPermissionsMissing, messageOK);
+				DisplayAlert(ApplicationResource.CameraNotSupportedTitle, ApplicationResource.CameraPermissionMissing, ApplicationResource.OK);
 				return;
 			}
 
@@ -113,7 +165,7 @@ namespace VisionTrainer.Pages
 		{
 			if (!CrossMedia.Current.IsCameraAvailable)
 			{
-				DisplayAlert(messageCameraNotSupported, messageCameraPermissionsMissing, messageOK);
+				DisplayAlert(ApplicationResource.CameraNotSupportedTitle, ApplicationResource.CameraPermissionMissing, ApplicationResource.OK);
 				return;
 			}
 
