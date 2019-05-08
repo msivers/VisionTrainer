@@ -486,8 +486,8 @@ namespace VisionTrainer.Droid
 
 				// Here, we create a CameraCaptureSession for camera preview.
 				List<Surface> surfaces = new List<Surface>();
-				surfaces.Add(surface);
 				surfaces.Add(mImageReader.Surface);
+				surfaces.Add(surface);
 				Device.CreateCaptureSession(surfaces, new CameraCaptureSessionCallback(this), null);
 
 			}

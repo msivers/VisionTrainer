@@ -1,7 +1,9 @@
 using Android.Media;
+using Android.OS;
 using Java.IO;
 using Java.Lang;
 using Java.Nio;
+using System;
 
 namespace Camera2Basic.Listeners
 {
@@ -23,9 +25,9 @@ namespace Camera2Basic.Listeners
 			ByteBuffer buffer = image.GetPlanes()[0].Buffer;
 			byte[] bytes = new byte[buffer.Remaining()];
 			buffer.Get(bytes);
+			image.Close();
 
 			owner.CaptureByteArray(bytes);
-			reader.Close();
 		}
 	}
 }

@@ -4,6 +4,9 @@ using VisionTrainer.Pages;
 using VisionTrainer.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace VisionTrainer
@@ -27,7 +30,9 @@ namespace VisionTrainer
 
 		protected override void OnStart()
 		{
-			// Handle when your app starts
+			AppCenter.Start("ios=661fec4a-f4dc-4202-8cc6-d9783867fb81;" +
+				  "android=afb0687b-7bb4-4d8f-8619-46bf1b303bc5;",
+				  typeof(Analytics), typeof(Crashes));
 		}
 
 		protected override void OnSleep()
