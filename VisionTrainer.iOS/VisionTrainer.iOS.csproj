@@ -191,11 +191,11 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\VisionTrainer\VisionTrainer.csproj">
-      <Project>{97D2A0F4-DBB0-4C18-B890-2105B7686D28}</Project>
+      <Project>{CE746019-A523-4F25-B621-BC8516E56100}</Project>
       <Name>VisionTrainer</Name>
     </ProjectReference>
     <ProjectReference Include="..\VisionTrainer.Common\VisionTrainer.Common.csproj">
-      <Project>{C1B1D1A6-CEC2-4E00-BE88-35D6EEDAF4E7}</Project>
+      <Project>{0DC9537E-00A0-47FA-92FB-5BEBDBDA2C98}</Project>
       <Name>VisionTrainer.Common</Name>
     </ProjectReference>
   </ItemGroup>
