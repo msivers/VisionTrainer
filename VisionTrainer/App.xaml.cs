@@ -30,8 +30,8 @@ namespace VisionTrainer
 
 		protected override void OnStart()
 		{
-			AppCenter.Start("ios=661fec4a-f4dc-4202-8cc6-d9783867fb81;" +
-				  "android=afb0687b-7bb4-4d8f-8619-46bf1b303bc5;",
+			AppCenter.Start("ios=a3696b2c-7dab-4ff3-b00f-a6e6fe3d99e0;" +
+				  "android=4501ec07-075d-48df-ae30-b6526d16361c;",
 				  typeof(Analytics), typeof(Crashes));
 		}
 
