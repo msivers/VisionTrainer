@@ -102,6 +102,7 @@
     <Compile Include="Utils\BitmapUtils.cs" />
     <Compile Include="Services\MultiMediaPickerService.cs" />
     <Compile Include="Utils\ImageHelpers.cs" />
+    <Compile Include="MainApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

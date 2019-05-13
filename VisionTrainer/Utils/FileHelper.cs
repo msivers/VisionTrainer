@@ -25,8 +25,6 @@ namespace VisionTrainer.Utils
 
 		public static string GetOutputPath(MediaFileType type, string name)
 		{
-			var fullPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
 			if (string.IsNullOrWhiteSpace(name))
 			{
 				string timestamp = DateTime.Now.ToString("yyyMMdd_HHmmss");
@@ -36,7 +34,7 @@ namespace VisionTrainer.Utils
 					name = "VID_" + timestamp + ".mp4";
 			}
 
-			return GetUniqueName(type, name);
+			return GetFullPath(GetUniqueName(type, name));
 		}
 
 		public static string GetFullPath(string path)

@@ -64,16 +64,22 @@ namespace VisionTrainer.Droid
 			}
 		}
 
+		bool tempHasCaptured = false;
 		void CaptureToFile()
 		{
 			if (captureBytesCallbackAction == null)
 				return;
 
+			tempHasCaptured = false;
 			cameraPreview.Capture();
 		}
 
 		void ImageCaptured(object sender, ImageCaptureEventArgs e)
 		{
+			if (tempHasCaptured)
+				return;
+
+			tempHasCaptured = true;
 			captureBytesCallbackAction(e.Bytes);
 		}
 

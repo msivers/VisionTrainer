@@ -10,11 +10,14 @@ using Android.Graphics;
 using Android.Media;
 using Android.Provider;
 using Android.Widget;
-using Plugin.CurrentActivity;
-using VisionTrainer.Common.Enums;
 using VisionTrainer.Droid.Utils;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Models;
+using VisionTrainer.Common.Enums;
+using VisionTrainer.Services;
+using Plugin.CurrentActivity;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using VisionTrainer.Utils;
 
 namespace VisionTrainer.Droid.Services
@@ -23,6 +26,7 @@ namespace VisionTrainer.Droid.Services
 	{
 		public static MultiMediaPickerService SharedInstance = new MultiMediaPickerService();
 		int MultiPickerResultCode = 9793;
+		const string TemporalDirectoryName = "TmpMedia";
 
 		MultiMediaPickerService()
 		{
@@ -99,23 +103,20 @@ namespace VisionTrainer.Droid.Services
 					var fullImage = ImageHelpers.RotateImage(path, 1);
 					var thumbImage = ImageHelpers.RotateImage(path, 0.25f);
 
-					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}{ext}");
-					fullPath = FileHelper.GetFullPath(relativePath);
+
+					fullPath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}{ext}");
 					File.WriteAllBytes(fullPath, fullImage);
 
 					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}-THUMBNAIL{ext}");
 					File.WriteAllBytes(thumbnailImagePath, thumbImage);
 
 				}
-
 				else if (type.StartsWith(Enum.GetName(typeof(MediaFileType), MediaFileType.Video), StringComparison.CurrentCultureIgnoreCase))
 				{
 					fullPath = path;
 					var bitmap = ThumbnailUtils.CreateVideoThumbnail(path, ThumbnailKind.MiniKind);
 
-					var relativePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}-THUMBNAIL{ext}");
-					thumbnailImagePath = FileHelper.GetFullPath(relativePath);
-
+					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}-THUMBNAIL{ext}");
 					var stream = new FileStream(thumbnailImagePath, FileMode.Create);
 					bitmap?.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
 					stream.Close();
@@ -129,8 +130,7 @@ namespace VisionTrainer.Droid.Services
 					{
 						Path = fullPath,
 						Type = mediaFileType,
-						PreviewPath = thumbnailImagePath,
-						Date = DateTime.Now
+						PreviewPath = thumbnailImagePath
 					};
 				}
 
@@ -215,6 +215,17 @@ namespace VisionTrainer.Droid.Services
 
 			return null;
 
+		}
+
+		public void Clean()
+		{
+
+			var documentsDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TemporalDirectoryName);
+
+			if (Directory.Exists(documentsDirectory))
+			{
+				Directory.Delete(documentsDirectory);
+			}
 		}
 
 		public async Task<IList<MediaDetails>> PickPhotosAsync()

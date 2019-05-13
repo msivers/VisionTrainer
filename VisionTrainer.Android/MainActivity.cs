@@ -10,6 +10,7 @@ using Plugin.Permissions;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Droid.Services;
 using Lottie.Forms;
+using Android.Content;
 
 namespace VisionTrainer.Droid
 {
@@ -42,6 +43,13 @@ namespace VisionTrainer.Droid
 		{
 			PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 			base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
+
+			MultiMediaPickerService.SharedInstance.OnActivityResult(requestCode, resultCode, data);
 		}
 	}
 }
