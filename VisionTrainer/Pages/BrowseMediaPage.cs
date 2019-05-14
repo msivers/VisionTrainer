@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class BrowseMediaPage : ContentPage
+	public class BrowseMediaPage : BaseContentPage
 	{
 		public BrowseMediaPage()
 		{

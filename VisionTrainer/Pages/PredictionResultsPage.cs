@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class PredictionResultsPage : ContentPage
+	public class PredictionResultsPage : BaseContentPage
 	{
 		SKCanvasView canvasView;
 		PredictionResultsViewModel viewModel;

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AppCenter.Analytics;
 using VisionTrainer.Constants;
 using VisionTrainer.Resources;
 using VisionTrainer.Utils;
@@ -6,7 +7,7 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class PermissionsPage : ContentPage
+	public class PermissionsPage : BaseContentPage
 	{
 		Button cameraButton;
 		Button photosButton;

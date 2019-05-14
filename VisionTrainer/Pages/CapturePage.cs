@@ -8,7 +8,7 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class CapturePage : ContentPage, IStatefulContent
+	public class CapturePage : BaseContentPage, IStatefulContent
 	{
 		CameraPreview cameraPreview;
 		CaptureViewModel captureModel;

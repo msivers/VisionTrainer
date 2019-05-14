@@ -5,7 +5,7 @@ using XamLottie;
 
 namespace VisionTrainer.Pages
 {
-	public class AnimationPage : ContentPage
+	public class AnimationPage : BaseContentPage
 	{
 		public AnimationPage()
 		{

@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace VisionTrainer.Pages
 {
-	public class UploadingPage : ContentPage
+	public class UploadingPage : BaseContentPage
 	{
 		AnimationView animationView;
 		RelativeLayout uploadingLayout;

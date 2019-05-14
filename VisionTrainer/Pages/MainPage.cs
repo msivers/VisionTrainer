@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
@@ -20,27 +21,8 @@ namespace VisionTrainer.Pages
 		{
 			On<Android>().SetToolbarPlacement(ToolbarPlacement.Bottom);
 
-			CheckPermissions();
-		}
+			Analytics.TrackEvent("Main Page");
 
-		async Task CheckPermissions()
-		{
-			var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
-			if (status != PermissionStatus.Granted)
-			{
-				Xamarin.Forms.Application.Current.ModalPopping += HandleModalPopping;
-				await Navigation.PushModalAsync(new PermissionsPage(), false);
-			}
-
-			else
-			{
-				CreateContent();
-			}
-		}
-
-		private void HandleModalPopping(object sender, ModalPoppingEventArgs e)
-		{
-			Xamarin.Forms.Application.Current.ModalPopping -= HandleModalPopping;
 			CreateContent();
 		}
 
@@ -81,12 +63,7 @@ namespace VisionTrainer.Pages
 		{
 			var textColor = Color.White;
 
-			//CreateDebugPrediction();
-			//CreateAnimationPage();
-
-			//var predictionNavigationPage = new NavigationPage(new UploadingPage());
 			var predictionNavigationPage = new NavigationPage(new PredictionInputPage());
-
 			predictionNavigationPage.Title = ApplicationResource.NavigationTestTitle;
 			predictionNavigationPage.Icon = "capture.png";
 			predictionNavigationPage.BarTextColor = textColor;
@@ -106,6 +83,17 @@ namespace VisionTrainer.Pages
 			settingsNavigationPage.BarTextColor = textColor;
 			settingsNavigationPage.BarBackgroundColor = AppColors.HeaderColor;
 			Children.Add(settingsNavigationPage);
+
+			// Check for permissions
+			Task.Run(async () =>
+			{
+				Analytics.TrackEvent("Check Permissions");
+				var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
+				if (status != PermissionStatus.Granted)
+				{
+					await Navigation.PushModalAsync(new PermissionsPage(), false);
+				}
+			});
 		}
 
 		protected override void OnCurrentPageChanged()
@@ -113,6 +101,11 @@ namespace VisionTrainer.Pages
 			base.OnCurrentPageChanged();
 
 			var navPage = (NavigationPage)CurrentPage;
+			//navPage.PopToRootAsync();
+
+			var name = navPage.CurrentPage.GetType().Name;
+			Analytics.TrackEvent("Page: " + name);
+
 			App.CurrentTabPage = navPage.CurrentPage;
 		}
 	}
