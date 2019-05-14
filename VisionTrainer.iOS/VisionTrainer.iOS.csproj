@@ -270,5 +270,6 @@
     <BundleResource Include="Resources\CloudMissing.png" />
     <BundleResource Include="Resources\CloudMissing%402x.png" />
     <BundleResource Include="Resources\CloudMissing%403x.png" />
+    <BundleResource Include="Resources\SplashArt.png" />
   </ItemGroup>
 </Project>
