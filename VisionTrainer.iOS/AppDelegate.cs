@@ -28,6 +28,8 @@ namespace VisionTrainer.iOS
 			ServiceContainer.Register<IMultiMediaPickerService>(new MultiMediaPickerService());
 			FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
 
+			UIApplication.SharedApplication.IdleTimerDisabled = true; // keep the app awake
+
 			// Load forms app
 			//Xamarin.Calabash.Start();
 			global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");

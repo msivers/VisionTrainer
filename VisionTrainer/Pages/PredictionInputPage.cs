@@ -156,10 +156,17 @@ namespace VisionTrainer.Pages
 				titleLabel.IsVisible = true;
 				messageLabel.IsVisible = true;
 				animationView.IsVisible = false;
+
 				if (cameraIsAvailable)
 				{
 					cameraPreview.IsVisible = false;
 					captureButton.IsVisible = false;
+
+					if (ToolbarItems.Contains(browseMedaToolbarItem))
+						ToolbarItems.Remove(browseMedaToolbarItem);
+
+					if (ToolbarItems.Contains(toggleCameraToolbarItem))
+						ToolbarItems.Remove(toggleCameraToolbarItem);
 				}
 			}
 

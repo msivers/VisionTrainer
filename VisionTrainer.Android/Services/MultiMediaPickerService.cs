@@ -19,6 +19,7 @@ using Plugin.CurrentActivity;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using VisionTrainer.Utils;
+using VisionTrainer.Constants;
 
 namespace VisionTrainer.Droid.Services
 {
@@ -118,7 +119,7 @@ namespace VisionTrainer.Droid.Services
 
 					thumbnailImagePath = FileHelper.GetOutputPath(MediaFileType.Image, $"{fileName}-THUMBNAIL{ext}");
 					var stream = new FileStream(thumbnailImagePath, FileMode.Create);
-					bitmap?.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
+					bitmap?.Compress(Bitmap.CompressFormat.Jpeg, ProjectConfig.JpegCompression, stream);
 					stream.Close();
 
 					mediaFileType = MediaFileType.Video;
@@ -130,7 +131,8 @@ namespace VisionTrainer.Droid.Services
 					{
 						Path = fullPath,
 						Type = mediaFileType,
-						PreviewPath = thumbnailImagePath
+						PreviewPath = thumbnailImagePath,
+						Date = DateTime.Now
 					};
 				}
 

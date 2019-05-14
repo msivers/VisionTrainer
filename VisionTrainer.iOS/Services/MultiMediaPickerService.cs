@@ -11,6 +11,7 @@ using GMImagePicker;
 using Photos;
 using UIKit;
 using VisionTrainer.Common.Enums;
+using VisionTrainer.Constants;
 using VisionTrainer.Interfaces;
 using VisionTrainer.Models;
 using VisionTrainer.Utils;
@@ -177,7 +178,7 @@ namespace VisionTrainer.iOS.Services
 								Debug.WriteLine(dataUti);
 
 								var image = UIImage.LoadFromData(data);
-								var imageData = image.AsJPEG();
+								var imageData = image.AsJPEG(ProjectConfig.JpegCompression / 100);
 
 								imageData?.Save(fullPath, true);
 							}

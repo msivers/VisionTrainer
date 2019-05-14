@@ -9,5 +9,8 @@ namespace VisionTrainer.Constants
 		public static string SubmitTrainingMediaUrl { get { return Settings.Endpoint + "SubmitTrainingMedia"; } }
 		public static string SubmitPredictionMediaUrl { get { return Settings.Endpoint + "SubmitPredictionMedia"; } }
 		public static string RemoteModelAvailableUrl { get { return Settings.Endpoint + "RemoteModelAvailable"; } }
+
+		public static int JpegCompression = 90;
+
 	}
 }

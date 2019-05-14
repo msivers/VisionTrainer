@@ -81,29 +81,7 @@ namespace VisionTrainer.ViewModels
 		public UploadingViewModel(INavigation navigation)
 		{
 			database = ServiceContainer.Resolve<IDatabase>();
-			var remainingItemsCount = database.GetItemsNotDone().Count();
-
-			var hasItems = (remainingItemsCount > 0);
-			if (hasItems)
-			{
-				var itemDescription = (remainingItemsCount > 1) ? "items" : "item";
-				UploadButtonEnabled = (remainingItemsCount > 0);
-				StatusTitle = "Upload Media for Training";
-				StatusMessage = remainingItemsCount + " " + itemDescription + " waiting for submission.\nUse wifi as files may be large.";
-				Animation = "pulse.json";
-				UploadButtonText = "Upload";
-				ShouldLoopAnimation = true;
-				UploadEnabled = true;
-				HeroImage = ImageSource.FromFile("CameraUpload");
-			}
-			else
-			{
-				StatusTitle = "Complete";
-				StatusMessage = "There are no items to upload";
-				Animation = "complete.json";
-				ShowAnimation = false;
-				HeroImage = ImageSource.FromFile("AllComplete");
-			}
+			UpdateStatus();
 
 			StartUploadCommand = new Command(async (obj) =>
 			{
@@ -117,7 +95,7 @@ namespace VisionTrainer.ViewModels
 				if (database.GetItemsNotDone().Count() == 0)
 				{
 					ShowAnimation = false;
-					await navigation.PopAsync();
+					UpdateStatus();
 				}
 			});
 
@@ -125,6 +103,8 @@ namespace VisionTrainer.ViewModels
 			{
 				ShowAnimation = false;
 				shouldUpload = false;
+
+				UpdateStatus();
 			});
 		}
 
@@ -150,6 +130,37 @@ namespace VisionTrainer.ViewModels
 					database.DeleteItem(item);
 					itemCount--;
 				}
+				else
+				{
+					StopUploadCommand.Execute(null);
+				}
+			}
+		}
+
+		void UpdateStatus()
+		{
+			var remainingItemsCount = database.GetItemsNotDone().Count();
+
+			var hasItems = (remainingItemsCount > 0);
+			if (hasItems)
+			{
+				var itemDescription = (remainingItemsCount > 1) ? "items" : "item";
+				UploadButtonEnabled = (remainingItemsCount > 0);
+				StatusTitle = "Upload Media for Training";
+				StatusMessage = remainingItemsCount + " " + itemDescription + " waiting for submission.\nUse wifi as files may be large.";
+				Animation = "pulse.json";
+				UploadButtonText = "Upload";
+				ShouldLoopAnimation = true;
+				UploadEnabled = true;
+				HeroImage = ImageSource.FromFile("CameraUpload");
+			}
+			else
+			{
+				StatusTitle = "Complete";
+				StatusMessage = "There are no items to upload";
+				Animation = "complete.json";
+				ShowAnimation = false;
+				HeroImage = ImageSource.FromFile("AllComplete");
 			}
 		}
 	}

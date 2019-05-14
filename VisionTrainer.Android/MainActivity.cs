@@ -25,6 +25,8 @@ namespace VisionTrainer.Droid
 			App.ScreenWidth = (int)Resources.DisplayMetrics.WidthPixels; // real pixels
 			App.ScreenHeight = (int)Resources.DisplayMetrics.HeightPixels; // real pixels
 
+			this.Window.SetFlags(WindowManagerFlags.KeepScreenOn, WindowManagerFlags.KeepScreenOn);
+
 			base.OnCreate(savedInstanceState);
 
 			// Initialize platform specific services
