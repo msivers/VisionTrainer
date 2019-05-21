@@ -5,7 +5,8 @@ namespace VisionTrainer.Constants
 {
 	public static class AppColors
 	{
-		public static Color HeaderColor = Color.FromHex("#087EFF"); // #4971AF
-		public static Color ButtonColor = Color.FromHex("#087EFF"); // #EDEDED
+		public static Color HeaderColor = Color.FromHex("#087EFF");
+		public static Color ButtonEnabledColor = Color.FromHex("#087EFF");
+		public static Color ButtonDisabledColor = Color.FromHex("#E6E6E6");
 	}
 }

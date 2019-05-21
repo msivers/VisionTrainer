@@ -30,8 +30,11 @@
     <data name="PagePredictionInputTitle">
         <value>Capture</value>
     </data>
-    <data name="PagePredictionInputUploading">
+    <data name="PagePredictionInputUploadingTitle">
         <value>Uploading</value>
+    </data>
+    <data name="PagePredictionInputUploadingMessage">
+        <value>Submitting media for prediction</value>
     </data>
     <data name="PageCaptureToolbarBrowsePhotos">
         <value>Pick Photo</value>

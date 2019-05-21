@@ -77,9 +77,15 @@ namespace VisionTrainer.Resources {
             }
         }
         
-        internal static string PagePredictionInputUploading {
+        internal static string PagePredictionInputUploadingTitle {
             get {
-                return ResourceManager.GetString("PagePredictionInputUploading", resourceCulture);
+                return ResourceManager.GetString("PagePredictionInputUploadingTitle", resourceCulture);
+            }
+        }
+        
+        internal static string PagePredictionInputUploadingMessage {
+            get {
+                return ResourceManager.GetString("PagePredictionInputUploadingMessage", resourceCulture);
             }
         }
         

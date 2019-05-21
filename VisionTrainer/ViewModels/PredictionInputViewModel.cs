@@ -67,6 +67,13 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref heroImage, value); }
 		}
 
+		bool showAnimation;
+		public bool ShowAnimation
+		{
+			get { return showAnimation; }
+			set { SetProperty(ref showAnimation, value); }
+		}
+
 		public PredictionInputViewModel(INavigation navigation)
 		{
 			this.Navigation = navigation;
@@ -78,30 +85,9 @@ namespace VisionTrainer.ViewModels
 				var hasModelName = !string.IsNullOrEmpty(Settings.PublishedModelName);
 				bool isAvilable = (hasActiveModel || hasModelName);
 
-				PredictionPageState state;
-				if (isAvilable)
-				{
-					if (CrossMedia.Current.IsCameraAvailable)
-					{
-						HeroImage = null;
-						state = PredictionPageState.CameraReady;
-					}
-					else
-					{
-						HeroImage = ImageSource.FromFile("CameraMissing");
-						TitleLabel = ApplicationResource.CameraNotSupportedTitle;
-						MessageLabel = ApplicationResource.CameraNotSupportedMessage;
-						state = PredictionPageState.NoCameraReady;
-
-					}
-				}
-				else
-				{
-					HeroImage = ImageSource.FromFile("CloudMissing");
-					TitleLabel = ApplicationResource.PredictionModelUnavailableTitle;
-					MessageLabel = ApplicationResource.PredictionModelUnavailableMessage;
-					state = PredictionPageState.NoModelAvailable;
-				}
+				PredictionPageState state = isAvilable ?
+					(CrossMedia.Current.IsCameraAvailable ? PredictionPageState.CameraReady : PredictionPageState.NoCameraReady)
+					: PredictionPageState.NoModelAvailable;
 
 				SetPageState(state);
 			});
@@ -112,6 +98,38 @@ namespace VisionTrainer.ViewModels
 		void SetPageState(PredictionPageState state)
 		{
 			pageState = state;
+
+			switch (pageState)
+			{
+				case PredictionPageState.CameraReady:
+					{
+						HeroImage = null;
+					}
+					break;
+				case PredictionPageState.NoCameraReady:
+					{
+						HeroImage = ImageSource.FromFile("CameraMissing");
+						TitleLabel = ApplicationResource.CameraNotSupportedTitle;
+						MessageLabel = ApplicationResource.CameraNotSupportedMessage;
+					}
+					break;
+				case PredictionPageState.NoModelAvailable:
+					{
+						HeroImage = ImageSource.FromFile("CloudMissing");
+						TitleLabel = ApplicationResource.PredictionModelUnavailableTitle;
+						MessageLabel = ApplicationResource.PredictionModelUnavailableMessage;
+					}
+					break;
+				case PredictionPageState.Uploading:
+					{
+						HeroImage = ImageSource.FromFile("CameraUpload");
+						TitleLabel = ApplicationResource.PagePredictionInputUploadingTitle;
+						MessageLabel = ApplicationResource.PagePredictionInputUploadingMessage;
+					}
+					break;
+				default:
+					break;
+			}
 
 			var eventData = new PageStateEventArgs(pageState);
 			UpdatePageState?.Invoke(this, eventData);
@@ -154,7 +172,6 @@ namespace VisionTrainer.ViewModels
 			};
 			database.SaveItem(predictionMedia);
 
-			// Update the state
 			SetPageState(PredictionPageState.Uploading);
 
 			await UploadMedia(predictionMedia.FullPath);
@@ -168,6 +185,7 @@ namespace VisionTrainer.ViewModels
 
 			if (success && App.CurrentTabPage.GetType() == typeof(PredictionInputPage))
 			{
+				SetPageState(PredictionPageState.None);
 				await Navigation.PushAsync(new PredictionResultsPage(predictionMedia, result));
 			}
 			else

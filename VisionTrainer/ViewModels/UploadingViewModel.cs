@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using VisionTrainer.Constants;
 using VisionTrainer.Services;
 using Xamarin.Forms;
 
@@ -54,6 +55,20 @@ namespace VisionTrainer.ViewModels
 			set { SetProperty(ref uploadButtonEnabled, value); }
 		}
 
+		Color uploadButtonTextColor;
+		public Color UploadButtonTextColor
+		{
+			get { return uploadButtonTextColor; }
+			set { SetProperty(ref uploadButtonTextColor, value); }
+		}
+
+		Color uploadButtonColor;
+		public Color UploadButtonColor
+		{
+			get { return uploadButtonColor; }
+			set { SetProperty(ref uploadButtonColor, value); }
+		}
+
 		bool showAnimation;
 		public bool ShowAnimation
 		{
@@ -81,6 +96,7 @@ namespace VisionTrainer.ViewModels
 		public UploadingViewModel(INavigation navigation)
 		{
 			database = ServiceContainer.Resolve<IDatabase>();
+			UploadButtonTextColor = Color.White;
 			UpdateStatus();
 
 			StartUploadCommand = new Command(async (obj) =>
@@ -88,6 +104,8 @@ namespace VisionTrainer.ViewModels
 				StatusTitle = "Uploading Media";
 				UploadButtonText = "Uploading";
 				UploadButtonEnabled = false;
+
+				UploadButtonColor = AppColors.ButtonDisabledColor;
 				shouldUpload = true;
 				ShowAnimation = true;
 				await Start();
@@ -150,6 +168,8 @@ namespace VisionTrainer.ViewModels
 				StatusMessage = remainingItemsCount + " " + itemDescription + " waiting for submission.\nUse wifi as files may be large.";
 				Animation = "pulse.json";
 				UploadButtonText = "Upload";
+				UploadButtonColor = AppColors.ButtonEnabledColor;
+
 				ShouldLoopAnimation = true;
 				UploadEnabled = true;
 				HeroImage = ImageSource.FromFile("CameraUpload");

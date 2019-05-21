@@ -69,10 +69,18 @@ namespace VisionTrainer.Pages
 				toggleCameraToolbarItem = new ToolbarItem(ApplicationResource.PageCaptureToolbarToggleCamera, null, () => ToggleCamera()) { Icon = "toggle.png" };
 			}
 
-			animationView = new AnimationView();
-			animationView.Animation = "spinner.json";
-			animationView.IsVisible = false;
-			layout.Children.Add(animationView,
+
+
+			heroImage = new Image();
+			heroImage.HeightRequest = heroImage.WidthRequest = 200;
+			heroImage.SetBinding(Image.SourceProperty, new Binding("HeroImage"));
+			heroImage.IsVisible = false;
+			heroImage.SizeChanged += (s, e) =>
+			{
+				layout.ForceLayout();
+			};
+
+			layout.Children.Add(heroImage,
 				Constraint.RelativeToParent((parent) =>
 				{
 					return (parent.Width * .5) - (heroImage.Width / 2);
@@ -83,15 +91,12 @@ namespace VisionTrainer.Pages
 				})
 			);
 
-			heroImage = new Image();
-			heroImage.HeightRequest = heroImage.WidthRequest = 200;
-			heroImage.SetBinding(Image.SourceProperty, new Binding("HeroImage"));
-			heroImage.SizeChanged += (s, e) =>
-			{
-				layout.ForceLayout();
-			};
-
-			layout.Children.Add(heroImage,
+			animationView = new AnimationView();
+			animationView.HeightRequest = animationView.WidthRequest = 200;
+			animationView.Animation = "pulse.json";
+			animationView.IsVisible = false;
+			animationView.AutoPlay = true;
+			layout.Children.Add(animationView,
 				Constraint.RelativeToParent((parent) =>
 				{
 					return (parent.Width * .5) - (heroImage.Width / 2);
@@ -221,9 +226,10 @@ namespace VisionTrainer.Pages
 				if (toggleCameraToolbarItem != null) toggleCameraToolbarItem.IsEnabled = false;
 
 				heroImage.IsVisible = true;
-				titleLabel.IsVisible = false;
-				messageLabel.IsVisible = false;
+				titleLabel.IsVisible = true;
+				messageLabel.IsVisible = true;
 				animationView.IsVisible = true;
+
 				if (cameraIsAvailable)
 				{
 					cameraPreview.IsVisible = false;
@@ -233,6 +239,21 @@ namespace VisionTrainer.Pages
 
 				animationView.Play();
 				animationView.Loop = true;
+			}
+
+			else if (e.State == PredictionPageState.None)
+			{
+				heroImage.IsVisible = false;
+				titleLabel.IsVisible = false;
+				messageLabel.IsVisible = false;
+				animationView.IsVisible = false;
+
+				if (cameraIsAvailable)
+				{
+					cameraPreview.IsVisible = false;
+					captureButton.IsVisible = false;
+					StopCamera();
+				}
 			}
 		}
 

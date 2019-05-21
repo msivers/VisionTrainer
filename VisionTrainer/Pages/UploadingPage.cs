@@ -52,13 +52,14 @@ namespace VisionTrainer.Pages
 			var startButton = new Button()
 			{
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				BackgroundColor = AppColors.ButtonColor,
 				FontAttributes = FontAttributes.Bold,
 				WidthRequest = 180,
 				HeightRequest = 40,
 				CornerRadius = 20
 			};
 			startButton.SetBinding(Button.TextProperty, new Binding("UploadButtonText"));
+			startButton.SetBinding(Button.TextColorProperty, new Binding("UploadButtonTextColor"));
+			startButton.SetBinding(Button.BackgroundColorProperty, new Binding("UploadButtonColor"));
 			startButton.SetBinding(Button.CommandProperty, new Binding("StartUploadCommand"));
 			startButton.SetBinding(Button.IsEnabledProperty, new Binding("UploadButtonEnabled"));
 			startButton.SetBinding(Button.IsVisibleProperty, new Binding("UploadEnabled"));
